@@ -357,7 +357,7 @@ nav {
   position: relative; z-index: 1;
   max-width: 1280px; margin: 0 auto; padding: 60px 60px 110px;
 }
-@media(max-width:640px){ .github-sec { padding: 40px 24px 80px; } }
+@media(max-width:640px){ .github-sec { padding: 40px 24px 80px; } .git-panel { padding: 20px; } }
 
 .github-grid {
   display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; margin-top: 50px;
@@ -372,6 +372,8 @@ nav {
   border-radius: 24px;
   padding: 30px;
   backdrop-filter: blur(10px);
+  min-width: 0; /* prevent grid blowout */
+  overflow: hidden;
 }
 .panel-title {
   display: flex; align-items: center; gap: 12px;
@@ -431,20 +433,23 @@ nav {
 .terminal {
   background: #030306; border: 1px solid var(--border); border-radius: 12px;
   padding: 16px 20px; font-family: monospace; font-size: 0.82rem; height: 200px;
-  overflow-y: auto; display: flex; flex-direction: column; gap: 8px;
+  overflow-y: auto; overflow-x: hidden; display: flex; flex-direction: column; gap: 8px;
   margin-top: 24px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
 }
 .term-header {
-  display: flex; align-items: center; justify-content: space-between;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
   font-size: 0.75rem; color: var(--muted); border-bottom: 1px solid rgba(255,255,255,0.03);
-  padding-bottom: 8px; margin-bottom: 8px;
+  padding-bottom: 8px; margin-bottom: 8px; min-width: 0;
+}
+.term-header > span {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
 }
 .term-dots { display: flex; gap: 6px; }
 .term-dot { width: 10px; height: 10px; border-radius: 50%; }
 .term-dot-red { background: #ff5f56; }
 .term-dot-yellow { background: #ffbd2e; }
 .term-dot-green { background: #27c93f; }
-.term-line { color: var(--muted2); line-height: 1.4; }
+.term-line { color: var(--muted2); line-height: 1.4; overflow-wrap: break-word; word-break: break-all; }
 .term-line span.time { color: var(--muted); margin-right: 6px; }
 .term-line span.author { color: var(--accent2); font-weight: bold; }
 .term-line span.commit { color: var(--text); }
