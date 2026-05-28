@@ -404,6 +404,67 @@ router.post('/ai-analyze', async (req, res) => {
   }
 });
 
+// ── Quản lý tài khoản ─────────────────────────────────
+
+// Tài khoản NGOÀI: Teacher + Student từ MongoDB (đăng ký email)
+router.get('/accounts/outside', async (_req, res) => {
+  try {
+    const { connectMongo, Teacher, Student } = require('../db-mongo');
+    await connectMongo();
+
+    const [teachers, students] = await Promise.all([
+      Teacher.find().select('-passwordHash').sort({ createdAt: -1 }).lean(),
+      Student.find({ authType: 'email' }).select('-passwordHash').sort({ createdAt: -1 }).lean(),
+    ]);
+
+    res.json({
+      teachers: teachers.map(t => ({
+        _id: t._id, fullName: t.fullName, email: t.email,
+        subject: t.subject || '', school: t.school || '',
+        isVerified: t.isVerified || false,
+        createdAt: t.createdAt, role: 'teacher',
+      })),
+      students: students.map(s => ({
+        _id: s._id, fullName: s.fullName, email: s.email,
+        gender: s.gender || '', dob: s.dob || '',
+        createdAt: s.createdAt, role: 'student',
+      })),
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Tài khoản TRONG: Học sinh trường từ AstraDB (đăng ký bằng CCCD, có className)
+router.get('/accounts/inside', async (_req, res) => {
+  try {
+    const User = await getStudentDB();
+    const all = await User.find({ role: 'student', className: { $nin: ['', null], $exists: true } })
+      .select('-passwordHash').lean();
+
+    all.sort(sortByGivenName);
+
+    // Group thầy cô nội bộ (role teacher trong AstraDB nếu có)
+    const UserAll = await getStudentDB();
+    const internalTeachers = await UserAll.find({ role: 'teacher' })
+      .select('-passwordHash').lean();
+
+    res.json({
+      teachers: internalTeachers.map(t => ({
+        _id: t._id, fullName: t.fullName,
+        cccd: t.cccd || '', className: t.className || '',
+        gender: t.gender || '', dob: t.dob || '',
+        createdAt: t.createdAt, role: 'teacher',
+      })),
+      students: all.map(s => ({
+        _id: s._id, fullName: s.fullName,
+        cccd: s.cccd || '', className: s.className || '',
+        gender: s.gender || '', dob: s.dob || '',
+        mustChangePassword: s.mustChangePassword || false,
+        createdAt: s.createdAt, role: 'student',
+      })),
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 // ── Góp ý (admin) ─────────────────────────────────────
 const { FeedbackModel } = require('../db');
 

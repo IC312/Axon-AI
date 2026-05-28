@@ -8,9 +8,9 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#050508;--surface:#0d0d14;--surface2:#12121e;
+  --bg:#040a09;--surface:#0a1412;--surface2:#101e1b;
   --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
-  --accent:#7c5cfc;--accent2:#00e5ff;
+  --accent:#0d9488;--accent2:#22d3ee;--accent-soft:rgba(13,148,136,.15);
   --text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;
   --success:#34d399
 }
@@ -28,9 +28,9 @@ body::before{
 }
 .bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
-.bg-orb-1{width:600px;height:600px;background:radial-gradient(circle,#7c5cfc,transparent);opacity:.07;top:-150px;right:-150px;animation:orb1 22s ease-in-out infinite}
-.bg-orb-2{width:500px;height:500px;background:radial-gradient(circle,#00e5ff,transparent);opacity:.06;bottom:-120px;left:-100px;animation:orb2 28s ease-in-out infinite}
-.bg-orb-3{width:350px;height:350px;background:radial-gradient(circle,#9c5cfc,transparent);opacity:.04;top:45%;left:45%;animation:orb3 18s ease-in-out infinite}
+.bg-orb-1{width:600px;height:600px;background:radial-gradient(circle,#0d9488,transparent);opacity:.1;top:-150px;left:-150px;animation:orb1 22s ease-in-out infinite}
+.bg-orb-2{width:500px;height:500px;background:radial-gradient(circle,#22d3ee,transparent);opacity:.07;bottom:-120px;right:-100px;animation:orb2 28s ease-in-out infinite}
+.bg-orb-3{width:350px;height:350px;background:radial-gradient(circle,#0891b2,transparent);opacity:.05;top:45%;left:45%;animation:orb3 18s ease-in-out infinite}
 @keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(-80px,100px)}}
 @keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,-70px)}}
 @keyframes orb3{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
@@ -41,7 +41,7 @@ body::before{
   border:1px solid rgba(255,255,255,.1);
   border-radius:24px;padding:40px 36px;
   width:100%;max-width:460px;
-  box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 1px rgba(124,92,252,.05);
+  box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 1px rgba(13,148,136,.07);
   animation:cardIn .55s cubic-bezier(.22,1,.36,1) both
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -56,7 +56,7 @@ body::before{
   background:linear-gradient(135deg,var(--accent),var(--accent2));
   border-radius:11px;display:flex;align-items:center;justify-content:center;
   position:relative;overflow:hidden;flex-shrink:0;
-  box-shadow:0 4px 20px rgba(124,92,252,.4)
+  box-shadow:0 4px 20px rgba(13,148,136,.45)
 }
 .logo-icon::after{
   content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;
@@ -68,33 +68,11 @@ body::before{
 /* Badge giáo viên */
 .teacher-badge{
   display:inline-flex;align-items:center;gap:6px;
-  background:linear-gradient(135deg,rgba(124,92,252,.18),rgba(0,229,255,.12));
-  border:1px solid rgba(124,92,252,.3);
+  background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.35);
   border-radius:30px;padding:5px 14px;font-size:.75rem;font-weight:700;
   color:var(--accent2);letter-spacing:.04em;text-transform:uppercase;
   margin:0 auto 16px;width:fit-content;display:flex
 }
-
-/* Tabs */
-.tabs{
-  display:flex;background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:13px;padding:4px;margin-bottom:26px;gap:3px
-}
-.tab{
-  flex:1;padding:10px 8px;text-align:center;border:none;background:none;
-  color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:.84rem;font-weight:600;cursor:pointer;
-  border-radius:10px;transition:all .22s;line-height:1.3
-}
-.tab.active{
-  background:linear-gradient(135deg,var(--accent),#9c7dff);
-  color:white;box-shadow:0 3px 12px rgba(124,92,252,.35)
-}
-.tab:not(.active):hover{color:var(--muted2)}
-
-.panel{display:none}
-.panel.active{display:block}
 
 .heading{
   font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
@@ -113,7 +91,7 @@ body::before{
   padding:12px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
   font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%
 }
-.s-input:focus{border-color:rgba(124,92,252,.55);box-shadow:0 0 0 3px rgba(124,92,252,.1)}
+.s-input:focus{border-color:rgba(13,148,136,.6);box-shadow:0 0 0 3px rgba(13,148,136,.12)}
 .s-input::placeholder{color:var(--muted)}
 .s-input.optional{border-color:rgba(255,255,255,.07)}
 .pw-input{padding-right:44px}
@@ -170,14 +148,14 @@ body::before{
 
 .btn-primary{
   width:100%;padding:13px;
-  background:linear-gradient(135deg,var(--accent),#9c7dff);
+  background:linear-gradient(135deg,#0d9488,#22d3ee);
   border:none;border-radius:11px;color:white;
   font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;font-weight:700;
   cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s;
   margin-top:6px;position:relative;overflow:hidden;
-  box-shadow:0 4px 20px rgba(124,92,252,.3)
+  box-shadow:0 4px 20px rgba(13,148,136,.35)
 }
-.btn-primary:hover:not(:disabled){opacity:.92;transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,92,252,.4)}
+.btn-primary:hover:not(:disabled){opacity:.92;transform:translateY(-1px);box-shadow:0 8px 28px rgba(13,148,136,.45)}
 .btn-primary:active:not(:disabled){transform:translateY(0) scale(.99)}
 .btn-primary:disabled{opacity:.45;cursor:not-allowed}
 .btn-primary::after{
@@ -210,6 +188,7 @@ body::before{
   .row2{grid-template-columns:1fr}
   body{padding:12px}
 }
+@media(max-width:400px){.card{padding:24px 16px}.heading{font-size:1.15rem}}
 </style>
 </head>
 <body>
@@ -232,15 +211,8 @@ body::before{
     Dành cho Giáo viên
   </div>
 
-  <!-- Tabs -->
-  <div class="tabs" role="tablist">
-    <button class="tab active" id="tab-register" role="tab" onclick="switchTab('register')">✦ Đăng ký</button>
-    <button class="tab" id="tab-login" role="tab" onclick="switchTab('login')">Đăng nhập</button>
-  </div>
-
-  <!-- ── Panel: Đăng ký ── -->
-  <div class="panel active" id="panel-register">
-    <div class="heading">Tạo tài khoản GV 👩‍🏫</div>
+  <!-- ── Đăng ký ── -->
+    <div class="heading">Tạo tài khoản Giáo viên</div>
     <div class="sub">Miễn phí · Hỗ trợ soạn bài &amp; quản lý lớp</div>
 
     <form onsubmit="doRegister(event)" autocomplete="on" novalidate>
@@ -297,40 +269,10 @@ body::before{
       <div class="msg" id="r-msg"></div>
       <button class="btn-primary" type="submit" id="r-btn">Tạo tài khoản Giáo viên</button>
     </form>
-  </div>
-
-  <!-- ── Panel: Đăng nhập ── -->
-  <div class="panel" id="panel-login">
-    <div class="heading">Chào mừng lại 👋</div>
-    <div class="sub">Đăng nhập tài khoản giáo viên của bạn</div>
-
-    <form onsubmit="doLogin(event)" autocomplete="on" novalidate>
-      <div class="field" id="lf-email">
-        <label for="l-email">Email</label>
-        <input class="s-input" type="email" id="l-email" placeholder="giaovien@gmail.com" required autocomplete="email">
-      </div>
-
-      <div class="field" id="lf-pw">
-        <label for="l-pw">Mật khẩu</label>
-        <div class="input-wrap">
-          <input class="s-input pw-input" type="password" id="l-pw"
-            placeholder="••••••••" required autocomplete="current-password">
-          <button type="button" class="pw-toggle" onclick="togglePw('l-pw','l-eye')" aria-label="Hiện mật khẩu">
-            <svg id="l-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-
-      <div class="msg" id="l-msg"></div>
-      <button class="btn-primary" type="submit" id="l-btn">Đăng nhập</button>
-    </form>
-  </div>
 
   <div class="divider"></div>
   <div class="footer-txt">
-    Học sinh? <a href="/register.html">Đăng ký tài khoản học sinh ↗</a>
+    Đã có tài khoản? <a href="/login-email-teacher.html">Đăng nhập ↗</a>
   </div>
 </div>
 
@@ -341,15 +283,6 @@ body::before{
     if (r.ok) { const d = await r.json(); location.href = d.role === 'admin' ? '/admin.html' : '/chat.html'; }
   } catch {}
 })();
-
-function switchTab(tab) {
-  ['register','login'].forEach(t => {
-    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
-    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
-  });
-  document.getElementById('r-msg').className = 'msg';
-  document.getElementById('l-msg').className = 'msg';
-}
 
 const _pw = {};
 function togglePw(inputId, iconId) {
@@ -490,45 +423,6 @@ async function doRegister(e) {
     msg.textContent='⚠ Lỗi kết nối. Vui lòng thử lại.';
     msg.className='msg err';
     btn.disabled=false;btn.textContent='Tạo tài khoản Giáo viên';
-  }
-}
-
-async function doLogin(e) {
-  e.preventDefault();
-  const btn=document.getElementById('l-btn');
-  const msg=document.getElementById('l-msg');
-  const email=document.getElementById('l-email').value.trim();
-  const pw=document.getElementById('l-pw').value;
-
-  msg.className='msg';
-  btn.disabled=true;
-  btn.innerHTML='<span class="btn-spinner"></span>Đang xác thực…';
-
-  try {
-    const res=await fetch('/api/auth/login-teacher',{
-      method:'POST',credentials:'include',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({email,password:pw})
-    });
-    const data=await res.json();
-    if(!res.ok){
-      msg.textContent='⚠ '+(data.error||'Đăng nhập thất bại');
-      msg.className='msg err';
-      shake('lf-email');shake('lf-pw');
-      btn.disabled=false;btn.textContent='Đăng nhập';return;
-    }
-    localStorage.setItem('hc_role',data.role);
-    localStorage.setItem('hc_fullName',data.fullName);
-    localStorage.setItem('hc_className','');
-    localStorage.setItem('hc_gender','');
-    localStorage.setItem('hc_dob','');
-    localStorage.setItem('hc_mustChangePw','0');
-    btn.textContent='✓ Thành công!';
-    setTimeout(()=>{location.href='/chat.html';},350);
-  } catch {
-    msg.textContent='⚠ Lỗi kết nối. Vui lòng thử lại.';
-    msg.className='msg err';
-    btn.disabled=false;btn.textContent='Đăng nhập';
   }
 }
 </script>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Axon AI — Đăng nhập</title>
+<title>Axon AI — Đăng nhập Học sinh</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -66,32 +66,20 @@ body::before{
 }
 @keyframes logoShimmer{0%{left:-60%}40%,100%{left:130%}}
 
-.tabs{
-  display:flex;background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:13px;padding:4px;margin-bottom:26px;gap:3px
+.role-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.3);
+  border-radius:30px;padding:5px 14px;font-size:.75rem;font-weight:700;
+  color:var(--accent2);letter-spacing:.04em;text-transform:uppercase;
+  margin:0 auto 20px;width:fit-content
 }
-.tab{
-  flex:1;padding:10px 8px;text-align:center;border:none;background:none;
-  color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;
-  font-size:.84rem;font-weight:600;cursor:pointer;
-  border-radius:10px;transition:all .22s;line-height:1.3
-}
-.tab.active{
-  background:linear-gradient(135deg,var(--accent),#9c7dff);
-  color:white;box-shadow:0 3px 12px rgba(124,92,252,.35)
-}
-.tab:not(.active):hover{color:var(--muted2)}
-
-.panel{display:none}
-.panel.active{display:block}
 
 .heading{
   font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
   font-size:1.55rem;letter-spacing:-.03em;color:white;
   text-align:center;margin-bottom:6px;line-height:1.2
 }
-.sub{font-size:.84rem;color:var(--muted);text-align:center;margin-bottom:22px;line-height:1.6}
+.sub{font-size:.84rem;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.6}
 
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
 .field label{font-size:.79rem;font-weight:600;color:var(--muted2);letter-spacing:.01em}
@@ -157,7 +145,7 @@ body::before{
 .msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--success);display:flex}
 
 .divider{height:1px;background:var(--border);margin:20px 0}
-.footer-txt{font-size:.74rem;color:var(--muted);text-align:center;line-height:1.8}
+.footer-txt{font-size:.74rem;color:var(--muted);text-align:center;line-height:1.9}
 .footer-txt a{color:var(--accent2);text-decoration:none;font-weight:600}
 .footer-txt a:hover{text-decoration:underline}
 
@@ -167,6 +155,7 @@ body::before{
   .logo{margin-bottom:20px}
   body{padding:12px}
 }
+@media(max-width:400px){.card{padding:24px 16px}.heading{font-size:1.2rem}}
 @media(max-width:360px){.card{padding:22px 16px}.heading{font-size:1.2rem}}
 </style>
 </head>
@@ -185,73 +174,39 @@ body::before{
     Axon AI
   </div>
 
-  <div class="tabs" role="tablist">
-    <button class="tab active" id="tab-student" role="tab" aria-selected="true" onclick="switchTab('student')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>Học sinh</button>
-    <button class="tab" id="tab-teacher" role="tab" aria-selected="false" onclick="switchTab('teacher')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:4px"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>Giáo viên</button>
-  </div>
+  <div class="role-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg> Học sinh</div>
 
-  <!-- ── Panel: Học sinh ── -->
-  <div class="panel active" id="panel-student">
-    <div class="heading">Chào mừng lại</div>
-    <div class="sub">Đăng nhập tài khoản học sinh</div>
-    <form onsubmit="doStudentLogin(event)" autocomplete="on" novalidate>
-      <div class="field" id="sf-email">
-        <label for="s-email">Email</label>
-        <div class="input-wrap">
-          <input class="s-input" type="email" id="s-email" name="email"
-            placeholder="ten@gmail.com" required autocomplete="email">
-        </div>
-      </div>
-      <div class="field" id="sf-pw">
-        <label for="s-pw">Mật khẩu</label>
-        <div class="input-wrap">
-          <input class="s-input pw-input" type="password" id="s-pw" name="password"
-            placeholder="••••••••" required autocomplete="current-password">
-          <button type="button" class="pw-toggle" onclick="togglePw('s-pw','s-eye')" aria-label="Hiện mật khẩu">
-            <svg id="s-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <div class="msg" id="s-msg"></div>
-      <button class="btn-primary" type="submit" id="s-btn">Đăng nhập</button>
-    </form>
-  </div>
+  <div class="heading">Chào mừng lại</div>
+  <div class="sub">Đăng nhập tài khoản học sinh cá nhân</div>
 
-  <!-- ── Panel: Giáo viên ── -->
-  <div class="panel" id="panel-teacher">
-    <div class="heading">Chào mừng lại</div>
-    <div class="sub">Đăng nhập tài khoản giáo viên</div>
-    <form onsubmit="doTeacherLogin(event)" autocomplete="on" novalidate>
-      <div class="field" id="tf-email">
-        <label for="t-email">Email</label>
-        <div class="input-wrap">
-          <input class="s-input" type="email" id="t-email" name="email"
-            placeholder="giaovien@gmail.com" required autocomplete="email">
-        </div>
+  <form onsubmit="doLogin(event)" autocomplete="on" novalidate>
+    <div class="field" id="f-email">
+      <label for="email">Email</label>
+      <div class="input-wrap">
+        <input class="s-input" type="email" id="email" name="email"
+          placeholder="ten@gmail.com" required autocomplete="email">
       </div>
-      <div class="field" id="tf-pw">
-        <label for="t-pw">Mật khẩu</label>
-        <div class="input-wrap">
-          <input class="s-input pw-input" type="password" id="t-pw" name="password"
-            placeholder="••••••••" required autocomplete="current-password">
-          <button type="button" class="pw-toggle" onclick="togglePw('t-pw','t-eye')" aria-label="Hiện mật khẩu">
-            <svg id="t-eye" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
-        </div>
+    </div>
+    <div class="field" id="f-pw">
+      <label for="pw">Mật khẩu</label>
+      <div class="input-wrap">
+        <input class="s-input pw-input" type="password" id="pw" name="password"
+          placeholder="••••••••" required autocomplete="current-password">
+        <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Hiện mật khẩu">
+          <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
       </div>
-      <div class="msg" id="t-msg"></div>
-      <button class="btn-primary" type="submit" id="t-btn">Đăng nhập</button>
-    </form>
-  </div>
+    </div>
+    <div class="msg" id="msg"></div>
+    <button class="btn-primary" type="submit" id="btn">Đăng nhập</button>
+  </form>
 
   <div class="divider"></div>
   <div class="footer-txt">
-    Chưa có tài khoản?
-    <a id="register-link" href="/register.html">Đăng ký miễn phí ↗</a>
+    Chưa có tài khoản? <a href="/register.html">Đăng ký miễn phí ↗</a><br>
+    <a href="/choose">← Chọn lại loại tài khoản</a>
   </div>
 </div>
 
@@ -263,40 +218,20 @@ body::before{
   } catch {}
 })();
 
-// Auto-switch tab via URL param: /login-email.html?role=teacher
-if (new URLSearchParams(location.search).get('role') === 'teacher') {
-  document.addEventListener('DOMContentLoaded', () => switchTab('teacher'));
-}
-
-function switchTab(tab) {
-  ['student','teacher'].forEach(t => {
-    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
-    document.getElementById('tab-' + t).setAttribute('aria-selected', t === tab);
-    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
-  });
-  document.getElementById('s-msg').className = 'msg';
-  document.getElementById('t-msg').className = 'msg';
-  document.getElementById('register-link').href = tab === 'teacher' ? '/register-teacher.html' : '/register.html';
-}
-
-const _pw = {};
-function togglePw(inputId, iconId) {
-  _pw[inputId] = !_pw[inputId];
-  document.getElementById(inputId).type = _pw[inputId] ? 'text' : 'password';
+let _pwVisible = false;
+function togglePw() {
+  _pwVisible = !_pwVisible;
+  document.getElementById('pw').type = _pwVisible ? 'text' : 'password';
   const NS = 'http://www.w3.org/2000/svg';
-  const svg = document.getElementById(iconId);
+  const svg = document.getElementById('eye-icon');
   while (svg.firstChild) svg.removeChild(svg.firstChild);
-  if (_pw[inputId]) {
-    const p = document.createElementNS(NS, 'path');
-    p.setAttribute('d', 'M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24');
-    const l = document.createElementNS(NS, 'line');
-    l.setAttribute('x1','1'); l.setAttribute('y1','1'); l.setAttribute('x2','23'); l.setAttribute('y2','23');
+  if (_pwVisible) {
+    const p = document.createElementNS(NS,'path'); p.setAttribute('d','M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24');
+    const l = document.createElementNS(NS,'line'); l.setAttribute('x1','1');l.setAttribute('y1','1');l.setAttribute('x2','23');l.setAttribute('y2','23');
     svg.appendChild(p); svg.appendChild(l);
   } else {
-    const p = document.createElementNS(NS, 'path');
-    p.setAttribute('d', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
-    const c = document.createElementNS(NS, 'circle');
-    c.setAttribute('cx','12'); c.setAttribute('cy','12'); c.setAttribute('r','3');
+    const p = document.createElementNS(NS,'path'); p.setAttribute('d','M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
+    const c = document.createElementNS(NS,'circle'); c.setAttribute('cx','12');c.setAttribute('cy','12');c.setAttribute('r','3');
     svg.appendChild(p); svg.appendChild(c);
   }
 }
@@ -307,12 +242,12 @@ function shake(id) {
   setTimeout(() => f.classList.remove('shake'), 500);
 }
 
-async function doStudentLogin(e) {
+async function doLogin(e) {
   e.preventDefault();
-  const btn = document.getElementById('s-btn');
-  const msg = document.getElementById('s-msg');
-  const email = document.getElementById('s-email').value.trim();
-  const pw    = document.getElementById('s-pw').value;
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('pw').value;
 
   msg.className = 'msg';
   btn.disabled = true;
@@ -328,45 +263,7 @@ async function doStudentLogin(e) {
     if (!res.ok) {
       msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> ' + (data.error || 'Đăng nhập thất bại').replace(/</g,'&lt;');
       msg.className = 'msg err';
-      shake('sf-email'); shake('sf-pw');
-      btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
-    }
-    localStorage.setItem('hc_role', data.role);
-    localStorage.setItem('hc_fullName', data.fullName);
-    localStorage.setItem('hc_className', '');
-    localStorage.setItem('hc_gender', ''); localStorage.setItem('hc_dob', '');
-    localStorage.setItem('hc_mustChangePw', '0');
-    btn.textContent = '✓ Thành công!';
-    setTimeout(() => { location.href = '/chat.html'; }, 350);
-  } catch {
-    msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Lỗi kết nối. Vui lòng thử lại.';
-    msg.className = 'msg err';
-    btn.disabled = false; btn.textContent = 'Đăng nhập';
-  }
-}
-
-async function doTeacherLogin(e) {
-  e.preventDefault();
-  const btn = document.getElementById('t-btn');
-  const msg = document.getElementById('t-msg');
-  const email = document.getElementById('t-email').value.trim();
-  const pw    = document.getElementById('t-pw').value;
-
-  msg.className = 'msg';
-  btn.disabled = true;
-  btn.innerHTML = '<span class="btn-spinner"></span>Đang xác thực…';
-
-  try {
-    const res = await fetch('/api/auth/login-teacher', {
-      method: 'POST', credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password: pw })
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> ' + (data.error || 'Đăng nhập thất bại').replace(/</g,'&lt;');
-      msg.className = 'msg err';
-      shake('tf-email'); shake('tf-pw');
+      shake('f-email'); shake('f-pw');
       btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
     }
     localStorage.setItem('hc_role', data.role);

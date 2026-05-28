@@ -75,10 +75,10 @@ body::before{
 .opt-card:hover{border-color:rgba(124,92,252,.55);background:rgba(124,92,252,.06);transform:translateY(-1px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
 .opt-card-icon{
   width:46px;height:46px;border-radius:13px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.4rem
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
 }
-.icon-school{background:rgba(124,92,252,.18)}
-.icon-personal{background:rgba(0,229,255,.12)}
+.icon-school{background:rgba(124,92,252,.18);color:rgba(124,92,252,.9)}
+.icon-personal{background:rgba(0,229,255,.12);color:rgba(0,229,255,.9)}
 .opt-card-body{flex:1;min-width:0}
 .opt-card-title{font-weight:700;font-size:.93rem;color:var(--text);margin-bottom:3px}
 .opt-card-desc{font-size:.76rem;color:var(--muted);line-height:1.5}
@@ -102,7 +102,7 @@ body::before{
   font-family:'Plus Jakarta Sans',sans-serif;color:inherit
 }
 .role-card:hover{border-color:rgba(124,92,252,.55);background:rgba(124,92,252,.06);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
-.role-icon{font-size:2.1rem;line-height:1}
+.role-icon{display:flex;align-items:center;justify-content:center}
 .role-title{font-weight:700;font-size:.9rem;color:var(--text)}
 .role-sub{font-size:.73rem;color:var(--muted);text-align:center;line-height:1.4}
 
@@ -116,6 +116,7 @@ body::before{
   .heading{font-size:1.35rem}.logo{margin-bottom:20px}
   body{padding:12px}.role-card{padding:18px 10px 14px}
 }
+@media(max-width:400px){.card{padding:24px 16px}.heading{font-size:1.2rem}}
 @media(max-width:360px){.card{padding:22px 14px}}
 </style>
 </head>
@@ -137,12 +138,14 @@ body::before{
   <div class="steps-wrap">
 
     <!-- ── Step 1: Chọn loại tài khoản ── -->
-    <div id="step1">
-      <div class="heading">Xin chào 👋</div>
+    <div id="step1" class="step">
+      <div class="heading">Xin chào</div>
       <div class="sub">Chọn loại tài khoản để tiếp tục</div>
       <div class="opt-cards">
         <button class="opt-card" onclick="pickType('school')">
-          <div class="opt-card-icon icon-school">🏫</div>
+          <div class="opt-card-icon icon-school">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 22V12H10v10"/><path d="m18 10 4 2v10H2V12l4-2"/><path d="m4 6 8-4 8 4"/></svg>
+          </div>
           <div class="opt-card-body">
             <div class="opt-card-title">Tài khoản Trường</div>
             <div class="opt-card-desc">Đăng nhập bằng số CCCD — dành cho học sinh &amp; giáo viên trong hệ thống nhà trường</div>
@@ -150,7 +153,9 @@ body::before{
           <svg class="opt-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
         <button class="opt-card" onclick="pickType('personal')">
-          <div class="opt-card-icon icon-personal">🌐</div>
+          <div class="opt-card-icon icon-personal">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>
+          </div>
           <div class="opt-card-body">
             <div class="opt-card-title">Tài khoản Cá nhân</div>
             <div class="opt-card-desc">Đăng nhập bằng email — dành cho tài khoản tự đăng ký bên ngoài</div>
@@ -161,7 +166,7 @@ body::before{
     </div>
 
     <!-- ── Step 2: Chọn vai trò ── -->
-    <div id="step2" class="hidden">
+    <div id="step2" class="step hidden">
       <button class="back-btn" onclick="goBack()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         Quay lại
@@ -170,12 +175,16 @@ body::before{
       <div class="sub" id="step2-sub">Chọn vai trò của bạn</div>
       <div class="role-cards">
         <button class="role-card" onclick="goLogin('student')">
-          <div class="role-icon">🎓</div>
+          <div class="role-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+          </div>
           <div class="role-title">Học sinh</div>
           <div class="role-sub">Tài khoản học tập</div>
         </button>
         <button class="role-card" onclick="goLogin('teacher')">
-          <div class="role-icon">👩‍🏫</div>
+          <div class="role-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+          </div>
           <div class="role-title">Giáo viên</div>
           <div class="role-sub">Tài khoản giảng dạy</div>
         </button>
@@ -184,10 +193,6 @@ body::before{
 
   </div><!-- /steps-wrap -->
 
-  <div class="divider"></div>
-  <div class="footer-txt" id="footer-txt">
-    Chưa có tài khoản? <a href="/register.html">Đăng ký miễn phí ↗</a>
-  </div>
 </div>
 
 <script>
@@ -202,7 +207,7 @@ let _type = null;
 
 const ROUTES = {
   school:   { student: '/portal', teacher: '/portal-teacher' },
-  personal: { student: '/login-email.html', teacher: '/login-email.html?role=teacher' },
+  personal: { student: '/login-email-student.html', teacher: '/login-email-teacher.html' },
 };
 
 function pickType(type) {
@@ -218,10 +223,6 @@ function pickType(type) {
     document.getElementById('step2-sub').textContent = type === 'school'
       ? 'Đăng nhập bằng CCCD · Hệ thống trường'
       : 'Đăng nhập bằng email · Tài khoản cá nhân';
-
-    document.getElementById('footer-txt').innerHTML = type === 'personal'
-      ? 'Chưa có tài khoản? <a href="/register.html">Đăng ký miễn phí ↗</a>'
-      : 'Hệ thống học tập AI · <strong style="color:var(--muted2)">Axon</strong>';
 
     s2.classList.remove('hidden');
     s2.classList.add('slide-in');

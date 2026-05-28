@@ -14,7 +14,7 @@
   --text:#e8f0ef;--muted:#6b7f7d;--muted2:#90a8a5;
   --danger:#f87171;--success:#34d399
 }
-html,body{height:100%;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;-webkit-tap-highlight-color:transparent}
 body{
   background:var(--bg);color:var(--text);
   font-family:'Plus Jakarta Sans',sans-serif;
@@ -35,6 +35,7 @@ body::before{
 @keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,100px)}}
 @keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-80px,-70px)}}
 @keyframes orb3{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+
 .card{
   position:relative;z-index:10;background:var(--surface);
   border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px 36px;
@@ -43,20 +44,28 @@ body::before{
   animation:cardIn .55s cubic-bezier(.22,1,.36,1) both
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
 .logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.03em;color:white}
 .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,#0d9488,#22d3ee);border-radius:11px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 4px 20px rgba(13,148,136,.45)}
 .logo-icon::after{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);animation:logoShimmer 4s ease-in-out infinite}
 @keyframes logoShimmer{0%{left:-60%}40%,100%{left:130%}}
-.heading{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.65rem;letter-spacing:-.03em;color:white;text-align:center;margin-bottom:6px;line-height:1.2}
-.sub{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.6}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
-.field label{font-size:.8rem;font-weight:600;color:var(--muted2);letter-spacing:.01em}
-.field .hint{font-size:.72rem;color:var(--muted);font-family:'Courier New',monospace;line-height:1.5}
+
+.role-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.35);
+  border-radius:30px;padding:5px 14px;font-size:.75rem;font-weight:700;
+  color:#22d3ee;letter-spacing:.04em;text-transform:uppercase;
+  margin:0 auto 20px;width:fit-content
+}
+
+.heading{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.55rem;letter-spacing:-.03em;color:white;text-align:center;margin-bottom:6px;line-height:1.2}
+.sub{font-size:.84rem;color:var(--muted);text-align:center;margin-bottom:24px;line-height:1.6}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:15px}
+.field label{font-size:.79rem;font-weight:600;color:var(--muted2);letter-spacing:.01em}
 .input-wrap{position:relative}
 .s-input{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:12px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
 .s-input:focus{border-color:rgba(13,148,136,.6);box-shadow:0 0 0 3px rgba(13,148,136,.12)}
 .s-input::placeholder{color:var(--muted)}
-.s-input.mono{font-family:'Courier New',monospace;letter-spacing:.06em}
 .pw-input{padding-right:44px}
 .pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:color .15s;border-radius:6px;padding:0;flex-shrink:0}
 .pw-toggle:hover{color:var(--muted2)}
@@ -74,12 +83,12 @@ body::before{
 .msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:flex}
 .msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--success);display:flex}
 .divider{height:1px;background:var(--border);margin:20px 0}
-.footer-txt{font-size:.74rem;color:var(--muted);text-align:center;line-height:1.6}
-.footer-txt a{color:var(--accent2);text-decoration:none;font-weight:600}
+.footer-txt{font-size:.74rem;color:var(--muted);text-align:center;line-height:1.9}
+.footer-txt a{color:#22d3ee;text-decoration:none;font-weight:600}
 .footer-txt a:hover{text-decoration:underline}
-@media(max-width:480px){.card{padding:28px 22px;border-radius:20px;margin:8px}.heading{font-size:1.4rem}.logo{margin-bottom:20px}body{padding:12px}}
-@media(max-width:400px){.card{padding:24px 16px}.heading{font-size:1.25rem}}
-@media(max-width:360px){.card{padding:22px 16px}.heading{font-size:1.25rem}}
+@media(max-width:480px){.card{padding:28px 22px;border-radius:20px;margin:8px}.heading{font-size:1.35rem}.logo{margin-bottom:20px}body{padding:12px}}
+@media(max-width:400px){.card{padding:24px 16px}.heading{font-size:1.2rem}}
+@media(max-width:360px){.card{padding:22px 16px}.heading{font-size:1.2rem}}
 </style>
 </head>
 <body>
@@ -88,6 +97,7 @@ body::before{
   <div class="bg-orb bg-orb-2"></div>
   <div class="bg-orb bg-orb-3"></div>
 </div>
+
 <div class="card">
   <div class="logo">
     <div class="logo-icon">
@@ -95,23 +105,26 @@ body::before{
     </div>
     Axon AI
   </div>
-  <div class="heading">Xin chào thầy/cô</div>
-  <div class="sub">Đăng nhập bằng số CCCD giáo viên</div>
-  <form onsubmit="doLogin(event)" autocomplete="on">
-    <div class="field" id="field-cccd">
-      <label for="cccd">Số định danh cá nhân (CCCD)</label>
+
+  <div class="role-badge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg> Giáo viên</div>
+
+  <div class="heading">Chào mừng thầy/cô</div>
+  <div class="sub">Đăng nhập tài khoản giáo viên cá nhân</div>
+
+  <form onsubmit="doLogin(event)" autocomplete="on" novalidate>
+    <div class="field" id="f-email">
+      <label for="email">Email</label>
       <div class="input-wrap">
-        <input class="s-input mono" type="text" id="cccd" name="username"
-          placeholder="000000000000" maxlength="12" inputmode="numeric"
-          required autocomplete="username">
+        <input class="s-input" type="email" id="email" name="email"
+          placeholder="giaovien@gmail.com" required autocomplete="email">
       </div>
     </div>
-    <div class="field" id="field-pw">
+    <div class="field" id="f-pw">
       <label for="pw">Mật khẩu</label>
       <div class="input-wrap">
         <input class="s-input pw-input" type="password" id="pw" name="password"
           placeholder="••••••••" required autocomplete="current-password">
-        <button type="button" class="pw-toggle" id="pw-eye" onclick="togglePw()" title="Hiện/ẩn mật khẩu" aria-label="Hiện mật khẩu">
+        <button type="button" class="pw-toggle" onclick="togglePw()" aria-label="Hiện mật khẩu">
           <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
           </svg>
@@ -121,11 +134,14 @@ body::before{
     <div class="msg" id="msg"></div>
     <button class="btn-primary" type="submit" id="btn">Đăng nhập</button>
   </form>
+
   <div class="divider"></div>
   <div class="footer-txt">
+    Chưa có tài khoản? <a href="/register-teacher.html">Đăng ký giáo viên ↗</a><br>
     <a href="/choose">← Chọn lại loại tài khoản</a>
   </div>
 </div>
+
 <script>
 (async () => {
   try {
@@ -133,6 +149,7 @@ body::before{
     if (r.ok) { const d = await r.json(); location.href = d.role === 'admin' ? '/admin.html' : '/chat.html'; }
   } catch {}
 })();
+
 let _pwVisible = false;
 function togglePw() {
   _pwVisible = !_pwVisible;
@@ -143,37 +160,54 @@ function togglePw() {
   if (_pwVisible) {
     const p = document.createElementNS(NS,'path'); p.setAttribute('d','M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24');
     const l = document.createElementNS(NS,'line'); l.setAttribute('x1','1');l.setAttribute('y1','1');l.setAttribute('x2','23');l.setAttribute('y2','23');
-    svg.appendChild(p);svg.appendChild(l);
+    svg.appendChild(p); svg.appendChild(l);
   } else {
     const p = document.createElementNS(NS,'path'); p.setAttribute('d','M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
     const c = document.createElementNS(NS,'circle'); c.setAttribute('cx','12');c.setAttribute('cy','12');c.setAttribute('r','3');
-    svg.appendChild(p);svg.appendChild(c);
+    svg.appendChild(p); svg.appendChild(c);
   }
 }
-function shakeField(id) {
-  const f = document.getElementById(id); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
+
+function shake(id) {
+  const f = document.getElementById(id);
+  f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
   setTimeout(() => f.classList.remove('shake'), 500);
 }
+
 async function doLogin(e) {
   e.preventDefault();
-  const btn = document.getElementById('btn'), msg = document.getElementById('msg');
-  const cccd = document.getElementById('cccd').value.trim(), pw = document.getElementById('pw').value;
-  msg.className = 'msg'; btn.disabled = true;
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  const email = document.getElementById('email').value.trim();
+  const pw    = document.getElementById('pw').value;
+
+  msg.className = 'msg';
+  btn.disabled = true;
   btn.innerHTML = '<span class="btn-spinner"></span>Đang xác thực…';
+
   try {
-    const res = await fetch('/api/auth/login', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({cccd, password:pw}) });
+    const res = await fetch('/api/auth/login-teacher', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password: pw })
+    });
     const data = await res.json();
     if (!res.ok) {
-      msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> ' + (data.error || 'Đăng nhập thất bại').replace(/</g,'&lt;'); msg.className = 'msg err';
-      shakeField('field-cccd'); shakeField('field-pw'); btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
+      msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> ' + (data.error || 'Đăng nhập thất bại').replace(/</g,'&lt;');
+      msg.className = 'msg err';
+      shake('f-email'); shake('f-pw');
+      btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
     }
-    localStorage.setItem('hc_role', data.role); localStorage.setItem('hc_fullName', data.fullName);
-    localStorage.setItem('hc_className', data.className||''); localStorage.setItem('hc_gender', data.gender||'');
-    localStorage.setItem('hc_dob', data.dob||''); localStorage.setItem('hc_mustChangePw', data.mustChangePassword ? '1':'0');
+    localStorage.setItem('hc_role', data.role);
+    localStorage.setItem('hc_fullName', data.fullName);
+    localStorage.setItem('hc_className', '');
+    localStorage.setItem('hc_gender', ''); localStorage.setItem('hc_dob', '');
+    localStorage.setItem('hc_mustChangePw', '0');
     btn.textContent = '✓ Thành công!';
-    setTimeout(() => { location.href = data.role === 'admin' ? '/admin.html' : '/chat.html'; }, 350);
+    setTimeout(() => { location.href = '/chat.html'; }, 350);
   } catch {
-    msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Lỗi kết nối server. Vui lòng thử lại.'; msg.className = 'msg err';
+    msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Lỗi kết nối. Vui lòng thử lại.';
+    msg.className = 'msg err';
     btn.disabled = false; btn.textContent = 'Đăng nhập';
   }
 }
