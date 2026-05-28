@@ -1,28 +1,25 @@
 /**
- * Seed tất cả học sinh từ file Excel vào MongoDB HSNBK
+ * Seed tất cả học sinh từ file Excel vào Astra DB
  * Chạy: node scripts/seed-students.js
  *
  * Login: Số CCCD (12 số)
  * Mật khẩu mặc định: Ngày sinh dạng DDMMYYYY (vd: 02/03/2014 → 02032014)
  */
 require('dotenv').config();
-const mongoose = require('mongoose');
-const bcrypt   = require('bcryptjs');
-const ExcelJS  = require('exceljs');
-const path     = require('path');
-const User     = require('../models/User');
+const bcrypt  = require('bcryptjs');
+const ExcelJS = require('exceljs');
+const path    = require('path');
+const { getUserModel, getConnection } = require('../db');
 
 const EXCEL_PATH = path.join(__dirname, 'ds_hoc_sinh.xlsx');
 
 function parseDob(cell) {
-  // Nếu là Date object (ExcelJS tự parse)
   if (cell instanceof Date) {
     const d = String(cell.getDate()).padStart(2, '0');
     const m = String(cell.getMonth() + 1).padStart(2, '0');
     const y = cell.getFullYear();
     return { dobStr: `${d}${m}${y}`, dobDisplay: `${d}/${m}/${y}` };
   }
-  // Nếu là string dạng DD/MM/YYYY
   const s = String(cell).trim();
   const parts = s.split('/');
   if (parts.length === 3) {
@@ -33,8 +30,9 @@ function parseDob(cell) {
 }
 
 async function main() {
-  await mongoose.connect(process.env.MONGODB_HSNBK);
-  console.log('✅  Kết nối MongoDB HSNBK thành công\n');
+  const conn = await getConnection('students');
+  const User = getUserModel(conn);
+  console.log('✅  Kết nối Astra DB thành công\n');
 
   const wb = new ExcelJS.Workbook();
   try {
@@ -47,9 +45,9 @@ async function main() {
   const ws = wb.worksheets[0];
   const rows = [];
   ws.eachRow((row, idx) => {
-    if (idx === 1) return; // bỏ header
-    const vals = row.values.slice(1); // ExcelJS index từ 1
-    if (vals[4]) rows.push(vals); // phải có CCCD ở cột 5
+    if (idx === 1) return;
+    const vals = row.values.slice(1);
+    if (vals[4]) rows.push(vals);
   });
 
   console.log(`📋  Tìm thấy ${rows.length} học sinh trong Excel`);
@@ -57,14 +55,13 @@ async function main() {
 
   let created = 0, skipped = 0, errors = 0;
 
-  const BATCH = 50;
+  const BATCH = 20; // Astra Document API rate limit thấp hơn MongoDB
   for (let i = 0; i < rows.length; i += BATCH) {
     const batch = rows.slice(i, i + BATCH);
     await Promise.all(batch.map(async row => {
       try {
         const [maLop, hoTen, ngaySinh, gioiTinh, cccd] = row;
         const cccdStr = String(cccd).trim().padStart(12, '0');
-
         const { dobStr, dobDisplay } = parseDob(ngaySinh);
 
         const exists = await User.findOne({ cccd: cccdStr });

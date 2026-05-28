@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Axon AI — Diễn đàn</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050508;--surface:#0d0d14;--surface2:#12121e;--surface3:#181826;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --accent:#7c5cfc;--accent2:#00e5ff;--accent-soft:rgba(124,92,252,.15);
+  --text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;
+  --success:#34d399;--danger:#f87171;--warning:#fbbf24;
+}
+html,body{height:100%;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-feature-settings:'calt','kern','liga';
+  overflow:hidden;display:flex;flex-direction:column
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4
+}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,#7c5cfc,transparent);opacity:.05;top:-100px;right:-100px}
+.bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,#f87171,transparent);opacity:.04;bottom:-80px;left:-80px}
+
+/* ══ HEADER ══ */
+.app-header{
+  display:flex;align-items:center;gap:12px;padding:11px 18px;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,5,8,.9);backdrop-filter:blur(20px);
+  flex-shrink:0;z-index:100;position:relative
+}
+.logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1rem;letter-spacing:-.02em;color:white;
+  text-decoration:none
+}
+.logo-icon{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;overflow:hidden
+}
+.logo-icon::after{
+  content:'';position:absolute;top:0;left:-70%;width:50%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:shimmer 4s ease-in-out infinite
+}
+@keyframes shimmer{0%{left:-70%}40%,100%{left:120%}}
+.forum-badge{
+  padding:3px 10px;background:rgba(124,92,252,.12);
+  border:1px solid rgba(124,92,252,.25);border-radius:20px;
+  font-size:.65rem;font-weight:700;color:#c4b5fd;letter-spacing:.06em;text-transform:uppercase
+}
+.spacer{flex:1}
+.hdr-btn{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--border);border-radius:9px;
+  background:transparent;padding:7px 11px;color:var(--muted2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;font-weight:500;
+  cursor:pointer;transition:all .15s;white-space:nowrap;text-decoration:none
+}
+.hdr-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.hdr-btn.primary{background:linear-gradient(135deg,var(--accent),#9c7dff);color:white;border-color:transparent}
+.hdr-btn.primary:hover{opacity:.9}
+
+/* ══ MOBILE TABS ══ */
+.mobile-tabs{
+  display:none;border-bottom:1px solid var(--border);
+  background:rgba(5,5,8,.9);backdrop-filter:blur(12px);flex-shrink:0
+}
+.mobile-tab{
+  flex:1;padding:10px 6px;border:none;border-bottom:2px solid transparent;
+  background:transparent;color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.73rem;font-weight:600;
+  cursor:pointer;transition:color .2s,border-color .2s
+}
+.mobile-tab.active{color:#c4b5fd;border-bottom-color:var(--accent)}
+
+/* ══ MAIN BODY ══ */
+.main-body{flex:1;display:flex;overflow:hidden;position:relative;min-height:0;z-index:1}
+
+/* ══ LEFT PANEL (post list) ══ */
+.panel-list{
+  width:360px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--border);
+  background:var(--surface);
+}
+.list-toolbar{
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  display:flex;gap:8px;align-items:center;flex-shrink:0
+}
+.search-input{
+  flex:1;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:6px 10px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.79rem;
+  outline:none;transition:border-color .15s
+}
+.search-input:focus{border-color:rgba(124,92,252,.4)}
+.search-input::placeholder{color:var(--muted)}
+.filter-select{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:6px 8px;color:var(--muted2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.73rem;
+  outline:none;cursor:pointer
+}
+.post-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.post-list::-webkit-scrollbar{width:3px}
+.post-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+
+/* Post card */
+.post-card{
+  padding:12px 14px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .12s;position:relative
+}
+.post-card:hover{background:rgba(255,255,255,.03)}
+.post-card.active{background:var(--accent-soft)}
+.post-card.active .post-title{color:#c4b5fd}
+.post-card.post-unread{border-left:2px solid rgba(0,229,255,.55)}
+.post-unread-dot{
+  display:inline-block;width:7px;height:7px;border-radius:50%;
+  background:#00e5ff;flex-shrink:0;margin-right:5px;vertical-align:middle;
+  box-shadow:0 0 5px rgba(0,229,255,.5);margin-top:-1px
+}
+.post-card-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.post-pin{font-size:.65rem;color:var(--warning);flex-shrink:0;margin-top:2px}
+.post-title{
+  font-size:.85rem;font-weight:700;color:var(--text);line-height:1.4;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1
+}
+.post-preview{
+  font-size:.75rem;color:var(--muted);line-height:1.55;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:7px
+}
+.post-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.post-author{
+  font-size:.65rem;font-weight:600;color:var(--muted2);
+  display:flex;align-items:center;gap:4px
+}
+.role-dot{
+  width:5px;height:5px;border-radius:50%;flex-shrink:0;display:inline-block
+}
+.role-dot.student{background:#34d399}
+.role-dot.admin{background:#f87171}
+.post-time{font-size:.6rem;color:var(--muted);font-family:'Courier New',monospace}
+.post-stats{display:flex;align-items:center;gap:8px;margin-left:auto}
+.post-stat{font-size:.63rem;color:var(--muted);display:flex;align-items:center;gap:3px}
+.post-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;margin-bottom:10px}
+.tag{
+  font-size:.58rem;padding:2px 8px;border-radius:20px;
+  background:var(--accent-soft);border:1px solid rgba(124,92,252,.25);
+  color:#c4b5fd;font-weight:600;letter-spacing:.03em;
+  transition:background .15s,border-color .15s
+}
+.tag:hover{background:rgba(124,92,252,.22);border-color:rgba(124,92,252,.4)}
+
+/* Skeleton */
+@keyframes sk-shine{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.sk{
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);
+  background-size:200% 100%;animation:sk-shine 1.4s ease infinite;border-radius:6px
+}
+.sk-post{padding:12px 14px;border-bottom:1px solid var(--border)}
+.sk-title{height:13px;width:80%;margin-bottom:8px}
+.sk-line{height:9px;margin-bottom:4px}
+.sk-line-short{height:9px;width:55%}
+
+/* Empty / load more */
+.list-empty{padding:40px 20px;text-align:center;font-size:.82rem;color:var(--muted);line-height:1.9}
+.load-more-btn{
+  width:100%;padding:10px;border:none;border-top:1px solid var(--border);
+  background:transparent;color:var(--muted2);font-size:.78rem;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:background .12s;flex-shrink:0
+}
+.load-more-btn:hover{background:rgba(255,255,255,.03)}
+
+/* ══ RIGHT PANEL (post detail) ══ */
+.panel-detail{
+  flex:1;min-width:0;display:flex;flex-direction:column;
+  background:var(--surface)
+}
+.detail-placeholder{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:12px;color:var(--muted);text-align:center;padding:30px
+}
+.detail-placeholder-icon{font-size:2.5rem;opacity:.3}
+.detail-placeholder p{font-size:.84rem;line-height:1.8}
+
+/* Detail header */
+.detail-header{
+  padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;gap:10px
+}
+.detail-back-btn{
+  display:none;align-items:center;gap:4px;background:none;border:none;
+  color:var(--muted);font-size:.78rem;cursor:pointer;padding:3px 7px;
+  border-radius:6px;transition:color .12s,background .12s;flex-shrink:0
+}
+.detail-back-btn:hover{color:var(--text);background:rgba(255,255,255,.06)}
+@media(max-width:768px){.detail-back-btn{display:flex}}
+
+/* Detail scrollable */
+.detail-scroll{flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch}
+.detail-scroll::-webkit-scrollbar{width:4px}
+.detail-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+
+/* Post content */
+.post-content-title{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1.25rem;color:white;line-height:1.35;letter-spacing:-.02em;
+  margin-bottom:10px
+}
+.post-content-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.post-content-body{
+  font-size:.87rem;color:var(--text);line-height:1.8;
+  white-space:pre-wrap;word-break:break-word;margin-bottom:18px
+}
+.tags-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px}
+
+/* Vote row */
+.vote-row{
+  display:flex;align-items:center;gap:6px;
+  padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  margin-bottom:24px
+}
+.vote-btn{
+  display:flex;align-items:center;gap:5px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:5px 10px;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.77rem;font-weight:600;
+  color:var(--muted2);transition:all .15s
+}
+.vote-btn:hover{border-color:var(--border2);color:var(--text)}
+.vote-btn.up.active{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--success)}
+.vote-btn.down.active{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:var(--danger)}
+.vote-score{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1rem;color:white;padding:0 6px
+}
+.vote-score.positive{color:var(--success)}
+.vote-score.negative{color:var(--danger)}
+.admin-actions{margin-left:auto;display:flex;gap:6px}
+.action-btn{
+  display:flex;align-items:center;gap:5px;
+  background:transparent;border:1px solid var(--border);border-radius:8px;
+  padding:5px 10px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.73rem;font-weight:600;color:var(--muted2);transition:all .15s
+}
+.action-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.action-btn.pin{color:var(--warning);border-color:rgba(251,191,36,.25)}
+.action-btn.pin:hover{background:rgba(251,191,36,.08)}
+.action-btn.danger:hover{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.3);color:var(--danger)}
+
+/* Comments section */
+.comments-section{margin-top:4px}
+.comments-title{
+  font-size:.8rem;font-weight:700;color:var(--muted2);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:14px
+}
+.comment-item{
+  display:flex;gap:9px;margin-bottom:12px;
+  animation:fadeUp .2s ease both
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.comment-item.reply{margin-left:28px;margin-top:-4px}
+.comment-av{
+  width:26px;height:26px;min-width:26px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:800;flex-shrink:0;
+  font-family:'Bricolage Grotesque',sans-serif;color:white
+}
+.av-student{background:linear-gradient(135deg,rgba(52,211,153,.5),rgba(0,229,255,.3))}
+.av-admin{background:linear-gradient(135deg,rgba(248,113,113,.5),rgba(251,191,36,.3))}
+.comment-body{flex:1;min-width:0}
+.comment-header{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;margin-bottom:4px}
+.comment-author{font-size:.75rem;font-weight:700;color:var(--text)}
+.comment-role{font-size:.58rem;padding:1px 6px;border-radius:6px;font-weight:700;letter-spacing:.04em;font-family:'Courier New',monospace}
+.comment-role.student{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:var(--success)}
+.comment-role.admin{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.2);color:var(--danger)}
+.comment-time{font-size:.6rem;color:var(--muted);font-family:'Courier New',monospace}
+.comment-text{font-size:.82rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.comment-actions{display:flex;align-items:center;gap:8px;margin-top:5px}
+.cmt-vote-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:.65rem;color:var(--muted);display:flex;align-items:center;gap:3px;
+  transition:color .12s;padding:1px 2px
+}
+.cmt-vote-btn:hover{color:var(--text)}
+.cmt-vote-btn.up.active{color:var(--success)}
+.cmt-vote-btn.down.active{color:var(--danger)}
+.cmt-reply-btn,.cmt-del-btn{
+  background:none;border:none;cursor:pointer;
+  font-size:.65rem;color:var(--muted);transition:color .12s;padding:1px 3px
+}
+.cmt-reply-btn:hover{color:#c4b5fd}
+.cmt-del-btn:hover{color:var(--danger)}
+
+/* New comment box */
+.new-comment-wrap{
+  border-top:1px solid var(--border);padding:14px 20px;flex-shrink:0;
+  background:var(--surface);position:relative
+}
+.reply-to-banner{
+  display:none;font-size:.72rem;color:#c4b5fd;
+  background:var(--accent-soft);border:1px solid rgba(124,92,252,.2);
+  border-radius:7px;padding:5px 10px;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:space-between
+}
+.reply-to-banner.hidden{display:none}
+.cancel-reply-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:.8rem}
+.comment-ta{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:10px 12px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;
+  outline:none;resize:none;min-height:68px;max-height:150px;
+  transition:border-color .2s;display:block;margin-bottom:8px
+}
+.comment-ta:focus{border-color:rgba(124,92,252,.45)}
+.comment-ta::placeholder{color:var(--muted)}
+.comment-footer{display:flex;justify-content:flex-end;gap:8px}
+.btn{
+  padding:7px 14px;border-radius:9px;border:none;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:700;
+  transition:all .15s;display:inline-flex;align-items:center;gap:6px
+}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#9c7dff);color:white}
+.btn-primary:hover:not(:disabled){opacity:.9}
+.btn-ghost{background:var(--surface2);border:1px solid var(--border2);color:var(--text)}
+.btn-ghost:hover:not(:disabled){background:var(--surface3)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ══ NEW POST MODAL ══ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  z-index:500;display:flex;align-items:center;justify-content:center;
+  padding:16px;opacity:0;pointer-events:none;transition:opacity .25s
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;width:100%;max-width:560px;max-height:90vh;
+  display:flex;flex-direction:column;
+  transform:translateY(16px) scale(.97);transition:transform .25s;
+  overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)
+}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0
+}
+.modal-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.97rem;color:white;letter-spacing:-.02em}
+.modal-close{
+  width:28px;height:28px;border:1px solid var(--border);border-radius:7px;
+  background:transparent;color:var(--muted2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s
+}
+.modal-close:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.modal-body{flex:1;overflow-y:auto;padding:18px 20px}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:9px}
+.form-group{margin-bottom:13px}
+.form-label{font-size:.7rem;font-weight:700;color:var(--muted2);margin-bottom:5px;display:block;letter-spacing:.04em;text-transform:uppercase}
+.form-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:9px;padding:9px 12px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;outline:none;
+  transition:border-color .2s
+}
+.form-input:focus{border-color:rgba(124,92,252,.5)}
+.form-input::placeholder{color:var(--muted)}
+.form-ta{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:9px;padding:9px 12px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;outline:none;
+  resize:vertical;min-height:120px;max-height:300px;transition:border-color .2s
+}
+.form-ta:focus{border-color:rgba(124,92,252,.5)}
+.form-ta::placeholder{color:var(--muted)}
+.char-hint{font-size:.65rem;color:var(--muted);margin-top:3px;text-align:right}
+.msg-box{font-size:.78rem;padding:9px 12px;border-radius:8px;margin-top:8px;display:none}
+.msg-box.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:block}
+
+.del-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:16px;height:16px;padding:0 4px;
+  background:var(--danger);border-radius:8px;
+  font-size:.58rem;font-weight:700;color:white;
+  position:absolute;top:-4px;right:-4px
+}
+/* ══ DELETED PANEL ══ */
+.dpanel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
+  z-index:600;display:none;align-items:stretch;justify-content:flex-end
+}
+.dpanel-overlay.open{display:flex}
+.dpanel{
+  width:min(520px,100%);background:var(--surface);
+  border-left:1px solid var(--border2);
+  display:flex;flex-direction:column;
+  transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1)
+}
+.dpanel-overlay.open .dpanel{transform:translateX(0)}
+.dpanel-header{
+  display:flex;align-items:center;gap:10px;
+  padding:15px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0
+}
+.dpanel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white;flex:1}
+.dpanel-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);flex-shrink:0}
+.dpanel-tab{
+  flex:1;padding:9px 8px;border:none;border-bottom:2px solid transparent;
+  background:transparent;color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.73rem;font-weight:600;
+  cursor:pointer;transition:color .15s,border-color .15s
+}
+.dpanel-tab.active{color:#c4b5fd;border-bottom-color:var(--accent)}
+.dpanel-body{flex:1;overflow-y:auto;padding:14px 16px;-webkit-overflow-scrolling:touch}
+.dpanel-body::-webkit-scrollbar{width:3px}
+.dpanel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+.dpanel-empty{text-align:center;padding:32px 16px;font-size:.82rem;color:var(--muted);line-height:1.7}
+/* Deleted item card */
+.del-card{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;padding:13px 14px;margin-bottom:10px;
+  display:flex;flex-direction:column;gap:8px
+}
+.del-card-title{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.3}
+.del-card-snippet{font-size:.78rem;color:var(--muted2);line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.del-card-meta{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  font-size:.65rem;color:var(--muted)
+}
+.del-by-badge{
+  padding:2px 7px;border-radius:10px;font-size:.6rem;font-weight:700;
+  border:1px solid;
+}
+.del-by-badge.user{background:rgba(107,107,128,.12);border-color:rgba(107,107,128,.25);color:var(--muted2)}
+.del-by-badge.ai{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.2);color:var(--warning)}
+.del-card-reason{font-size:.72rem;color:var(--warning);line-height:1.5;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.15);border-radius:7px;padding:6px 9px}
+.del-card-actions{display:flex;gap:7px;flex-wrap:wrap}
+.del-action-btn{
+  font-size:.72rem;padding:4px 10px;border-radius:7px;border:1px solid var(--border2);
+  background:var(--surface3);color:var(--muted2);cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;
+  transition:all .15s;white-space:nowrap
+}
+.del-action-btn:hover{background:var(--surface2);color:var(--text);border-color:var(--border3)}
+.del-action-btn.primary{background:rgba(124,92,252,.1);border-color:rgba(124,92,252,.3);color:#c4b5fd}
+.del-action-btn.primary:hover{background:rgba(124,92,252,.18)}
+.del-action-btn.seen-btn{background:rgba(0,229,255,.07);border-color:rgba(0,229,255,.25);color:var(--accent2)}
+.del-action-btn.seen-btn:hover{background:rgba(0,229,255,.15);border-color:rgba(0,229,255,.45)}
+.del-action-btn{
+  padding:5px 11px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--surface3);color:var(--muted2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.72rem;font-weight:600;
+  cursor:pointer;transition:all .14s;white-space:nowrap
+}
+.del-action-btn:hover{background:rgba(124,92,252,.12);border-color:rgba(124,92,252,.3);color:#c4b5fd}
+.del-action-btn.primary{background:linear-gradient(135deg,var(--accent),#9c7dff);color:white;border-color:transparent}
+.del-action-btn.primary:hover{opacity:.88}
+.del-action-btn:disabled{opacity:.4;cursor:not-allowed}
+.del-card-appeal-status{font-size:.7rem;color:var(--muted);background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:7px;padding:5px 9px;line-height:1.5}
+/* Appeal input */
+.appeal-wrap{display:none;flex-direction:column;gap:7px;margin-top:4px}
+.appeal-wrap.open{display:flex}
+.appeal-ta{
+  width:100%;background:var(--surface3);border:1px solid var(--border2);
+  border-radius:8px;padding:8px 10px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;
+  outline:none;resize:none;min-height:60px;max-height:120px;
+  transition:border-color .18s
+}
+.appeal-ta:focus{border-color:rgba(124,92,252,.45)}
+.appeal-ta::placeholder{color:var(--muted)}
+.toast-container{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:10px 16px;border-radius:10px;font-size:.83rem;color:var(--text);background:var(--surface);border:1px solid var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.5);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:300px;display:flex;align-items:center;gap:8px}
+.toast-icon{font-size:.9rem;flex-shrink:0}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:rgba(52,211,153,.35)}
+.toast.error{border-color:rgba(248,113,113,.35)}
+.toast.warning{border-color:rgba(251,191,36,.35)}
+
+/* ══ CONFIRM MODAL ══ */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:1900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s}
+.confirm-overlay.open{opacity:1;pointer-events:all}
+.confirm-box{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:22px 24px;max-width:320px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+.confirm-text{font-size:.88rem;color:var(--text);margin-bottom:18px;line-height:1.5}
+.confirm-btns{display:flex;gap:8px;justify-content:flex-end}
+.confirm-ok{background:var(--danger);border:none;color:#fff;padding:7px 18px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:600;transition:opacity .12s}
+.confirm-ok:hover{opacity:.85}
+.confirm-cancel{background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--muted);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:.82rem;transition:background .12s}
+.confirm-cancel:hover{background:rgba(255,255,255,.1)}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:768px){
+  .mobile-tabs{display:flex}
+  .panel-list,.panel-detail{
+    position:absolute;top:0;left:0;right:0;bottom:0;
+    width:100%!important;transform:translateX(100%);
+    transition:transform .35s cubic-bezier(.4,0,.2,1)
+  }
+  .panel-list.active,.panel-detail.active{transform:translateX(0)}
+  .modal-overlay{align-items:flex-end;padding:0}
+  .modal{border-radius:22px 22px 0 0;max-height:93vh;border-left:none;border-right:none;border-bottom:none;max-width:100%}
+}
+@media(min-width:769px){
+  .panel-list{transform:none!important}
+  .panel-detail{transform:none!important;position:relative}
+}
+</style>
+</head>
+<body>
+<div class="bg-orbs"><div class="bg-orb bg-orb-1"></div><div class="bg-orb bg-orb-2"></div></div>
+
+<!-- ═══ HEADER ═══ -->
+<div class="app-header">
+  <a class="logo" href="#">
+    <div class="logo-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    Axon AI
+  </a>
+  <span class="forum-badge">Diễn đàn</span>
+  <div class="spacer"></div>
+  <button class="hdr-btn" id="deleted-btn" onclick="openDeletedPanel()" style="position:relative">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+    <span>Bài đã xóa</span>
+    <span class="del-badge" id="del-badge" style="display:none"></span>
+  </button>
+  <button class="hdr-btn" onclick="openNewPost()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    <span>Đăng bài</span>
+  </button>
+  <a class="hdr-btn" id="back-btn" href="#">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    <span id="back-label">Quay lại</span>
+  </a>
+</div>
+
+<!-- ═══ MOBILE TABS ═══ -->
+<div class="mobile-tabs">
+  <button class="mobile-tab active" onclick="showMobilePanel('list')">Bài viết</button>
+  <button class="mobile-tab" onclick="showMobilePanel('detail')">Chi tiết</button>
+</div>
+
+<!-- ═══ MAIN BODY ═══ -->
+<div class="main-body">
+  <!-- Left: Post list -->
+  <div class="panel-list active" id="panel-list">
+    <div class="list-toolbar">
+      <input class="search-input" type="search" id="search-input"
+        placeholder="Tìm kiếm bài viết…"
+        oninput="debounceSearch(this.value)">
+      <select class="filter-select" id="sort-select" onchange="loadPosts(1)">
+        <option value="new">Mới nhất</option>
+        <option value="hot">Nhiều vote</option>
+      </select>
+      <button id="scan-btn" style="display:none" title="Quét & xóa nội dung vi phạm"
+        onclick="scanForum()"
+        class="filter-select" style="cursor:pointer;color:var(--warning);border-color:rgba(251,191,36,.3);white-space:nowrap">
+        🛡 Quét
+      </button>
+    </div>
+    <div class="post-list" id="post-list">
+      <!-- populated by JS -->
+    </div>
+    <button class="load-more-btn" id="load-more-btn" style="display:none" onclick="loadMore()">Xem thêm…</button>
+  </div>
+
+  <!-- Right: Post detail -->
+  <div class="panel-detail" id="panel-detail">
+    <div class="detail-placeholder" id="detail-placeholder">
+      <div class="detail-placeholder-icon">💬</div>
+      <p>Chọn một bài viết để xem<br>hoặc đăng bài mới</p>
+    </div>
+    <!-- filled dynamically -->
+  </div>
+</div>
+
+<!-- ═══ DELETED POSTS PANEL ═══ -->
+<div class="dpanel-overlay" id="dpanel-overlay" onclick="closeDeletedPanelBg(event)">
+  <div class="dpanel">
+    <div class="dpanel-header">
+      <div class="dpanel-title">🗑 Bài đã xóa</div>
+      <button class="modal-close" onclick="closeDeletedPanel()">&#x2715;</button>
+    </div>
+    <div class="dpanel-tabs">
+      <button class="dpanel-tab active" id="dp-tab-posts" onclick="switchDpTab('posts')">Bài viết</button>
+      <button class="dpanel-tab" id="dp-tab-cmts" onclick="switchDpTab('cmts')">Bình luận</button>
+    </div>
+    <div class="dpanel-body" id="dpanel-body">
+      <div class="dpanel-empty">Không có bài nào</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NEW POST MODAL ═══ -->
+<div class="modal-overlay" id="post-modal" onclick="closePostModalBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">✏️ Đăng bài mới</div>
+      <button class="modal-close" onclick="closePostModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Tiêu đề <span style="color:var(--danger)">*</span></label>
+        <input class="form-input" type="text" id="post-title" maxlength="200"
+          placeholder="Tiêu đề bài viết của bạn…"
+          oninput="updateCharCount('post-title','title-count',200)">
+        <div class="char-hint"><span id="title-count">0</span>/200</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nội dung <span style="color:var(--danger)">*</span></label>
+        <textarea class="form-ta" id="post-content" maxlength="5000"
+          placeholder="Nội dung bài viết…"
+          oninput="updateCharCount('post-content','content-count',5000)"></textarea>
+        <div class="char-hint"><span id="content-count">0</span>/5000</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags (phân cách bằng dấu phẩy, tối đa 5)</label>
+        <input class="form-input" type="text" id="post-tags"
+          placeholder="toán, lý, hóa, bài tập…">
+      </div>
+      <div class="msg-box" id="post-err"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closePostModal()">Hủy</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center"
+        id="post-submit-btn" onclick="submitPost()">Đăng bài</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TOAST ═══ -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ═══ CONFIRM MODAL ═══ -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-text" id="confirm-text"></div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" id="confirm-cancel">Hủy</button>
+      <button class="confirm-ok" id="confirm-ok">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+let me = null;        // { id, role, fullName }
+let currentPost = null;
+let replyToId   = null;
+let replyToName = null;
+let page = 1, totalPosts = 0, limit = 20;
+let searchTimer = null;
+
+const API = '/api/forum';
+const f = (url, opts = {}) => fetch(url, { credentials: 'include', headers: { 'Content-Type': 'application/json' }, ...opts });
+
+// ── Read tracking (localStorage) ──
+function frdKey() { return me ? `frd_${me.id}` : null; }
+function getReadSet() {
+  const k = frdKey(); if (!k) return new Set();
+  try { return new Set(JSON.parse(localStorage.getItem(k) || '[]')); } catch { return new Set(); }
+}
+function saveReadSet(s) {
+  const k = frdKey(); if (!k) return;
+  try { localStorage.setItem(k, JSON.stringify([...s].slice(-2000))); } catch {} // giữ tối đa 2000 postId
+}
+function isPostRead(id) { return getReadSet().has(String(id)); }
+function markPostRead(id) {
+  const s = getReadSet(); s.add(String(id)); saveReadSet(s);
+  // Xóa dot trên card
+  const dot = document.querySelector(`.post-card[data-id="${id}"] .post-unread-dot`);
+  if (dot) dot.remove();
+  const card = document.querySelector(`.post-card[data-id="${id}"]`);
+  if (card) card.classList.remove('post-unread');
+}
+
+// ── Deleted items "seen" tracking (DB-based) ──
+function isDelItemSeen(item) { return item.deletedSeen === true; }
+async function markDelItemSeenDB(type, id) {
+  try {
+    await f(`/api/forum/my-deleted/${type}/${id}/mark-seen`, { method: 'POST' });
+  } catch { /* silent */ }
+}
+
+// ── Init ──
+(async () => {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!r.ok) { location.href = '/'; return; }
+    me = await r.json();
+    // Set back button
+    const backBtn = document.getElementById('back-btn');
+    backBtn.href = me.role === 'admin' ? '/admin' : '/';
+    document.getElementById('back-label').textContent = me.role === 'admin' ? 'Admin' : 'Học tập';
+    // Hiện nút quét cho admin
+    if (me.role === 'admin') document.getElementById('scan-btn').style.display = '';
+  } catch { location.href = '/'; }
+  loadPosts(1);
+  // Load badge số bài đã xóa
+  try {
+    const dr = await f(`${API}/my-deleted`);
+    if (dr.ok) { dpData = await dr.json(); updateDelBadge(); }
+  } catch {}
+  // Hiển thị cảnh báo vi phạm (nếu có)
+  try {
+    const wr = await f(`${API}/warnings`);
+    if (wr.ok) {
+      const warns = await wr.json();
+      warns.forEach(w => toast(w.message, 'warning', 8000));
+    }
+  } catch {}
+})();
+
+// ── Admin: quét nội dung vi phạm ─────────────────────
+async function scanForum() {
+  if (!await showConfirm('Quét toàn bộ bài viết và bình luận? Nội dung vi phạm sẽ bị xóa và tác giả sẽ nhận cảnh báo.', 'Quét ngay')) return;
+  const btn = document.getElementById('scan-btn');
+  btn.disabled = true; btn.textContent = '⏳ Đang quét…';
+  try {
+    const r = await f(`${API}/admin/scan`, { method: 'POST' });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Lỗi quét', 'error'); return; }
+    toast(`Hoàn tất: xóa ${d.deletedPosts} bài viết, ${d.deletedCmts} bình luận vi phạm.`, 'success', 6000);
+    loadPosts(1);
+    if (currentPost) {
+      document.getElementById('panel-detail').innerHTML = '<div class="detail-placeholder"><div class="detail-placeholder-icon">💬</div><p>Vui lòng chọn lại bài viết</p></div>';
+      currentPost = null;
+    }
+  } catch (e) { toast('Lỗi: ' + e.message, 'error'); }
+  finally { btn.disabled = false; btn.textContent = '🛡 Quét'; }
+}
+
+// ── Utilities ──
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(d) {
+  if (!d) return '—';
+  const dt = new Date(d);
+  const now = new Date();
+  const diff = now - dt;
+  if (diff < 60000)   return 'vừa xong';
+  if (diff < 3600000) return Math.floor(diff/60000) + ' phút trước';
+  if (diff < 86400000) return Math.floor(diff/3600000) + ' giờ trước';
+  return dt.toLocaleDateString('vi-VN');
+}
+function updateCharCount(inputId, countId, max) {
+  const el = document.getElementById(inputId);
+  const cnt = document.getElementById(countId);
+  if (el && cnt) cnt.textContent = el.value.length;
+}
+
+// ── Toast ──
+const TOAST_ICONS = { success:'✓', error:'✕', warning:'⚠', info:'ℹ' };
+function toast(msg, type = 'info', duration = 3000) {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span class="toast-icon">${TOAST_ICONS[type]||''}</span><span>${msg}</span>`;
+  c.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 250); }, duration);
+}
+
+// ── Confirm ──
+function showConfirm(msg, okLabel = 'Xóa') {
+  return new Promise(resolve => {
+    document.getElementById('confirm-text').textContent = msg;
+    document.getElementById('confirm-ok').textContent = okLabel;
+    const overlay = document.getElementById('confirm-overlay');
+    overlay.classList.add('open');
+    const okBtn = document.getElementById('confirm-ok');
+    const cancelBtn = document.getElementById('confirm-cancel');
+    function done(val) {
+      overlay.classList.remove('open');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(val);
+    }
+    function onOk() { done(true); }
+    function onCancel() { done(false); }
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
+  });
+}
+
+// ── Mobile ──
+function showMobilePanel(name) {
+  if (window.innerWidth > 768) return;
+  document.querySelectorAll('.mobile-tab').forEach((btn, i) => {
+    btn.classList.toggle('active', ['list','detail'][i] === name);
+  });
+  document.getElementById('panel-list').classList.toggle('active', name === 'list');
+  document.getElementById('panel-detail').classList.toggle('active', name === 'detail');
+}
+
+// ── Post list ──
+function debounceSearch(v) {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => loadPosts(1), 350);
+}
+
+async function loadPosts(p = 1) {
+  page = p;
+  const list = document.getElementById('post-list');
+  const morBtn = document.getElementById('load-more-btn');
+  if (p === 1) {
+    list.innerHTML = [1,2,3,4,5].map(() => `
+      <div class="sk-post">
+        <div class="sk sk-title"></div>
+        <div class="sk sk-line" style="width:90%"></div>
+        <div class="sk sk-line-short"></div>
+      </div>`).join('');
+    morBtn.style.display = 'none';
+  }
+  const q      = encodeURIComponent(document.getElementById('search-input').value.trim());
+  const sort   = document.getElementById('sort-select').value;
+  const r = await f(`${API}/posts?page=${p}&limit=${limit}&search=${q}`);
+  if (!r.ok) { list.innerHTML = '<div class="list-empty">Lỗi tải bài viết</div>'; return; }
+  let { posts, total } = await r.json();
+  totalPosts = total;
+  if (sort === 'hot') {
+    posts = [...posts].sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes);
+    });
+  }
+  if (p === 1) list.innerHTML = '';
+  if (!posts.length && p === 1) {
+    list.innerHTML = '<div class="list-empty">Chưa có bài viết nào.<br>Hãy là người đầu tiên đăng bài! 🚀</div>';
+    return;
+  }
+  posts.forEach(post => {
+    const card = document.createElement('div');
+    const read = isPostRead(post._id);
+    card.className = 'post-card' + (currentPost?._id === post._id ? ' active' : '') + (read ? '' : ' post-unread');
+    card.dataset.id = post._id;
+    const score = post.upvotes - post.downvotes;
+    const unreadDot = read ? '' : '<span class="post-unread-dot" title="Chưa xem"></span>';
+    card.innerHTML = `
+      <div class="post-card-top">
+        ${post.pinned ? '<span class="post-pin">📌</span>' : ''}
+        <div class="post-title">${unreadDot}${esc(post.title)}</div>
+      </div>
+      <div class="post-preview">${esc(post.content)}</div>
+      ${post.tags?.length ? `<div class="post-tags">${post.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="post-meta">
+        <span class="post-author">
+          <span class="role-dot ${post.authorRole}"></span>
+          ${esc(post.authorName)}${post.authorClass ? ' · ' + esc(post.authorClass) : ''}
+        </span>
+        <span class="post-time">${fmt(post.createdAt)}</span>
+        <span class="post-stats">
+          <span class="post-stat">▲ ${score >= 0 ? '+' : ''}${score}</span>
+          <span class="post-stat">💬 ${post.commentCount}</span>
+        </span>
+      </div>`;
+    card.onclick = () => openPost(post._id, card);
+    list.appendChild(card);
+  });
+  const loaded = (p - 1) * limit + posts.length;
+  morBtn.style.display = loaded < total ? 'block' : 'none';
+}
+
+function loadMore() { loadPosts(page + 1); }
+
+// ── Open post ──
+async function openPost(postId, cardEl) {
+  document.querySelectorAll('.post-card').forEach(c => c.classList.remove('active'));
+  if (cardEl) cardEl.classList.add('active');
+  markPostRead(postId);
+  showMobilePanel('detail');
+  const detail = document.getElementById('panel-detail');
+  detail.innerHTML = `
+    <div class="detail-header">
+      <button class="detail-back-btn" onclick="showMobilePanel('list')">&#8592; Bài viết</button>
+      <div style="flex:1"></div>
+    </div>
+    <div class="detail-scroll" id="detail-scroll">
+      <div style="padding:30px;text-align:center;font-size:.8rem;color:var(--muted)">Đang tải…</div>
+    </div>`;
+  const r = await f(`${API}/posts/${postId}`);
+  if (!r.ok) {
+    document.getElementById('detail-scroll').innerHTML = '<div style="padding:30px;text-align:center;color:var(--danger)">Không thể tải bài viết</div>';
+    return;
+  }
+  const { post, comments } = await r.json();
+  currentPost = post;
+  renderDetail(post, comments);
+}
+
+function renderDetail(post, comments) {
+  const detail = document.getElementById('panel-detail');
+  const score  = post.upvotes - post.downvotes;
+  const isOwn  = me && post.authorId === me.id;
+  const isAdmin = me && me.role === 'admin';
+
+  detail.innerHTML = `
+    <div class="detail-header">
+      <button class="detail-back-btn" onclick="showMobilePanel('list')">&#8592; Bài viết</button>
+      <div style="flex:1"></div>
+    </div>
+    <div class="detail-scroll" id="detail-scroll">
+      <h1 class="post-content-title">${esc(post.title)}</h1>
+      <div class="post-content-meta">
+        <span class="post-author">
+          <span class="role-dot ${post.authorRole}"></span>
+          <strong style="font-size:.8rem">${esc(post.authorName)}</strong>
+          ${post.authorClass ? `<span style="font-size:.68rem;color:var(--muted)">${esc(post.authorClass)}</span>` : ''}
+        </span>
+        <span class="post-time">${fmt(post.createdAt)}</span>
+        ${post.pinned ? '<span style="font-size:.72rem;color:var(--warning)">📌 Đã ghim</span>' : ''}
+      </div>
+      ${post.tags?.length ? `<div class="tags-row">${post.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>` : ''}
+      <div class="post-content-body">${esc(post.content)}</div>
+      <div class="vote-row">
+        <button class="vote-btn up ${post.myVote===1?'active':''}" id="post-up" onclick="votePost(1)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+          ${post.upvotes}
+        </button>
+        <span class="vote-score ${score>0?'positive':score<0?'negative':''}" id="post-score">${score>0?'+':''}${score}</span>
+        <button class="vote-btn down ${post.myVote===-1?'active':''}" id="post-down" onclick="votePost(-1)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+          ${post.downvotes}
+        </button>
+        <div class="admin-actions">
+          ${isAdmin ? `<button class="action-btn pin ${post.pinned?'active':''}" id="pin-btn" onclick="togglePin('${post._id}')">${post.pinned?'📌 Bỏ ghim':'📌 Ghim'}</button>` : ''}
+          ${(isOwn||isAdmin) ? `<button class="action-btn danger" onclick="deletePost('${post._id}')"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Xóa</button>` : ''}
+        </div>
+      </div>
+      <div class="comments-section" id="comments-section">
+        <div class="comments-title">Bình luận (${post.commentCount})</div>
+        <div id="comments-list">${renderComments(comments)}</div>
+      </div>
+    </div>
+    <div class="new-comment-wrap" id="new-comment-wrap">
+      <div class="reply-to-banner hidden" id="reply-banner">
+        <span id="reply-banner-text"></span>
+        <button class="cancel-reply-btn" onclick="cancelReply()">✕</button>
+      </div>
+      <textarea class="comment-ta" id="comment-ta" rows="2"
+        placeholder="Viết bình luận…"
+        onkeydown="if(event.key==='Enter'&&event.ctrlKey)submitComment()"></textarea>
+      <div class="comment-footer">
+        <span style="font-size:.68rem;color:var(--muted);align-self:center">Ctrl+Enter để gửi</span>
+        <button class="btn btn-primary" onclick="submitComment()" id="comment-submit-btn">Gửi</button>
+      </div>
+    </div>`;
+}
+
+function renderComments(comments) {
+  if (!comments.length) return '<div style="font-size:.8rem;color:var(--muted);padding:10px 0">Chưa có bình luận nào. Hãy là người đầu tiên!</div>';
+  const tops = comments.filter(c => !c.parentId);
+  const byParent = {};
+  comments.filter(c => c.parentId).forEach(c => {
+    (byParent[c.parentId] = byParent[c.parentId] || []).push(c);
+  });
+  return tops.map(c => renderComment(c) + (byParent[c._id] || []).map(r => renderComment(r, true)).join('')).join('');
+}
+
+function renderComment(c, isReply = false) {
+  const isOwn  = me && c.authorId === me.id;
+  const isAdmin = me && me.role === 'admin';
+  const score  = c.upvotes - c.downvotes;
+  const initial = (c.authorName || '?').split(' ').pop().charAt(0).toUpperCase();
+  return `
+    <div class="comment-item ${isReply ? 'reply' : ''}" id="cmt-${c._id}">
+      <div class="comment-av ${c.authorRole === 'admin' ? 'av-admin' : 'av-student'}">${initial}</div>
+      <div class="comment-body">
+        <div class="comment-header">
+          <span class="comment-author">${esc(c.authorName)}</span>
+          <span class="comment-role ${c.authorRole}">${c.authorRole === 'admin' ? 'Admin' : (c.authorClass || 'Học sinh')}</span>
+          <span class="comment-time">${fmt(c.createdAt)}</span>
+        </div>
+        <div class="comment-text">${esc(c.content)}</div>
+        <div class="comment-actions">
+          <button class="cmt-vote-btn up ${c.myVote===1?'active':''}" onclick="voteCmt('${c._id}',1,this)">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <span class="cmt-up-count">${c.upvotes}</span>
+          </button>
+          <span style="font-size:.62rem;color:var(--muted);font-family:'Courier New',monospace">${score>=0?'+':''}${score}</span>
+          <button class="cmt-vote-btn down ${c.myVote===-1?'active':''}" onclick="voteCmt('${c._id}',-1,this)">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+            <span class="cmt-dn-count">${c.downvotes}</span>
+          </button>
+          ${!isReply ? `<button class="cmt-reply-btn" onclick="setReply('${c._id}','${esc(c.authorName)}')">↩ Trả lời</button>` : ''}
+          ${(isOwn||isAdmin) ? `<button class="cmt-del-btn" onclick="deleteCmt('${c._id}')">✕ Xóa</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Vote post ──
+async function votePost(v) {
+  if (!currentPost) return;
+  const prev = currentPost.myVote;
+  const vote = prev === v ? 0 : v; // toggle
+  const r = await f(`${API}/posts/${currentPost._id}/vote`, {
+    method: 'POST', body: JSON.stringify({ vote }),
+  });
+  if (!r.ok) return;
+  const d = await r.json();
+  currentPost.upvotes   = d.upvotes;
+  currentPost.downvotes = d.downvotes;
+  currentPost.myVote    = d.myVote;
+  const score = d.upvotes - d.downvotes;
+  document.getElementById('post-up').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="18 15 12 9 6 15"/></svg> ${d.upvotes}`;
+  document.getElementById('post-up').className  = `vote-btn up ${d.myVote===1?'active':''}`;
+  document.getElementById('post-down').innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg> ${d.downvotes}`;
+  document.getElementById('post-down').className = `vote-btn down ${d.myVote===-1?'active':''}`;
+  const sc = document.getElementById('post-score');
+  sc.textContent = (score > 0 ? '+' : '') + score;
+  sc.className   = `vote-score ${score>0?'positive':score<0?'negative':''}`;
+  // update card
+  const card = document.querySelector(`.post-card[data-id="${currentPost._id}"] .post-stat`);
+  if (card) card.textContent = `▲ ${score>=0?'+':''}${score}`;
+}
+
+// ── Vote comment ──
+async function voteCmt(id, v, btn) {
+  const row = btn.closest('.comment-actions');
+  const upBtn = row.querySelector('.cmt-vote-btn.up');
+  const dnBtn = row.querySelector('.cmt-vote-btn.down');
+  const prevUp = upBtn.classList.contains('active') ? 1 : 0;
+  const prevDn = dnBtn.classList.contains('active') ? -1 : 0;
+  const prev = prevUp || prevDn;
+  const vote = prev === v ? 0 : v;
+  const r = await f(`${API}/comments/${id}/vote`, {
+    method: 'POST', body: JSON.stringify({ vote }),
+  });
+  if (!r.ok) return;
+  const d = await r.json();
+  upBtn.className = `cmt-vote-btn up ${d.myVote===1?'active':''}`;
+  dnBtn.className = `cmt-vote-btn down ${d.myVote===-1?'active':''}`;
+  upBtn.querySelector('.cmt-up-count').textContent = d.upvotes;
+  dnBtn.querySelector('.cmt-dn-count').textContent = d.downvotes;
+  const score = d.upvotes - d.downvotes;
+  row.querySelectorAll('span')[0].textContent = (score>=0?'+':'')+score;
+}
+
+// ── Pin post ──
+async function togglePin(id) {
+  const r = await f(`${API}/posts/${id}/pin`, { method: 'POST' });
+  if (!r.ok) { toast('Không có quyền ghim', 'error'); return; }
+  const { pinned } = await r.json();
+  currentPost.pinned = pinned;
+  const btn = document.getElementById('pin-btn');
+  if (btn) btn.textContent = pinned ? '📌 Bỏ ghim' : '📌 Ghim';
+  toast(pinned ? 'Đã ghim bài viết' : 'Đã bỏ ghim', 'success');
+  loadPosts(1);
+}
+
+// ── Delete post ──
+async function deletePost(id) {
+  if (!await showConfirm('Xóa bài viết này? Tất cả bình luận cũng sẽ bị xóa.', 'Xóa')) return;
+  const r = await f(`${API}/posts/${id}`, { method: 'DELETE' });
+  if (!r.ok) { toast('Không thể xóa', 'error'); return; }
+  toast('Đã xóa bài viết', 'success');
+  currentPost = null;
+  document.getElementById('panel-detail').innerHTML = `
+    <div class="detail-placeholder" id="detail-placeholder">
+      <div class="detail-placeholder-icon">💬</div>
+      <p>Bài viết đã được xóa</p>
+    </div>`;
+  showMobilePanel('list');
+  loadPosts(1);
+}
+
+// ── Reply ──
+function setReply(id, name) {
+  replyToId   = id;
+  replyToName = name;
+  const banner = document.getElementById('reply-banner');
+  document.getElementById('reply-banner-text').textContent = `↩ Trả lời ${name}`;
+  banner.classList.remove('hidden');
+  document.getElementById('comment-ta').focus();
+}
+function cancelReply() {
+  replyToId = null; replyToName = null;
+  document.getElementById('reply-banner').classList.add('hidden');
+}
+
+// ── Submit comment ──
+async function submitComment() {
+  const ta  = document.getElementById('comment-ta');
+  const btn = document.getElementById('comment-submit-btn');
+  const content = ta.value.trim();
+  if (!content) { toast('Vui lòng nhập nội dung bình luận', 'warning'); return; }
+  btn.disabled = true; btn.textContent = 'Đang gửi…';
+  const body = { content };
+  if (replyToId) body.parentId = replyToId;
+  const r = await f(`${API}/posts/${currentPost._id}/comments`, {
+    method: 'POST', body: JSON.stringify(body),
+  });
+  btn.disabled = false; btn.textContent = 'Gửi';
+  if (!r.ok) { const d = await r.json(); toast(d.error || 'Lỗi gửi bình luận', 'error'); return; }
+  const cmt = await r.json();
+  ta.value = '';
+  cancelReply();
+  // Insert into DOM
+  const list = document.getElementById('comments-list');
+  if (list.querySelector('[style*="Chưa có"]')) list.innerHTML = '';
+  const div = document.createElement('div');
+  div.innerHTML = renderComment(cmt, !!cmt.parentId);
+  if (cmt.parentId) {
+    const parent = document.getElementById(`cmt-${cmt.parentId}`);
+    if (parent) parent.insertAdjacentElement('afterend', div.firstElementChild);
+    else list.insertAdjacentElement('beforeend', div.firstElementChild);
+  } else {
+    list.insertAdjacentElement('beforeend', div.firstElementChild);
+  }
+  currentPost.commentCount = (currentPost.commentCount || 0) + 1;
+  const title = document.querySelector('.comments-title');
+  if (title) title.textContent = `Bình luận (${currentPost.commentCount})`;
+  // scroll to new comment
+  const newEl = list.lastElementChild;
+  if (newEl) newEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  // update card
+  const card = document.querySelectorAll(`.post-card[data-id="${currentPost._id}"] .post-stat`);
+  if (card[1]) card[1].textContent = `💬 ${currentPost.commentCount}`;
+}
+
+// ── Delete comment ──
+async function deleteCmt(id) {
+  if (!await showConfirm('Xóa bình luận này?', 'Xóa')) return;
+  const r = await f(`${API}/comments/${id}`, { method: 'DELETE' });
+  if (!r.ok) { toast('Không thể xóa', 'error'); return; }
+  const el = document.getElementById(`cmt-${id}`);
+  if (el) el.remove();
+  currentPost.commentCount = Math.max(0, (currentPost.commentCount || 1) - 1);
+  const title = document.querySelector('.comments-title');
+  if (title) title.textContent = `Bình luận (${currentPost.commentCount})`;
+  toast('Đã xóa bình luận', 'success');
+}
+
+// ── New post modal ──
+function openNewPost() {
+  document.getElementById('post-title').value   = '';
+  document.getElementById('post-content').value = '';
+  document.getElementById('post-tags').value    = '';
+  document.getElementById('title-count').textContent   = '0';
+  document.getElementById('content-count').textContent = '0';
+  document.getElementById('post-err').className = 'msg-box';
+  document.getElementById('post-modal').classList.add('open');
+}
+function closePostModal() { document.getElementById('post-modal').classList.remove('open'); }
+function closePostModalBg(e) { if (e.target === document.getElementById('post-modal')) closePostModal(); }
+
+async function submitPost() {
+  const title   = document.getElementById('post-title').value.trim();
+  const content = document.getElementById('post-content').value.trim();
+  const tagsRaw = document.getElementById('post-tags').value;
+  const tags    = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).slice(0, 5);
+  const err     = document.getElementById('post-err');
+  err.className = 'msg-box';
+  if (!title)   { err.textContent = 'Vui lòng nhập tiêu đề'; err.className = 'msg-box err'; return; }
+  if (!content) { err.textContent = 'Vui lòng nhập nội dung'; err.className = 'msg-box err'; return; }
+  const btn = document.getElementById('post-submit-btn');
+  btn.disabled = true; btn.textContent = 'Đang đăng…';
+  const r = await f(`${API}/posts`, {
+    method: 'POST', body: JSON.stringify({ title, content, tags }),
+  });
+  btn.disabled = false; btn.textContent = 'Đăng bài';
+  if (!r.ok) { const d = await r.json(); err.textContent = d.error || 'Lỗi đăng bài'; err.className = 'msg-box err'; return; }
+  const post = await r.json();
+  closePostModal();
+  toast('Đã đăng bài viết!', 'success');
+  loadPosts(1);
+  setTimeout(() => {
+    const card = document.querySelector(`.post-card[data-id="${post._id}"]`);
+    if (card) openPost(post._id, card);
+  }, 600);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closePostModal(); closeDeletedPanel(); }
+});
+
+// ── Deleted panel ────────────────────────────────────────
+let dpTab = 'posts'; // 'posts' | 'cmts'
+let dpData = { posts: [], comments: [] };
+
+function openDeletedPanel() {
+  document.getElementById('dpanel-overlay').classList.add('open');
+  loadDeletedItems();
+}
+function closeDeletedPanel() { document.getElementById('dpanel-overlay').classList.remove('open'); }
+function closeDeletedPanelBg(e) { if (e.target === document.getElementById('dpanel-overlay')) closeDeletedPanel(); }
+function switchDpTab(tab) {
+  dpTab = tab;
+  document.getElementById('dp-tab-posts').classList.toggle('active', tab === 'posts');
+  document.getElementById('dp-tab-cmts').classList.toggle('active', tab === 'cmts');
+  renderDeletedItems();
+}
+async function loadDeletedItems() {
+  const body = document.getElementById('dpanel-body');
+  body.innerHTML = '<div class="dpanel-empty">⏳ Đang tải…</div>';
+  try {
+    const r = await f(`${API}/my-deleted`);
+    if (!r.ok) { body.innerHTML = '<div class="dpanel-empty">Lỗi tải dữ liệu</div>'; return; }
+    dpData = await r.json();
+    updateDelBadge();
+    renderDeletedItems();
+  } catch { body.innerHTML = '<div class="dpanel-empty">Lỗi kết nối</div>'; }
+}
+function updateDelBadge() {
+  const allItems = [...(dpData.posts || []), ...(dpData.comments || [])];
+  const unseen = allItems.filter(i => !isDelItemSeen(i)).length;
+  const badge = document.getElementById('del-badge');
+  if (!badge) return;
+  badge.textContent = unseen > 9 ? '9+' : unseen;
+  badge.style.display = unseen ? '' : 'none';
+}
+function renderDeletedItems() {
+  const body = document.getElementById('dpanel-body');
+  const allItems = dpTab === 'posts' ? (dpData.posts || []) : (dpData.comments || []);
+  // Hiển thị tất cả, nhưng mục đã xem mờ hơn và không có nút Đã xem nữa
+  if (!allItems.length) { body.innerHTML = '<div class="dpanel-empty">Không có mục nào bị xóa</div>'; return; }
+  body.innerHTML = allItems.map((item, idx) => renderDelCard(item, idx)).join('');
+}
+function renderDelCard(item, idx) {
+  const isPost    = dpTab === 'posts';
+  const byAI      = item.deletedBy === 'ai';
+  const byUser    = item.deletedBy === 'user';
+  const appeal    = item.appeal || {};
+  const approved  = appeal.status === 'approved';
+  const pending   = appeal.status === 'pending';
+  const rejected  = appeal.status === 'rejected';
+  const canRechk  = byAI && (item.recheckCount || 0) < 2 && !item.recheckPassed;
+  const canRestore = byUser || item.recheckPassed || approved;
+  const seen      = isDelItemSeen(item);
+  const seenType  = isPost ? 'post' : 'comment';
+  const snippet   = isPost
+    ? `<div class="del-card-title">${esc(item.title || '')}</div><div class="del-card-snippet">${esc((item.content || '').slice(0, 160))}${(item.content||'').length > 160 ? '…' : ''}</div>`
+    : `<div class="del-card-snippet">“${esc((item.content || '').slice(0, 160))}${(item.content||'').length > 160 ? '…' : ''}”</div>`;
+  const byLabel = byAI ? `<span class="del-by-badge ai">🤖 AI xóa</span>` : `<span class="del-by-badge user">Tự xóa</span>`;
+  const reason = item.deletedReason ? `<div class="del-card-reason">💬 Lý do: ${esc(item.deletedReason)}</div>` : '';
+  let statusHtml = '';
+  if (pending)  statusHtml = `<div class="del-card-appeal-status">⏳ Phản hồi đang chờ admin xật lý…</div>`;
+  if (approved) statusHtml = `<div class="del-card-appeal-status" style="color:var(--success);border-color:rgba(52,211,153,.25)">✅ Admin đã duyệt — bạn có thể đăng lại</div>`;
+  if (rejected) statusHtml = `<div class="del-card-appeal-status" style="color:var(--danger);border-color:rgba(248,113,113,.25)">❌ Phản hồi bị từ chối${item.appeal.adminNote ? ': ' + esc(item.appeal.adminNote) : ''}</div>`;
+  if (item.recheckPassed) statusHtml = `<div class="del-card-appeal-status" style="color:var(--success);border-color:rgba(52,211,153,.25)">✅ AI đã duyệt — bạn có thể đăng lại</div>`;
+  const type   = isPost ? 'post' : 'cmt';
+  const btnRestore = canRestore ? `<button class="del-action-btn primary" onclick="doRestore('${type}','${item._id}',this)">&#x2197; Đăng lại</button>` : '';
+  const btnRecheck = canRechk   ? `<button class="del-action-btn" onclick="doRecheck('${type}','${item._id}',this)">&#x1F50D; Kiểm tra lại${(item.recheckCount||0) > 0 ? ` (${2-(item.recheckCount||0)} lần còn lại)` : ''}</button>` : (byAI && !item.recheckPassed && (item.recheckCount||0)>=2 ? `<span style="font-size:.68rem;color:var(--muted)">Đã dùng hết lượt kiểm tra lại</span>` : '');
+  const btnAppeal = (byAI && !pending && !approved) ? `<button class="del-action-btn" onclick="toggleAppealInput('appeal-${type}-${idx}')">&#x1F4EC; Phản hồi admin</button>` : '';
+  const btnSeen = !seen ? `<button class="del-action-btn seen-btn" onclick="dismissDelItem('${seenType}','${item._id}',this)">✓ Đánh dấu đã xem</button>` : '';
+  return `
+  <div class="del-card" id="delcard-${item._id}"${seen ? ' style="opacity:.4"' : ''}>
+    ${snippet}
+    <div class="del-card-meta">${byLabel}<span>${fmt(item.deletedAt)}</span></div>
+    ${reason}${statusHtml}
+    <div class="del-card-actions">${btnRestore}${btnRecheck}${btnAppeal}${btnSeen}</div>
+    <div class="appeal-wrap" id="appeal-${type}-${idx}">
+      <textarea class="appeal-ta" id="appeal-ta-${type}-${idx}" placeholder="Giải thích vị sao bạn nghĩ bài này không vi phạm…" rows="3"></textarea>
+      <button class="del-action-btn primary" onclick="doAppeal('${type}','${item._id}','appeal-ta-${type}-${idx}','appeal-${type}-${idx}',this)">Gửi phản hồi</button>
+    </div>
+  </div>`;
+}
+async function dismissDelItem(type, id, btn) {
+  // Optimistic UI update
+  const card = document.getElementById(`delcard-${id}`);
+  if (card) { card.style.transition = 'opacity .3s'; card.style.opacity = '0.4'; btn.remove(); }
+  // Cập nhật dữ liệu local
+  const col = type === 'post' ? 'posts' : 'comments';
+  if (dpData[col]) {
+    const it = dpData[col].find(i => i._id === id);
+    if (it) it.deletedSeen = true;
+  }
+  updateDelBadge();
+  // Lưu vào DB
+  await markDelItemSeenDB(type, id);
+}
+function toggleAppealInput(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+async function doRestore(type, id, btn) {
+  const label = type === 'post' ? 'bài viết' : 'bình luận';
+  if (!await showConfirm(`Đăng lại ${label} này? AI sẽ kiểm duyệt một lần nữa trước khi xuất hiện trên diễn đàn.`, 'Đăng lại')) return;
+  btn.disabled = true; btn.textContent = '⏳ Đang xử lý…';
+  const endpoint = type === 'post' ? `${API}/posts/${id}/restore` : `${API}/comments/${id}/restore`;
+  const r = await f(endpoint, { method: 'POST' });
+  btn.disabled = false; btn.textContent = '↗ Đăng lại';
+  const d = await r.json();
+  if (!r.ok) { toast(d.error || 'Không thể khôi phục', 'error', 5000); return; }
+  toast(`Đã đăng lại ${label} thành công!`, 'success');
+  loadDeletedItems();
+  loadPosts(1);
+}
+async function doRecheck(type, id, btn) {
+  btn.disabled = true; btn.textContent = '⏳ Đang kiểm tra…';
+  const endpoint = type === 'post' ? `${API}/posts/${id}/recheck` : `${API}/comments/${id}/recheck`;
+  const r = await f(endpoint, { method: 'POST' });
+  const d = await r.json();
+  btn.disabled = false;
+  if (!r.ok && r.status === 429) { toast(d.error || 'Đã hết lượt kiểm tra lại', 'warning'); loadDeletedItems(); return; }
+  if (!r.ok) { toast(d.error || 'Lỗi kiểm tra', 'error'); return; }
+  if (d.allowed) {
+    toast('✅ AI đã duyệt! Bạn có thể đăng lại bài viết.', 'success', 5000);
+  } else {
+    const msg = d.exhausted
+      ? `AI vẫn không duyệt: ${d.reason || 'vi phạm quy tắc'}. Bạn đã dùng hết 2 lần kiểm tra. Hãy dùng "Phản hồi admin" nếu bạn cho rằng đây là nhầm lẫn.`
+      : `AI chưa duyệt: ${d.reason || 'vi phạm quy tắc'}. Bạn còn ${2 - d.recheckCount} lần kiểm tra lại.`;
+    toast(msg, 'warning', 8000);
+  }
+  loadDeletedItems();
+}
+async function doAppeal(type, id, taId, wrapId, btn) {
+  const message = (document.getElementById(taId)?.value || '').trim();
+  if (!message) { toast('Vui lòng nhập nội dung phản hồi', 'warning'); return; }
+  btn.disabled = true; btn.textContent = 'Đang gửi…';
+  const endpoint = type === 'post' ? `${API}/posts/${id}/appeal` : `${API}/comments/${id}/appeal`;
+  const r = await f(endpoint, { method: 'POST', body: JSON.stringify({ message }) });
+  const d = await r.json();
+  btn.disabled = false; btn.textContent = 'Gửi phản hồi';
+  if (!r.ok) { toast(d.error || 'Không gửi được', 'error'); return; }
+  toast('Đã gửi phản hồi đến admin. Bạn sẽ nhận được thông báo khi có kết quả.', 'success', 6000);
+  const wrap = document.getElementById(wrapId);
+  if (wrap) wrap.classList.remove('open');
+  loadDeletedItems();
+}
+</script>
+</body>
+</html>

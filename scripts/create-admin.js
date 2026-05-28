@@ -3,17 +3,17 @@
  *   node scripts/create-admin.js
  */
 require('dotenv').config();
-const mongoose = require('mongoose');
-const bcrypt   = require('bcryptjs');
-const User     = require('../models/User');
+const bcrypt = require('bcryptjs');
+const { getUserModel, getConnection } = require('../db');
 
 const ADMIN_USERNAME = 'admin';        // ← dùng làm "CCCD" khi đăng nhập
 const ADMIN_PASSWORD = 'Admin@123456'; // ← đổi thành mật khẩu mạnh!
 const ADMIN_NAME     = 'Quản Trị Viên';
 
 async function main() {
-  await mongoose.connect(process.env.MONGODB_HSNBK);
-  console.log('✅  Kết nối MongoDB thành công');
+  const conn = await getConnection('students');
+  const User = getUserModel(conn);
+  console.log('✅  Kết nối Astra DB thành công');
 
   const exists = await User.findOne({ username: ADMIN_USERNAME });
   if (exists) { console.log('⚠️  Admin đã tồn tại'); process.exit(0); }

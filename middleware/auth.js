@@ -1,12 +1,19 @@
 const jwt = require('jsonwebtoken');
 
-function authMiddleware(req, res, next) {
+function getToken(req) {
+  // Ưu tiên httpOnly cookie, fallback về Authorization header
+  if (req.cookies && req.cookies.hc_token) return req.cookies.hc_token;
   const header = req.headers.authorization;
-  if (!header || !header.startsWith('Bearer '))
-    return res.status(401).json({ error: 'Chưa đăng nhập' });
+  if (header && header.startsWith('Bearer ')) return header.split(' ')[1];
+  return null;
+}
+
+function authMiddleware(req, res, next) {
+  const token = getToken(req);
+  if (!token) return res.status(401).json({ error: 'Chưa đăng nhập' });
 
   try {
-    req.user = jwt.verify(header.split(' ')[1], process.env.JWT_SECRET);
+    req.user = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     next();
   } catch {
     res.status(401).json({ error: 'Phiên đăng nhập hết hạn, vui lòng đăng nhập lại' });

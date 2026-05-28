@@ -2,46 +2,148 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Axon AI — Quản trị</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#050508;--surface:#0d0d14;--surface2:#12121e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--accent:#f87171;--accent2:#fb923c;--accent-soft:rgba(248,113,113,0.12);--text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;--danger:#f87171;--success:#34d399}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;overflow:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+:root{
+  --bg:#050508;--surface:#0d0d14;--surface2:#12121e;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --accent:#f87171;--accent2:#fb923c;--accent-soft:rgba(248,113,113,.12);
+  --text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;
+  --danger:#f87171;--success:#34d399
+}
+html,body{height:100%;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;overflow:hidden
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4
+}
 .bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.bg-orb-1{position:absolute;width:500px;height:500px;background:radial-gradient(circle,#f87171,transparent);border-radius:50%;filter:blur(80px);opacity:.05;top:-150px;right:-100px;animation:orb1 20s ease-in-out infinite}
-.bg-orb-2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,#fb923c,transparent);border-radius:50%;filter:blur(80px);opacity:.05;bottom:-100px;left:-80px;animation:orb2 25s ease-in-out infinite}
-@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,60px)}}
-@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,-50px)}}
-.card{position:relative;z-index:10;background:var(--surface);border:1px solid rgba(248,113,113,.2);border-radius:24px;padding:40px 36px;width:100%;max-width:400px;box-shadow:0 40px 80px rgba(0,0,0,.5),0 0 0 1px rgba(248,113,113,.05);animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:20px;font-size:.72rem;font-weight:700;color:#fca5a5;letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px}
-.badge-dot{width:6px;height:6px;background:#f87171;border-radius:50%;box-shadow:0 0 6px #f87171;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.logo{display:flex;align-items:center;gap:10px;margin-bottom:6px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.3rem;letter-spacing:-.03em;color:white}
-.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,#f87171,#fb923c);border-radius:10px;display:flex;align-items:center;justify-content:center}
-.sub{font-size:.82rem;color:var(--muted);margin-bottom:28px}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.bg-orb-1{width:550px;height:550px;background:radial-gradient(circle,#f87171,transparent);opacity:.06;top:-150px;right:-100px;animation:orb1 22s ease-in-out infinite}
+.bg-orb-2{width:450px;height:450px;background:radial-gradient(circle,#fb923c,transparent);opacity:.05;bottom:-100px;left:-80px;animation:orb2 26s ease-in-out infinite}
+@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(-70px,80px)}}
+@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(70px,-60px)}}
+
+.card{
+  position:relative;z-index:10;
+  background:var(--surface);
+  border:1px solid rgba(248,113,113,.18);
+  border-radius:24px;padding:40px 36px;
+  width:100%;max-width:400px;
+  box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 1px rgba(248,113,113,.04);
+  animation:cardIn .55s cubic-bezier(.22,1,.36,1) both
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+.badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:4px 12px;background:rgba(248,113,113,.1);
+  border:1px solid rgba(248,113,113,.25);border-radius:20px;
+  font-size:.72rem;font-weight:700;color:#fca5a5;
+  letter-spacing:.06em;text-transform:uppercase;margin-bottom:20px
+}
+.badge-dot{
+  width:6px;height:6px;background:#f87171;border-radius:50%;
+  box-shadow:0 0 6px rgba(248,113,113,.7);
+  animation:badgePulse 2.5s ease-in-out infinite
+}
+@keyframes badgePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
+
+.logo{
+  display:flex;align-items:center;gap:10px;margin-bottom:6px;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1.3rem;letter-spacing:-.03em;color:white
+}
+.logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,#f87171,#fb923c);
+  border-radius:10px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 4px 16px rgba(248,113,113,.35)
+}
+.sub{font-size:.82rem;color:var(--muted);margin-bottom:28px;line-height:1.6}
+
 .field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
 .field label{font-size:.8rem;font-weight:600;color:var(--muted2)}
-.s-input{background:var(--surface2);border:1px solid rgba(248,113,113,.2);border-radius:11px;padding:11px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-.s-input:focus{border-color:rgba(248,113,113,.5);box-shadow:0 0 0 3px rgba(248,113,113,.08)}
+.input-wrap{position:relative}
+
+.s-input{
+  background:var(--surface2);border:1px solid rgba(248,113,113,.2);border-radius:11px;
+  padding:12px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%
+}
+.s-input:focus{border-color:rgba(248,113,113,.5);box-shadow:0 0 0 3px rgba(248,113,113,.1)}
 .s-input::placeholder{color:var(--muted)}
-.btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,#f87171,#fb923c);border:none;border-radius:11px;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s;margin-top:6px}
-.btn-primary:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.msg{font-size:.8rem;padding:10px 13px;border-radius:9px;margin-top:12px;display:none;align-items:center;gap:8px}
+.pw-input{padding-right:44px}
+
+.pw-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  width:28px;height:28px;background:none;border:none;cursor:pointer;
+  color:var(--muted);display:flex;align-items:center;justify-content:center;
+  transition:color .15s;border-radius:6px;padding:0
+}
+.pw-toggle:hover{color:var(--muted2)}
+
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  15%{transform:translateX(-6px)}30%{transform:translateX(6px)}
+  45%{transform:translateX(-4px)}60%{transform:translateX(4px)}
+  75%{transform:translateX(-2px)}90%{transform:translateX(2px)}
+}
+.field.shake .s-input{
+  animation:shake .45s cubic-bezier(.36,.07,.19,.97) both;
+  border-color:rgba(248,113,113,.6)!important;box-shadow:0 0 0 3px rgba(248,113,113,.1)!important
+}
+
+.btn-primary{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,#f87171,#fb923c);
+  border:none;border-radius:11px;color:white;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;font-weight:700;
+  cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s;
+  margin-top:6px;
+  box-shadow:0 4px 18px rgba(248,113,113,.3)
+}
+.btn-primary:hover:not(:disabled){opacity:.92;transform:translateY(-1px);box-shadow:0 8px 24px rgba(248,113,113,.4)}
+.btn-primary:active:not(:disabled){transform:translateY(0) scale(.99)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+
+.btn-spinner{
+  display:inline-block;width:14px;height:14px;
+  border:2px solid rgba(255,255,255,.3);border-top-color:white;
+  border-radius:50%;animation:spin .7s linear infinite;
+  vertical-align:middle;margin-right:7px
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.msg{font-size:.8rem;padding:10px 13px;border-radius:9px;margin-top:12px;display:none;align-items:center;gap:8px;line-height:1.5}
 .msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:flex}
-.note{font-size:.74rem;color:var(--muted);text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
-@media(max-width:480px){.card{padding:28px 22px;border-radius:18px;margin:12px}}
+
+.note{font-size:.72rem;color:var(--muted);text-align:center;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);line-height:1.6}
+
+@media(max-width:480px){
+  .card{padding:28px 22px;border-radius:20px;margin:8px}
+  body{padding:12px}
+}
 </style>
 </head>
 <body>
-<div class="bg-orbs"><div class="bg-orb-1"></div><div class="bg-orb-2"></div></div>
+<div class="bg-orbs">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+</div>
+
 <div class="card">
   <div class="badge"><span class="badge-dot"></span>Khu vực quản trị</div>
+
   <div class="logo">
     <div class="logo-icon">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -50,41 +152,120 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   </div>
   <div class="sub">Cổng quản trị hệ thống · Chỉ dành cho quản trị viên</div>
 
-  <form onsubmit="doLogin(event)">
-    <div class="field">
-      <label>Tên đăng nhập</label>
-      <input class="s-input" type="text" id="uname" placeholder="admin" required autocomplete="username">
+  <form onsubmit="doLogin(event)" autocomplete="on">
+    <div class="field" id="field-user">
+      <label for="uname">Tên đăng nhập</label>
+      <div class="input-wrap">
+        <input class="s-input" type="text" id="uname" name="username"
+          placeholder="admin" required autocomplete="username">
+      </div>
     </div>
-    <div class="field">
-      <label>Mật khẩu</label>
-      <input class="s-input" type="password" id="pw" placeholder="••••••••" required autocomplete="current-password">
+    <div class="field" id="field-pw">
+      <label for="pw">Mật khẩu</label>
+      <div class="input-wrap">
+        <input class="s-input pw-input" type="password" id="pw" name="password"
+          placeholder="••••••••" required autocomplete="current-password">
+        <button type="button" class="pw-toggle" id="pw-eye" onclick="togglePw()" title="Hiện/ẩn mật khẩu" aria-label="Hiện mật khẩu">
+          <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
     </div>
+
     <div class="msg" id="msg"></div>
     <button class="btn-primary" type="submit" id="btn">Đăng nhập quản trị</button>
   </form>
 
-  <div class="note">URL này không được công khai · Không chia sẻ với học sinh</div>
+  <div class="note">🔒 URL này không được công khai · Không chia sẻ với học sinh</div>
 </div>
 
 <script>
-const t=localStorage.getItem('hc_token'),r=localStorage.getItem('hc_role');
-if(t&&r==='admin')location.href='/admin.html';
-async function doLogin(e){
+// Kiểm tra session admin qua cookie
+(async () => {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (r.ok) { const d = await r.json(); if (d.role === 'admin') location.href = '/admin.html'; }
+  } catch {}
+})();
+
+let _pwVisible = false;
+function togglePw() {
+  _pwVisible = !_pwVisible;
+  const inp = document.getElementById('pw');
+  inp.type = _pwVisible ? 'text' : 'password';
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('eye-icon');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  if (_pwVisible) {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', 'M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24');
+    const l = document.createElementNS(NS, 'line');
+    l.setAttribute('x1','1'); l.setAttribute('y1','1'); l.setAttribute('x2','23'); l.setAttribute('y2','23');
+    svg.appendChild(p); svg.appendChild(l);
+  } else {
+    const p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', 'M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx','12'); c.setAttribute('cy','12'); c.setAttribute('r','3');
+    svg.appendChild(p); svg.appendChild(c);
+  }
+}
+
+function shakeField(id) {
+  const f = document.getElementById(id);
+  f.classList.remove('shake');
+  void f.offsetWidth;
+  f.classList.add('shake');
+  setTimeout(() => f.classList.remove('shake'), 500);
+}
+
+async function doLogin(e) {
   e.preventDefault();
-  const btn=document.getElementById('btn'),msg=document.getElementById('msg');
-  btn.disabled=true;btn.textContent='Đang xác thực…';msg.className='msg';
-  try{
-    const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cccd:document.getElementById('uname').value.trim(),password:document.getElementById('pw').value})});
-    const data=await res.json();
-    if(!res.ok){msg.textContent='⚠ '+data.error;msg.className='msg err';return;}
-    if(data.role!=='admin'){msg.textContent='⚠ Tài khoản này không có quyền quản trị';msg.className='msg err';return;}
-    ['hc_token','hc_role','hc_fullName','hc_className','hc_gender','hc_dob','hc_mustChangePw'].forEach(k=>localStorage.removeItem(k));
-    localStorage.setItem('hc_token',data.token);
-    localStorage.setItem('hc_role',data.role);
-    localStorage.setItem('hc_fullName',data.fullName);
-    location.href='/admin.html';
-  }catch{msg.textContent='⚠ Lỗi kết nối server';msg.className='msg err';}
-  finally{btn.disabled=false;btn.textContent='Đăng nhập quản trị';}
+  const btn = document.getElementById('btn');
+  const msg = document.getElementById('msg');
+  msg.className = 'msg';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span>Đang xác thực…';
+
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        cccd: document.getElementById('uname').value.trim(),
+        password: document.getElementById('pw').value
+      })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      msg.textContent = '⚠ ' + (data.error || 'Đăng nhập thất bại');
+      msg.className = 'msg err';
+      shakeField('field-user'); shakeField('field-pw');
+      btn.disabled = false; btn.textContent = 'Đăng nhập quản trị';
+      return;
+    }
+    if (data.role !== 'admin') {
+      msg.textContent = '⚠ Tài khoản này không có quyền quản trị';
+      msg.className = 'msg err';
+      shakeField('field-user');
+      btn.disabled = false; btn.textContent = 'Đăng nhập quản trị';
+      return;
+    }
+
+    localStorage.setItem('hc_role', data.role);
+    localStorage.setItem('hc_fullName', data.fullName || 'Admin');
+
+    btn.textContent = '✓ Thành công!';
+    setTimeout(() => { location.href = '/admin.html'; }, 350);
+
+  } catch {
+    msg.textContent = '⚠ Lỗi kết nối server. Vui lòng thử lại.';
+    msg.className = 'msg err';
+    btn.disabled = false; btn.textContent = 'Đăng nhập quản trị';
+  }
 }
 </script>
 </body>

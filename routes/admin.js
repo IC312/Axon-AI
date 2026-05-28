@@ -38,7 +38,7 @@ function gradeFromClass(className) {
 router.get('/stats', async (_req, res) => {
   try {
     const User = await getStudentDB();
-    const students = await User.find({ role: 'student' }).select('className').lean();
+    const students = await User.find({ role: 'student' });
     const classes  = [...new Set(students.map(s => s.className).filter(Boolean))];
 
     // Đếm conv + msg từ tất cả 4 DB khối
@@ -58,7 +58,7 @@ router.get('/stats', async (_req, res) => {
 router.get('/classes', async (_req, res) => {
   try {
     const User = await getStudentDB();
-    const students = await User.find({ role: 'student', className: { $ne: '' } }).select('className').lean();
+    const students = await User.find({ role: 'student', className: { $ne: '' } });
     const classes  = [...new Set(students.map(s => s.className))].sort(sortClasses);
     res.json(classes);
   } catch (err) { res.status(500).json({ error: err.message }); }
@@ -68,8 +68,7 @@ router.get('/classes', async (_req, res) => {
 router.get('/classes/:className/students', async (req, res) => {
   try {
     const User = await getStudentDB();
-    const students = await User.find({ role: 'student', className: req.params.className })
-      .select('-passwordHash').lean();
+    const students = await User.find({ role: 'student', className: req.params.className });
     students.sort(sortByGivenName);
 
     const grade = gradeFromClass(req.params.className);
@@ -87,7 +86,7 @@ router.get('/classes/:className/students', async (req, res) => {
 router.get('/users/:userId', async (req, res) => {
   try {
     const User = await getStudentDB();
-    const s = await User.findById(req.params.userId).select('-passwordHash').lean();
+    const s = await User.findById(req.params.userId);
     if (!s) return res.status(404).json({ error: 'Không tìm thấy' });
     const defaultPw = s.mustChangePassword
       ? (s.dob ? s.dob.replace(/\//g, '') : '(chưa có ngày sinh)')
@@ -118,13 +117,13 @@ router.post('/users/:userId/reset-password', async (req, res) => {
 router.get('/users/:userId/conversations', async (req, res) => {
   try {
     const User = await getStudentDB();
-    const student = await User.findById(req.params.userId).select('className').lean();
+    const student = await User.findById(req.params.userId);
     if (!student) return res.status(404).json({ error: 'Không tìm thấy' });
 
     const grade = gradeFromClass(student.className);
     const { Conversation, Message } = await getChatDB(grade);
 
-    const convs = await Conversation.find({ userId: req.params.userId }).sort({ updatedAt: -1 }).lean();
+    const convs = await Conversation.find({ userId: req.params.userId });
     const result = await Promise.all(convs.map(async c => ({
       ...c, msgCount: await Message.countDocuments({ conversationId: c._id })
     })));
@@ -138,9 +137,9 @@ router.get('/conversations/:id/messages', async (req, res) => {
     // Tìm conversation trong tất cả DB khối
     const chatDBs = await getAllChatModels();
     for (const { Conversation, Message } of chatDBs) {
-      const conv = await Conversation.findById(req.params.id).lean();
+      const conv = await Conversation.findById(req.params.id);
       if (conv) {
-        const msgs = await Message.find({ conversationId: req.params.id }).sort({ createdAt: 1 }).lean();
+        const msgs = await Message.find({ conversationId: req.params.id });
         return res.json(msgs);
       }
     }
@@ -167,7 +166,9 @@ router.post('/settings', async (req, res) => {
       user.fullName = newUsername.trim();
     }
     if (newPassword) {
-      if (newPassword.length < 6) return res.status(400).json({ error: 'Mật khẩu mới tối thiểu 6 ký tự' });
+      if (newPassword.length < 8) return res.status(400).json({ error: 'Mật khẩu mới tối thiểu 8 ký tự' });
+      if (!/[a-z]/i.test(newPassword) || !/\d/.test(newPassword))
+        return res.status(400).json({ error: 'Mật khẩu phải chứa chữ cái và số' });
       user.passwordHash = await bcrypt.hash(newPassword, 10);
     }
     await user.save();
@@ -175,48 +176,114 @@ router.post('/settings', async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// ── AI helpers ────────────────────────────────────────
-const SILICONFLOW_URL = 'https://api.siliconflow.com/v1/chat/completions';
-const AI_MODEL        = 'zai-org/GLM-5.1';
+// ── AI helpers (Groq) ────────────────────────────────
+const Groq = require('groq-sdk');
+const ADMIN_AI_MODEL = 'qwen/qwen3-32b';
 
+const ADMIN_GROQ_KEYS = [
+  process.env.GROQ_API_KEY,
+  process.env.GROQ_API_KEY_2,
+  process.env.GROQ_API_KEY_3,
+  process.env.GROQ_API_KEY_4,
+  process.env.GROQ_API_KEY_5,
+].filter(Boolean);
+
+let _adminKeyIdx = 0;
+
+function isKeyError(err) {
+  return (
+    err.status === 401 ||
+    err.status === 403 ||
+    err.status === 429 ||
+    (err.message && (
+      err.message.includes('invalid_api_key') ||
+      err.message.includes('rate_limit') ||
+      err.message.includes('quota') ||
+      err.message.includes('Unauthorized')
+    ))
+  );
+}
+
+// Non-streaming với failover tự động
 async function callAI(systemPrompt, userContent, maxTokens = 600) {
-  const res = await fetch(SILICONFLOW_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type':  'application/json',
-      'Authorization': `Bearer ${process.env.SILICONFLOW_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: AI_MODEL,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user',   content: userContent  },
-      ],
-      stream:      false,
-      max_tokens:  maxTokens,
-      temperature: 0.4,
-      top_p:       0.9,
-    }),
-  });
-  if (!res.ok) throw new Error(`SiliconFlow ${res.status}`);
-  const data = await res.json();
-  return data.choices?.[0]?.message?.content || '';
+  let lastError = null;
+  const startIdx = _adminKeyIdx;
+
+  for (let attempt = 0; attempt < ADMIN_GROQ_KEYS.length; attempt++) {
+    const keyIdx = (startIdx + attempt) % ADMIN_GROQ_KEYS.length;
+    try {
+      const groq = new Groq.Groq({ apiKey: ADMIN_GROQ_KEYS[keyIdx] });
+      const completion = await groq.chat.completions.create({
+        model: ADMIN_AI_MODEL,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user',   content: userContent  },
+        ],
+        stream:      false,
+        max_completion_tokens: maxTokens,
+        temperature: 0.4,
+        top_p:       0.9,
+      });
+      _adminKeyIdx = keyIdx;
+      let text = completion.choices?.[0]?.message?.content || '';
+      // Strip <think> blocks
+      text = text.replace(/<think>[\s\S]*?<\/think>/g, '').replace(/<think>[\s\S]*/,'').trim();
+      return text;
+    } catch (err) {
+      lastError = err;
+      if (isKeyError(err) && attempt < ADMIN_GROQ_KEYS.length - 1) {
+        const nextIdx = (keyIdx + 1) % ADMIN_GROQ_KEYS.length;
+        console.warn(`[Admin AI Failover] Key #${keyIdx + 1} lỗi (${err.status || err.message}), thử Key #${nextIdx + 1}...`);
+        _adminKeyIdx = nextIdx;
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw lastError;
+}
+
+// Streaming với failover tự động
+async function createAdminGroqStreamWithFailover(params) {
+  let lastError = null;
+  const startIdx = _adminKeyIdx;
+
+  for (let attempt = 0; attempt < ADMIN_GROQ_KEYS.length; attempt++) {
+    const keyIdx = (startIdx + attempt) % ADMIN_GROQ_KEYS.length;
+    try {
+      const groq = new Groq.Groq({ apiKey: ADMIN_GROQ_KEYS[keyIdx] });
+      const stream = await groq.chat.completions.create(params);
+      _adminKeyIdx = keyIdx;
+      return stream;
+    } catch (err) {
+      lastError = err;
+      if (isKeyError(err) && attempt < ADMIN_GROQ_KEYS.length - 1) {
+        const nextIdx = (keyIdx + 1) % ADMIN_GROQ_KEYS.length;
+        console.warn(`[Admin AI Failover] Key #${keyIdx + 1} lỗi (${err.status || err.message}), thử Key #${nextIdx + 1}...`);
+        _adminKeyIdx = nextIdx;
+        continue;
+      }
+      throw err;
+    }
+  }
+
+  throw lastError;
 }
 
 // ── Bước 1: Tóm tắt từng cuộc hội thoại ─────────────
 // Được gọi 1 lần khi mở modal phân tích.
 // Backend lấy toàn bộ tin nhắn → tóm tắt song song → trả về mảng tóm tắt.
-router.post('/prepare-analysis/:userId', async (req, res) => {
+router.get('/prepare-analysis/:userId', async (req, res) => {
   try {
     const User = await getStudentDB();
-    const student = await User.findById(req.params.userId).select('-passwordHash').lean();
+    const student = await User.findById(req.params.userId);
     if (!student) return res.status(404).json({ error: 'Không tìm thấy học sinh' });
 
     const grade = gradeFromClass(student.className);
     const { Conversation, Message } = await getChatDB(grade);
 
-    const convs = await Conversation.find({ userId: req.params.userId })
-      .sort({ updatedAt: -1 }).lean();
+    const convs = await Conversation.find({ userId: req.params.userId });
 
     if (!convs.length) {
       return res.json({ student, summaries: [], totalConvs: 0, totalMsgs: 0 });
@@ -224,13 +291,13 @@ router.post('/prepare-analysis/:userId', async (req, res) => {
 
     // Lấy messages song song cho tất cả conversations
     const convMessages = await Promise.all(
-      convs.map(c => Message.find({ conversationId: c._id }).sort({ createdAt: 1 }).lean())
+      convs.map(c => Message.find({ conversationId: c._id }))
     );
 
     const totalMsgs = convMessages.reduce((sum, msgs) => sum + msgs.length, 0);
 
     // Tóm tắt từng cuộc hội thoại song song (giới hạn 500 ký tự/tin nhắn trước khi gửi)
-    const SUMMARIZE_SYSTEM = `Bạn là trợ lý tóm tắt hội thoại học sinh. Tóm tắt ngắn gọn cuộc trò chuyện sau trong 3-5 câu, tập trung vào: chủ đề chính, câu hỏi học sinh đặt ra, mức độ hiểu bài, thái độ học tập. Viết bằng tiếng Việt, không dùng bullet points.`;
+    const SUMMARIZE_SYSTEM = `Tóm tắt hội thoại học sinh trong 2-3 câu: chủ đề, mức hiểu bài, thái độ. Tiếng Việt, không bullet.`;
 
     const summaries = await Promise.all(
       convs.map(async (conv, i) => {
@@ -266,7 +333,7 @@ router.post('/ai-analyze', async (req, res) => {
     }
 
     // Xây system prompt từ tóm tắt (nhỏ gọn, không gửi raw messages)
-    let system = `Bạn là trợ lý phân tích học sinh thông minh, hỗ trợ giáo viên hiểu sâu hơn về học sinh. Trả lời bằng tiếng Việt, ngắn gọn, có cấu trúc rõ ràng.\n\n`;
+    let system = `Trợ lý phân tích học sinh cho giáo viên. Tiếng Việt, ngắn gọn, có cấu trúc.\n\n`;
     system += `THÔNG TIN HỌC SINH:\n`;
     system += `- Họ tên: ${student.fullName}\n`;
     system += `- Lớp: ${student.className || '—'}\n`;
@@ -282,35 +349,94 @@ router.post('/ai-analyze', async (req, res) => {
       system += `Học sinh chưa có hội thoại nào với AI.\n\n`;
     }
 
-    system += `Dựa vào các tóm tắt trên, hãy trả lời câu hỏi của giáo viên. Tập trung vào: mức độ hiểu bài, điểm mạnh/yếu, phong cách học, khó khăn gặp phải, gợi ý cải thiện.`;
+    system += `Dựa vào tóm tắt trên, trả lời câu hỏi giáo viên: mức hiểu bài, điểm mạnh/yếu, khó khăn, gợi ý.`;
 
-    const sfRes = await fetch(SILICONFLOW_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type':  'application/json',
-        'Authorization': `Bearer ${process.env.SILICONFLOW_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model:       AI_MODEL,
-        messages:    [{ role: 'system', content: system }, ...messages],
-        stream:      false,
-        max_tokens:  1200,
-        temperature: 0.7,
-        top_p:       0.9,
-      }),
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('X-Accel-Buffering', 'no');
+
+    const stream = await createAdminGroqStreamWithFailover({
+      model:       ADMIN_AI_MODEL,
+      messages:    [{ role: 'system', content: system }, ...messages],
+      stream:      true,
+      max_completion_tokens: 1200,
+      temperature: 0.7,
+      top_p:       0.9,
     });
 
-    if (!sfRes.ok) {
-      const err = await sfRes.text();
-      return res.status(sfRes.status).json({ error: `Lỗi AI (${sfRes.status}): ${err}` });
+    let buf = '';
+    let inThink = false;
+
+    for await (const chunk of stream) {
+      const delta = chunk.choices[0]?.delta?.content || '';
+      if (!delta) continue;
+
+      buf += delta;
+
+      // Phát hiện và bỏ qua toàn bộ <think>...</think>
+      let out = '';
+      while (buf.length) {
+        if (inThink) {
+          const end = buf.indexOf('</think>');
+          if (end === -1) { buf = ''; break; } // chưa đến </think>, bỏ hết
+          buf = buf.slice(end + 8); // bỏ qua </think>
+          inThink = false;
+        } else {
+          const start = buf.indexOf('<think>');
+          if (start === -1) { out += buf; buf = ''; break; }
+          out += buf.slice(0, start); // phần trước <think> → gửi
+          buf = buf.slice(start + 7);
+          inThink = true;
+        }
+      }
+
+      if (out) {
+        res.write(`data: ${JSON.stringify({ choices: [{ delta: { content: out } }] })}\n\n`);
+      }
     }
 
-    const data = await sfRes.json();
-    const reply = data.choices?.[0]?.message?.content || 'Không có phản hồi.';
-    res.json({ reply });
+    res.write('data: [DONE]\n\n');
+    res.end();
   } catch (err) {
-    res.status(500).json({ error: 'Lỗi server: ' + err.message });
+    console.error('[Admin Analyze Error]', err.message);
+    if (!res.headersSent) res.status(500).json({ error: 'Lỗi server: ' + err.message });
+    else res.end();
   }
+});
+
+// ── Góp ý (admin) ─────────────────────────────────────
+const { FeedbackModel } = require('../db');
+
+router.get('/feedback', async (_req, res) => {
+  try {
+    const items = await FeedbackModel.find();
+    res.json(items);
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// Đánh dấu admin đã xem — hỗ trợ cả mark-all và mark từng ID
+router.post('/feedback/mark-read', async (req, res) => {
+  try {
+    const ids = req.body && Array.isArray(req.body.ids) ? req.body.ids : 'all';
+    await FeedbackModel.markAdminRead(ids);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.post('/feedback/:id/reply', async (req, res) => {
+  try {
+    const { reply } = req.body;
+    if (!reply || !reply.trim()) return res.status(400).json({ error: 'Nội dung phản hồi trống' });
+    await FeedbackModel.reply(req.params.id, reply.trim());
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+router.delete('/feedback/:id', async (req, res) => {
+  try {
+    await FeedbackModel.deleteById(req.params.id);
+    res.json({ ok: true });
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 module.exports = router;

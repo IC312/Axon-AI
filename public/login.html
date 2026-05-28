@@ -1,103 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Axon AI — Đăng nhập</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#050508;--surface:#0d0d14;--surface2:#12121e;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--accent:#7c5cfc;--accent2:#00e5ff;--accent-soft:rgba(124,92,252,0.15);--text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;--danger:#f87171;--success:#34d399}
-html,body{height:100%}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;overflow:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
-.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
-.bg-orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.07}
-.bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,#7c5cfc,transparent);top:-100px;left:-100px;animation:orb1 20s ease-in-out infinite}
-.bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,#00e5ff,transparent);bottom:-100px;right:-80px;animation:orb2 25s ease-in-out infinite}
-@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,80px)}}
-@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-60px)}}
-.card{position:relative;z-index:10;background:var(--surface);border:1px solid var(--border2);border-radius:24px;padding:40px 36px;width:100%;max-width:420px;box-shadow:0 40px 80px rgba(0,0,0,.5);animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.03em;color:white}
-.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;position:relative;overflow:hidden;flex-shrink:0}
-.logo-icon::after{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);animation:shimmer 4s ease-in-out infinite}
-@keyframes shimmer{0%{left:-60%}40%,100%{left:130%}}
-.heading{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.6rem;letter-spacing:-.03em;color:white;text-align:center;margin-bottom:6px;line-height:1.2}
-.sub{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:28px}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
-.field label{font-size:.8rem;font-weight:600;color:var(--muted2);letter-spacing:.01em}
-.field .hint{font-size:.72rem;color:var(--muted);font-family:'Courier New',monospace}
-.s-input{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:11px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-.s-input:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 3px rgba(124,92,252,.08)}
-.s-input::placeholder{color:var(--muted)}
-.s-input.mono{font-family:'Courier New',monospace;letter-spacing:.05em}
-.btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#9c7dff);border:none;border-radius:11px;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s;margin-top:6px;position:relative;overflow:hidden}
-.btn-primary:hover:not(:disabled){opacity:.9;transform:translateY(-1px)}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed}
-.btn-primary::after{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);animation:btnShimmer 3s ease-in-out infinite}
-@keyframes btnShimmer{0%{left:-80%}40%,100%{left:120%}}
-.msg{font-size:.8rem;padding:10px 13px;border-radius:9px;margin-top:12px;display:none;align-items:center;gap:8px}
-.msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:flex}
-.msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--success);display:flex}
-.divider{height:1px;background:var(--border);margin:20px 0}
-.footer-txt{font-size:.74rem;color:var(--muted);text-align:center}
-@media(max-width:480px){.card{padding:28px 22px;border-radius:18px;margin:12px}.heading{font-size:1.4rem}.logo{margin-bottom:20px}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="0;url=/login-email.html">
+  <title>Đang chuyển hướng...</title>
+  <script>
+    window.location.replace('/login-email.html');
+  </script>
 </head>
 <body>
-<div class="bg-orbs"><div class="bg-orb bg-orb-1"></div><div class="bg-orb bg-orb-2"></div></div>
-<div class="card">
-  <div class="logo">
-    <div class="logo-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-    </div>
-    Axon AI
-  </div>
-  <div class="heading">Xin chào 👋</div>
-  <div class="sub">Đăng nhập để tiếp tục học tập</div>
-
-  <form onsubmit="doLogin(event)">
-    <div class="field">
-      <label>Số định danh cá nhân (CCCD)</label>
-      <input class="s-input mono" type="text" id="cccd" placeholder="000000000000" maxlength="12" inputmode="numeric" required autocomplete="username">
-    </div>
-    <div class="field">
-      <label>Mật khẩu</label>
-      <input class="s-input" type="password" id="pw" placeholder="••••••••" required autocomplete="current-password">
-      <span class="hint">Mặc định: ngày sinh DDMMYYYY &nbsp;(vd: 02032014)</span>
-    </div>
-    <div class="msg" id="msg"></div>
-    <button class="btn-primary" type="submit" id="btn">Đăng nhập</button>
-  </form>
-
-  <div class="divider"></div>
-  <div class="footer-txt">Hệ thống học tập AI · Chỉ dành cho học sinh & giáo viên</div>
-</div>
-
-<script>
-const t=localStorage.getItem('hc_token'),r=localStorage.getItem('hc_role');
-if(t)location.href=r==='admin'?'/admin.html':'/chat.html';
-async function doLogin(e){
-  e.preventDefault();
-  const btn=document.getElementById('btn'),msg=document.getElementById('msg');
-  btn.disabled=true;btn.textContent='Đang xác thực…';msg.className='msg';
-  try{
-    const res=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({cccd:document.getElementById('cccd').value.trim(),password:document.getElementById('pw').value})});
-    const data=await res.json();
-    if(!res.ok){msg.textContent='⚠ '+data.error;msg.className='msg err';return;}
-    ['hc_token','hc_role','hc_fullName','hc_className','hc_gender','hc_dob','hc_mustChangePw'].forEach(k=>localStorage.removeItem(k));
-    localStorage.setItem('hc_token',data.token);
-    localStorage.setItem('hc_role',data.role);
-    localStorage.setItem('hc_fullName',data.fullName);
-    localStorage.setItem('hc_className',data.className||'');
-    localStorage.setItem('hc_gender',data.gender||'');
-    localStorage.setItem('hc_dob',data.dob||'');
-    localStorage.setItem('hc_mustChangePw',data.mustChangePassword?'1':'0');
-    location.href=data.role==='admin'?'/admin.html':'/chat.html';
-  }catch{msg.textContent='⚠ Lỗi kết nối server';msg.className='msg err';}
-  finally{btn.disabled=false;btn.textContent='Đăng nhập';}
-}
-</script>
+  <p>Đang chuyển sang trang đăng nhập mới...</p>
 </body>
 </html>

@@ -3,922 +3,1602 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Axon Admin</title>
+<title>Axon AI — Quản trị</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#050508;--surface:#0d0d14;--surface2:#12121e;--border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--accent:#7c5cfc;--accent2:#00e5ff;--accent-soft:rgba(124,92,252,.15);--text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;--danger:#f87171;--success:#34d399;--warning:#fbbf24}
+:root{
+  --bg:#050508;--surface:#0d0d14;--surface2:#12121e;--surface3:#181826;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --accent:#7c5cfc;--accent2:#00e5ff;--accent-soft:rgba(124,92,252,.15);
+  --text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;
+  --success:#34d399;--danger:#f87171;--warning:#fbbf24;
+}
 html,body{height:100%;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;display:flex;flex-direction:column;overflow:hidden}
-body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-feature-settings:'calt','kern','liga';
+  overflow:hidden;display:flex;flex-direction:column
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4
+}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,#7c5cfc,transparent);opacity:.05;top:-100px;right:-100px}
+.bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,#f87171,transparent);opacity:.04;bottom:-80px;left:-80px}
 
-/* HEADER */
-.header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid var(--border);background:rgba(5,5,8,.85);backdrop-filter:blur(20px);flex-shrink:0;z-index:10;gap:8px;min-height:48px}
-.logo{display:flex;align-items:center;gap:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;letter-spacing:-.02em;color:white;flex-shrink:0;min-width:0}
-.logo-icon{width:26px;height:26px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.admin-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:20px;font-size:.63rem;font-weight:700;color:#fca5a5;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0}
-.admin-badge-dot{width:5px;height:5px;background:#f87171;border-radius:50%;box-shadow:0 0 5px #f87171;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.head-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.admin-name{font-size:.75rem;color:var(--muted)}
-.settings-btn{display:flex;align-items:center;gap:5px;background:var(--accent-soft);border:1px solid rgba(124,92,252,.25);border-radius:8px;padding:5px 10px;color:#c4b5fd;font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;font-weight:600;cursor:pointer;transition:background .15s;white-space:nowrap}
-.settings-btn:hover{background:rgba(124,92,252,.22)}
-.logout-btn{padding:5px 10px;border:1px solid var(--border);border-radius:8px;background:none;color:var(--muted2);font-size:.73rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;white-space:nowrap}
-.logout-btn:hover{border-color:rgba(248,113,113,.3);color:var(--danger)}
+/* ══ HEADER ══ */
+.app-header{
+  display:flex;align-items:center;gap:12px;padding:11px 18px;
+  border-bottom:1px solid var(--border);
+  background:rgba(5,5,8,.9);backdrop-filter:blur(20px);
+  flex-shrink:0;z-index:100;position:relative
+}
+.logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1rem;letter-spacing:-.02em;color:white
+}
+.logo-icon{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;overflow:hidden
+}
+.logo-icon::after{
+  content:'';position:absolute;top:0;left:-70%;width:50%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:shimmer 4s ease-in-out infinite
+}
+@keyframes shimmer{0%{left:-70%}40%,100%{left:120%}}
 
-/* STATS BAR */
-.stats-bar{display:flex;gap:8px;padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.stats-bar::-webkit-scrollbar{display:none}
-.stat{display:flex;flex-direction:column;padding:7px 14px;background:var(--surface);border:1px solid var(--border);border-radius:10px;flex-shrink:0;min-width:80px}
-.stat-val{font-family:'Bricolage Grotesque',sans-serif;font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.stat-lbl{font-size:.62rem;color:var(--muted);margin-top:1px}
+.admin-badge{
+  padding:3px 10px;background:rgba(248,113,113,.1);
+  border:1px solid rgba(248,113,113,.25);border-radius:20px;
+  font-size:.65rem;font-weight:700;color:#fca5a5;letter-spacing:.06em;text-transform:uppercase
+}
+.spacer{flex:1}
+.header-actions{display:flex;align-items:center;gap:7px}
+.hdr-btn{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--border);border-radius:9px;
+  background:transparent;padding:7px 10px;color:var(--muted2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;font-weight:500;
+  cursor:pointer;transition:all .15s;white-space:nowrap
+}
+.hdr-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.hdr-btn.danger:hover{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.3);color:var(--danger)}
+.hdr-btn svg{flex-shrink:0}
+.fb-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:17px;height:17px;padding:0 4px;
+  background:var(--danger);color:#fff;border-radius:99px;
+  font-size:.6rem;font-weight:700;line-height:1;
+  position:absolute;top:-5px;right:-5px;pointer-events:none
+}
+.hdr-btn{position:relative}
+/* ── unread dot dùng chung ── */
+.unread-dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:var(--accent,#00e5ff);flex-shrink:0;
+  margin-right:5px;vertical-align:middle;
+  box-shadow:0 0 5px rgba(0,229,255,.5)
+}
+.fb-unread{border-left:2px solid var(--accent,#00e5ff) !important}
+.mfb-unread{border-left:2px solid #f59e0b !important}
+.post-unread-dot{
+  display:inline-block;width:8px;height:8px;border-radius:50%;
+  background:#00e5ff;flex-shrink:0;margin-right:5px;vertical-align:middle;
+  box-shadow:0 0 5px rgba(0,229,255,.45)
+}
 
-/* MOBILE PANEL TABS */
-.panel-tabs{display:none;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--surface);overflow-x:auto}
-.panel-tabs::-webkit-scrollbar{display:none}
-.panel-tab-btn{flex-shrink:0;padding:10px 16px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap}
-.panel-tab-btn.active{color:#c4b5fd;border-bottom-color:var(--accent)}
+/* ══ STATS BAR ══ */
+.stats-bar{
+  display:flex;gap:12px;padding:12px 18px;
+  border-bottom:1px solid var(--border);flex-shrink:0
+}
+.stat-card{
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:11px;padding:11px 14px;min-width:0;
+  transition:border-color .2s,transform .2s;cursor:default
+}
+.stat-card:hover{border-color:var(--border2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.25)}
+.stat-num{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1.4rem;color:white;letter-spacing:-.03em;
+  transition:color .2s
+}
+.stat-label{font-size:.67rem;color:var(--muted);margin-top:2px;font-family:'Courier New',monospace;letter-spacing:.04em;text-transform:uppercase}
+.stat-card:nth-child(1) .stat-num{color:#c4b5fd}
+.stat-card:nth-child(2) .stat-num{color:var(--accent2)}
+.stat-card:nth-child(3) .stat-num{color:var(--success)}
+.stat-card:nth-child(4) .stat-num{color:var(--warning)}
 
-/* DESKTOP 3 PANELS */
-.panels{display:flex;flex:1;overflow:hidden}
-.panel{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden;flex-shrink:0}
-.panel-head{padding:9px 13px;border-bottom:1px solid var(--border);flex-shrink:0;background:rgba(13,13,20,.5);display:flex;align-items:center;justify-content:space-between;gap:8px}
-.panel-title{font-size:.64rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.panel-count{font-size:.65rem;color:var(--accent2);font-family:'Courier New',monospace}
+/* ══ MOBILE TABS ══ */
+.mobile-tabs{
+  display:none;border-bottom:1px solid var(--border);
+  background:rgba(5,5,8,.9);backdrop-filter:blur(12px);flex-shrink:0
+}
+.mobile-tab{
+  flex:1;padding:10px 6px;border:none;border-bottom:2px solid transparent;
+  background:transparent;color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.73rem;font-weight:600;
+  cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap
+}
+.mobile-tab.active{color:#c4b5fd;border-bottom-color:var(--accent)}
+.mobile-tab:hover:not(.active){color:var(--text)}
+
+/* ══ MAIN BODY ══ */
+.main-body{flex:1;display:flex;overflow:hidden;position:relative;min-height:0}
+
+/* ══ PANELS ══ */
+.panel{
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--border);
+  background:var(--surface);overflow:hidden
+}
+.panel-classes{width:155px;flex-shrink:0}
+.panel-students{width:240px;flex-shrink:0}
+.panel-convs{width:240px;flex-shrink:0}
+.panel-msgs{flex:1;min-width:0;border-right:none}
+
+.panel-header{
+  padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between
+}
+.panel-title{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted2)}
+.panel-count{font-size:.65rem;color:var(--muted);background:rgba(255,255,255,.06);padding:2px 7px;border-radius:10px;font-family:'Courier New',monospace}
 .panel-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .panel-body::-webkit-scrollbar{width:3px}
-.panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
-.empty-hint{padding:18px;text-align:center;font-size:.77rem;color:var(--muted);line-height:1.8}
+.panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+.panel-empty{padding:20px 12px;text-align:center;font-size:.77rem;color:var(--muted);line-height:1.7}
 
-/* CLASSES */
-#panel-classes{width:155px}
-.class-item{padding:8px 13px;cursor:pointer;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.04);transition:all .12s;display:flex;align-items:center;justify-content:space-between;gap:5px;color:var(--muted2)}
-.class-item:hover{background:rgba(255,255,255,.03);color:var(--text)}
-.class-item.active{background:var(--accent-soft);color:#c4b5fd}
-.class-count{font-size:.63rem;color:var(--muted);font-family:'Courier New',monospace;background:var(--surface2);padding:1px 6px;border-radius:8px;flex-shrink:0}
-.class-item.active .class-count{background:rgba(124,92,252,.2);color:#c4b5fd}
+/* ── Class items ── */
+.cls-item{
+  display:flex;align-items:center;gap:8px;padding:9px 12px;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background .12s;border:none;background:transparent;
+  text-align:left;width:100%
+}
+.cls-item:hover:not(.active){background:rgba(255,255,255,.02)}
+.cls-item.active{background:rgba(124,92,252,.1)}
+.cls-icon{
+  width:26px;height:26px;background:rgba(124,92,252,.14);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;font-weight:800;color:#c4b5fd;
+  font-family:'Bricolage Grotesque',sans-serif;flex-shrink:0
+}
+.cls-item.active .cls-icon{background:rgba(124,92,252,.25)}
+.cls-name{font-size:.82rem;font-weight:600;color:var(--text)}
+.cls-count{font-size:.62rem;color:var(--muted);font-family:'Courier New',monospace}
 
-/* STUDENTS */
-#panel-students{width:240px}
-.search-wrap{padding:7px 9px;border-bottom:1px solid var(--border)}
-.search-input{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-size:.78rem;font-family:'Plus Jakarta Sans',sans-serif;outline:none;transition:border-color .15s}
+/* ── Student items ── */
+.search-wrap{padding:9px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.search-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  border-radius:8px;padding:6px 10px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.79rem;
+  outline:none;transition:border-color .15s
+}
 .search-input:focus{border-color:rgba(124,92,252,.4)}
 .search-input::placeholder{color:var(--muted)}
-.student-item{padding:8px 11px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);transition:all .12s;display:flex;align-items:center;gap:8px;user-select:none}
-.student-item:hover{background:rgba(255,255,255,.03)}
-.student-item.active{background:var(--accent-soft)}
-.student-item:active{background:var(--accent-soft)}
-.s-av{width:28px;height:28px;border-radius:7px;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:700;color:#c4b5fd;font-family:'Bricolage Grotesque',sans-serif;flex-shrink:0}
-.s-info{flex:1;min-width:0}
-.s-name{font-size:.78rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
-.s-meta{font-size:.63rem;color:var(--muted);margin-top:1px;font-family:'Courier New',monospace}
-.s-pw-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.s-pw-dot.default{background:var(--warning);box-shadow:0 0 5px var(--warning)}
-.s-pw-dot.changed{background:var(--success);box-shadow:0 0 5px var(--success)}
 
-/* RIGHT */
-#panel-right{flex:1;display:flex;overflow:hidden}
-#sub-convs{width:240px;min-width:240px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;flex-shrink:0}
-.conv-row{padding:9px 12px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.04);transition:all .12s}
-.conv-row:hover{background:rgba(255,255,255,.03)}
-.conv-row.active{background:var(--accent-soft)}
-.conv-row:active{background:var(--accent-soft)}
-.conv-row-title{font-size:.79rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px;color:var(--text)}
-.conv-row-meta{font-size:.63rem;color:var(--muted);font-family:'Courier New',monospace;display:flex;justify-content:space-between}
-#sub-msgs{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.msgs-head{padding:9px 14px;border-bottom:1px solid var(--border);font-size:.76rem;color:var(--muted2);font-family:'Courier New',monospace;flex-shrink:0;display:flex;align-items:center;gap:8px;background:rgba(13,13,20,.5)}
-.msgs-head b{color:var(--text);font-weight:600;font-family:'Plus Jakarta Sans',sans-serif}
-.msgs-back-btn{display:none;width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted2);cursor:pointer;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
-#msgs-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
-#msgs-body::-webkit-scrollbar{width:3px}
-#msgs-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
-.mb{padding:9px 12px;border-radius:10px;font-size:.88rem;line-height:1.75;max-width:88%;word-break:break-word;overflow-wrap:anywhere}
-.mb.user{align-self:flex-end;background:linear-gradient(135deg,rgba(124,92,252,.22),rgba(124,92,252,.12));border:1px solid rgba(124,92,252,.2);border-top-right-radius:3px}
-.mb.assistant{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-top-left-radius:3px;width:100%;max-width:100%}
-.mb.assistant p{margin:4px 0}
-.mb.assistant ul,.mb.assistant ol{padding-left:18px;margin:4px 0}
-.mb.assistant li{line-height:1.75}
-.mb.assistant li::marker{color:var(--accent2)}
-.mb-role{font-size:.62rem;font-family:'Courier New',monospace;color:var(--muted);margin-bottom:3px}
-.mb pre{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:7px;padding:9px;overflow-x:auto;margin:5px 0;font-size:.78em;font-family:'Courier New',monospace;-webkit-overflow-scrolling:touch}
-.mb code{font-family:'Courier New',monospace;font-size:.79em;color:var(--accent2);background:rgba(0,229,255,.1);padding:1px 4px;border-radius:3px}
-.placeholder{margin:auto;text-align:center;color:var(--muted);font-size:.79rem;padding:28px 16px;line-height:2}
-.placeholder strong{display:block;font-size:1.8rem;margin-bottom:6px}
+.student-item{
+  display:flex;align-items:center;gap:9px;padding:10px 12px;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background .12s;
+}
+.student-item:hover:not(.active){background:rgba(255,255,255,.02)}
+.student-item.active{background:rgba(124,92,252,.1)}
+.st-av{
+  width:28px;height:28px;background:linear-gradient(135deg,rgba(124,92,252,.4),rgba(0,229,255,.3));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:800;color:white;
+  font-family:'Bricolage Grotesque',sans-serif;flex-shrink:0
+}
+.st-info{flex:1;min-width:0}
+.st-name{font-size:.81rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-class{font-size:.62rem;color:var(--muted);font-family:'Courier New',monospace;margin-top:1px}
+/* Password status pill */
+.st-pw-pill{
+  font-size:.59rem;padding:2px 6px;border-radius:8px;
+  font-weight:700;letter-spacing:.04em;white-space:nowrap;
+  font-family:'Courier New',monospace;flex-shrink:0
+}
+.st-pw-pill.changed{background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.2);color:var(--success)}
+.st-pw-pill.unchanged{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.2);color:var(--warning)}
+/* Mobile more-button */
+.st-more-btn{
+  flex-shrink:0;background:none;border:none;cursor:pointer;
+  width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;font-size:1rem;color:var(--muted);
+  transition:background .12s,color .12s;
+}
+.st-more-btn:hover{background:rgba(255,255,255,.07);color:var(--text)}
+/* Hide on desktop, show on touch/mobile */
+@media(pointer:fine){.st-more-btn{opacity:0}}
+@media(pointer:fine) .student-item:hover .st-more-btn{opacity:1}
+@media(pointer:coarse){.st-more-btn{opacity:1}}
 
-/* Mobile panel footer (logout) */
-.mobile-panel-footer{display:none;padding:10px 12px 12px;flex-shrink:0;border-top:1px solid var(--border)}
-.mobile-logout-full{width:100%;padding:10px;border:1px solid rgba(248,113,113,.25);border-radius:10px;background:rgba(248,113,113,.06);color:#fca5a5;font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s}
-.mobile-logout-full:hover{background:rgba(248,113,113,.12)}
+/* ── Conversation items ── */
+.conv-item{
+  padding:10px 12px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background .12s
+}
+.conv-item:hover:not(.active){background:rgba(255,255,255,.02)}
+.conv-item.active{background:rgba(124,92,252,.1)}
+.conv-item-title{font-size:.8rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.conv-item-meta{font-size:.63rem;color:var(--muted);font-family:'Courier New',monospace}
 
-/* CTX MENU */
-#ctx-menu{position:fixed;z-index:300;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:5px;min-width:190px;box-shadow:0 20px 50px rgba(0,0,0,.5);display:none}
-#ctx-menu.show{display:block}
-.ctx-item{padding:9px 13px;border-radius:7px;font-size:.81rem;cursor:pointer;display:flex;align-items:center;gap:8px;transition:background .1s;color:var(--muted2)}
-.ctx-item:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.msgs-back-btn{display:none;align-items:center;gap:5px;background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer;padding:3px 6px;border-radius:6px;transition:color .12s,background .12s;flex-shrink:0}
+.msgs-back-btn:hover{color:var(--text);background:rgba(255,255,255,.06)}
+@media(max-width:768px){.msgs-back-btn{display:flex}}
+
+/* ══ PANEL RESIZER ══ */
+.resizer{
+  width:5px;flex-shrink:0;cursor:col-resize;
+  background:transparent;
+  position:relative;z-index:10;
+  transition:background .15s;
+  border-right:1px solid var(--border);
+}
+.resizer::after{
+  content:'';position:absolute;inset:-3px 0;
+  /* wider hit area */
+}
+.resizer:hover,.resizer.dragging{
+  background:rgba(124,92,252,.35);
+  border-right-color:var(--accent);
+}
+@media(max-width:768px){.resizer{display:none}}
+
+/* ── Messages panel ── */
+.msgs-header{
+  padding:11px 16px;border-bottom:1px solid var(--border);flex-shrink:0;
+  display:flex;align-items:center;gap:9px
+}
+.msgs-header-title{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:700;
+  font-size:.9rem;color:white;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap
+}
+.msgs-area{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+.msgs-area::-webkit-scrollbar{width:4px}
+.msgs-area::-webkit-scrollbar-thumb{background:rgba(255,255,255,.07);border-radius:2px}
+.msgs-placeholder{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:100%;color:var(--muted);text-align:center;padding:30px
+}
+.msgs-placeholder-icon{font-size:2rem;margin-bottom:12px;opacity:.5}
+.msgs-placeholder p{font-size:.84rem;line-height:1.8}
+
+/* Message bubbles */
+.msg-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:14px;animation:fadeUp .25s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-row.user{flex-direction:row-reverse}
+.msg-av{
+  width:24px;height:24px;min-width:24px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;font-weight:700;flex-shrink:0;margin-top:2px
+}
+.av-ai{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.av-user{background:linear-gradient(135deg,rgba(124,92,252,.5),rgba(0,229,255,.3));color:white;font-family:'Bricolage Grotesque',sans-serif}
+.msg-bub{
+  max-width:78%;padding:8px 12px;border-radius:11px;
+  font-size:.83rem;line-height:1.75;word-break:break-word;overflow-wrap:anywhere
+}
+.bub-ai{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-top-left-radius:3px}
+.bub-user{
+  background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.2);
+  color:var(--text);border-top-right-radius:3px
+}
+.bub-ai strong{color:white;font-weight:600}
+.bub-ai code{
+  background:rgba(0,229,255,.1);border:1px solid rgba(0,229,255,.15);
+  border-radius:4px;padding:1px 4px;font-family:'Courier New',monospace;font-size:.79em;color:var(--accent2)
+}
+.bub-ai ul,.bub-ai ol{padding-left:16px;margin:4px 0}
+.bub-ai li{margin:2px 0}
+.bub-ai p{margin:3px 0}
+.bub-ai h1,.bub-ai h2,.bub-ai h3{font-family:'Bricolage Grotesque',sans-serif;color:white;margin:8px 0 3px;letter-spacing:-.02em}
+.bub-ai h1{font-size:1.05em}.bub-ai h2{font-size:.97em}.bub-ai h3{font-size:.91em}
+/* Code block with copy */
+.code-block{position:relative;margin:6px 0}
+.code-block pre{
+  background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;
+  padding:12px 12px 12px 12px;overflow-x:auto;
+  font-family:'Courier New',monospace;font-size:.78em;line-height:1.55;
+  color:#c4b5fd;white-space:pre;-webkit-overflow-scrolling:touch
+}
+.code-block pre code{background:none;padding:0;border:none}
+.copy-btn{
+  position:absolute;top:6px;right:7px;
+  padding:2px 7px;border-radius:5px;border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);color:var(--muted2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.62rem;font-weight:600;
+  cursor:pointer;transition:all .15s;z-index:1
+}
+.copy-btn:hover{background:rgba(0,229,255,.12);border-color:rgba(0,229,255,.25);color:var(--accent2)}
+.copy-btn.copied{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.25);color:var(--success)}
+
+/* Typing indicator */
+.typing-indicator{display:inline-flex;gap:4px;align-items:center;padding:3px 2px}
+.typing-dot{width:5px;height:5px;background:var(--muted);border-radius:50%;animation:typingB 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingB{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-4px);opacity:1}}
+.stream-cursor{display:inline-block;color:var(--accent2);animation:cur .7s step-end infinite}
+@keyframes cur{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ══ SKELETON LOADING ══ */
+@keyframes sk-shine{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.sk{
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.09) 50%,rgba(255,255,255,.04) 75%);
+  background-size:200% 100%;
+  animation:sk-shine 1.4s ease infinite;
+  border-radius:6px;
+}
+.sk-cls-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.sk-cls-icon{width:28px;height:28px;border-radius:8px;flex-shrink:0}
+.sk-cls-text{flex:1;display:flex;flex-direction:column;gap:4px}
+.sk-cls-name{height:11px;width:48px;border-radius:4px}
+.sk-cls-sub{height:9px;width:34px;border-radius:4px}
+.sk-st-item{display:flex;align-items:center;gap:9px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.sk-st-av{width:28px;height:28px;border-radius:8px;flex-shrink:0}
+.sk-st-info{flex:1;display:flex;flex-direction:column;gap:4px}
+.sk-st-name{height:11px;width:110px;border-radius:4px}
+.sk-st-cccd{height:9px;width:72px;border-radius:4px}
+.sk-st-pill{width:44px;height:18px;border-radius:8px;flex-shrink:0}
+
+/* ══ CONTEXT MENU ══ */
+.ctx-menu{
+  position:fixed;background:var(--surface);border:1px solid var(--border2);
+  border-radius:11px;padding:5px;z-index:600;min-width:170px;
+  box-shadow:0 16px 40px rgba(0,0,0,.55);
+  animation:ctxIn .15s ease both
+}
+@keyframes ctxIn{from{opacity:0;transform:scale(.94) translateY(-4px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.ctx-item{
+  display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:7px;
+  cursor:pointer;font-size:.8rem;color:var(--text);transition:background .1s;
+  border:none;background:transparent;width:100%;text-align:left;
+}
+.ctx-item:hover{background:rgba(255,255,255,.05)}
 .ctx-item.danger:hover{background:rgba(248,113,113,.08);color:var(--danger)}
-.ctx-sep{height:1px;background:var(--border);margin:3px 5px}
+.ctx-sep{height:1px;background:var(--border);margin:4px 5px}
 
-/* MODALS */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);z-index:400;display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s}
+/* ══ MODALS ══ */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  z-index:500;display:flex;align-items:center;justify-content:center;
+  padding:16px;opacity:0;pointer-events:none;transition:opacity .25s
+}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:18px;width:100%;max-width:450px;max-height:90vh;display:flex;flex-direction:column;transform:translateY(14px) scale(.97);transition:transform .25s;overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)}
+.modal{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;width:100%;max-width:460px;max-height:90vh;
+  display:flex;flex-direction:column;
+  transform:translateY(16px) scale(.97);transition:transform .25s;
+  overflow:hidden;box-shadow:0 40px 80px rgba(0,0,0,.6)
+}
 .modal-overlay.open .modal{transform:translateY(0) scale(1)}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:15px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
-.modal-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1rem;color:white;letter-spacing:-.02em}
-.modal-close{width:28px;height:28px;border:1px solid var(--border);border-radius:7px;background:transparent;color:var(--muted2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s}
-.modal-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
-.modal-tabs{display:flex;gap:2px;padding:9px 20px 0;border-bottom:1px solid var(--border);flex-shrink:0}
-.tab-btn{padding:7px 12px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:.79rem;font-weight:600;cursor:pointer;transition:color .2s,border-color .2s;white-space:nowrap;margin-bottom:-1px}
-.tab-btn.active{color:#c4b5fd;border-bottom-color:var(--accent)}
-.tab-btn:hover:not(.active){color:var(--text)}
-.modal-body{flex:1;overflow-y:auto;padding:18px 20px;-webkit-overflow-scrolling:touch}
+.modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:15px 20px 12px;border-bottom:1px solid var(--border);flex-shrink:0
+}
+.modal-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.97rem;color:white;letter-spacing:-.02em}
+.modal-close{
+  width:28px;height:28px;border:1px solid var(--border);border-radius:7px;
+  background:transparent;color:var(--muted2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .15s
+}
+.modal-close:hover{background:rgba(255,255,255,.05);color:var(--text)}
+.modal-body{flex:1;overflow-y:auto;padding:16px 20px;-webkit-overflow-scrolling:touch}
 .modal-body::-webkit-scrollbar{width:4px}
 .modal-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
-.tab-panel{display:none;flex-direction:column;gap:14px}.tab-panel.active{display:flex}
-.detail-av{width:50px;height:50px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:800;color:white;font-family:'Bricolage Grotesque',sans-serif;margin:0 auto 14px;box-shadow:0 0 28px rgba(124,92,252,.3)}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.info-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:9px}
+
+/* Modal tabs */
+.modal-tabs{display:flex;border-bottom:1px solid var(--border);margin:-16px -20px 16px;padding:0 20px}
+.modal-tab{
+  padding:10px 14px;border:none;border-bottom:2px solid transparent;
+  background:transparent;color:var(--muted);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;font-weight:600;
+  cursor:pointer;transition:color .2s,border-color .2s;margin-bottom:-1px
+}
+.modal-tab.active{color:#c4b5fd;border-bottom-color:var(--accent)}
+.modal-tab:hover:not(.active){color:var(--text)}
+.tab-panel{display:none}.tab-panel.active{display:block}
+#az-panel-ai.active{display:flex;flex-direction:column;flex:1;overflow:hidden;min-height:0}
+#az-panel-hist.active{display:block;flex:1;overflow-y:auto;padding:14px 18px}
+
+/* Forms */
+.form-group{margin-bottom:12px}
+.form-label{font-size:.7rem;font-weight:700;color:var(--muted2);margin-bottom:5px;display:block;letter-spacing:.04em;text-transform:uppercase}
+.form-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:9px;padding:9px 12px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;outline:none;
+  transition:border-color .2s,box-shadow .2s
+}
+.form-input:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 3px rgba(124,92,252,.08)}
+.form-input::placeholder{color:var(--muted)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.form-info{
+  background:var(--surface2);border:1px solid var(--border);border-radius:9px;
+  padding:9px 12px;font-size:.84rem;color:var(--text)
+}
+
+/* Info grid */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.info-item{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:8px 11px}
 .info-item.full{grid-column:1/-1}
-.info-lbl{font-size:.61rem;color:var(--muted);font-family:'Courier New',monospace;margin-bottom:3px;letter-spacing:.04em;text-transform:uppercase}
-.info-val{font-size:.83rem;font-weight:600;color:white;word-break:break-all}
-.pw-row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.pw-val{font-family:'Courier New',monospace;font-size:.83rem;font-weight:600;color:white}
-.pw-tag{font-size:.61rem;padding:2px 8px;border-radius:8px;font-family:'Courier New',monospace;flex-shrink:0}
-.pw-tag.default{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:var(--warning)}
-.pw-tag.changed{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--success)}
-.reset-btn{width:100%;padding:10px;border-radius:10px;border:1px solid rgba(248,113,113,.3);background:rgba(248,113,113,.07);color:#fca5a5;font-size:.81rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .15s;font-weight:600}
-.reset-btn:hover:not(:disabled){background:rgba(248,113,113,.14)}
-.reset-btn:disabled{opacity:.4;cursor:not-allowed}
-.reset-msg{font-size:.75rem;padding:8px 11px;border-radius:8px;text-align:center;display:none}
-.reset-msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:var(--success);display:block}
-.reset-msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:block}
-.divider{height:1px;background:var(--border)}
-.s-input{background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-.s-input:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 3px rgba(124,92,252,.08)}
-.s-input::placeholder{color:var(--muted)}
-.field-group{display:flex;flex-direction:column;gap:6px}
-.field-group label{font-size:.77rem;font-weight:600;color:var(--muted2)}
-.btn-save{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,var(--accent),#9c7dff);border:none;border-radius:10px;padding:10px 16px;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;transition:opacity .15s}
-.btn-save:hover{opacity:.9}
-.a-msg{font-size:.77rem;padding:8px 11px;border-radius:8px;margin-top:2px;display:none}
-.a-msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.2);color:var(--success);display:block}
-.a-msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:block}
+.info-lbl{font-size:.6rem;color:var(--muted);font-family:'Courier New',monospace;margin-bottom:2px;letter-spacing:.04em;text-transform:uppercase}
+.info-val{font-size:.82rem;font-weight:600;color:white;word-break:break-all}
 
-/* ── AI ANALYZE MODAL ── */
-#analyze-overlay .modal{max-width:820px;height:88vh;max-height:88vh}
-/* Tab bar */
-.analyze-tabs{display:flex;gap:2px;padding:8px 16px 0;border-bottom:1px solid var(--border);flex-shrink:0}
-.analyze-tab{padding:7px 16px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:color .2s,border-color .2s;margin-bottom:-1px}
-.analyze-tab.active{color:#c4b5fd;border-bottom-color:var(--accent)}
-.analyze-tab:hover:not(.active){color:var(--text)}
-/* Tab panels */
-.analyze-panel{display:none;flex:1;overflow:hidden;flex-direction:column;min-height:0}
-.analyze-panel.active{display:flex}
-/* History tab */
-.analyze-hist-body{flex:1;overflow-y:auto;padding:14px}
-.analyze-hist-body::-webkit-scrollbar{width:3px}
-.analyze-hist-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08)}
-.ctx-conv-block{margin-bottom:12px;border:1px solid var(--border);border-radius:12px;overflow:hidden}
-.ctx-conv-title{padding:8px 12px;font-size:.78rem;font-weight:700;color:#c4b5fd;border-bottom:1px solid var(--border);background:rgba(124,92,252,.08);display:flex;align-items:center;gap:6px}
-.ctx-conv-num{font-size:.65rem;background:rgba(124,92,252,.2);color:#c4b5fd;padding:1px 7px;border-radius:8px;font-family:'Courier New',monospace}
-.ctx-conv-sum{padding:10px 12px;font-size:.82rem;line-height:1.75;color:var(--muted2)}
-/* AI chat tab */
-.analyze-chat{flex:1;display:flex;flex-direction:column;overflow:hidden;min-height:0}
-#analyze-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-#analyze-msgs::-webkit-scrollbar{width:3px}
-#analyze-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08)}
-.analyze-input-row{display:flex;gap:8px;padding:10px 16px;border-top:1px solid var(--border);flex-shrink:0;background:rgba(13,13,20,.5)}
-#analyze-input{flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;padding:9px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.85rem;outline:none;resize:none;min-height:40px;max-height:110px;transition:border-color .2s;line-height:1.55}
-#analyze-input:focus{border-color:rgba(124,92,252,.4)}
-#analyze-input::placeholder{color:var(--muted)}
-#analyze-send{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),#9c7dff);border:none;border-radius:10px;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s;align-self:flex-end}
-#analyze-send:hover{opacity:.85}
-#analyze-send:disabled{opacity:.35;cursor:not-allowed}
-/* Bubbles */
-.a-bubble{padding:12px 15px;border-radius:12px;font-size:.88rem;line-height:1.8;max-width:90%;word-break:break-word}
-.a-bubble.user{align-self:flex-end;background:linear-gradient(135deg,rgba(124,92,252,.22),rgba(124,92,252,.12));border:1px solid rgba(124,92,252,.2);border-top-right-radius:3px}
-.a-bubble.ai{align-self:flex-start;background:var(--surface);border:1px solid var(--border);border-top-left-radius:3px;width:100%;max-width:100%}
-.a-bubble.ai .ai-label{font-size:.62rem;font-family:'Courier New',monospace;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;gap:5px}
-.ai-label-dot{width:5px;height:5px;background:var(--accent2);border-radius:50%;box-shadow:0 0 6px var(--accent2)}
-/* AI content typography */
-.ai-content{font-size:.9rem;line-height:1.85;color:var(--text)}
-.ai-content h3{font-size:1rem;font-weight:700;color:white;margin:16px 0 6px;font-family:'Bricolage Grotesque',sans-serif;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,.07)}
-.ai-content h3:first-child{margin-top:0}
-.ai-content p{margin:6px 0}
-.ai-content ul,.ai-content ol{padding-left:18px;margin:6px 0;display:flex;flex-direction:column;gap:4px}
-.ai-content li{line-height:1.8;padding-left:2px}
-.ai-content li::marker{color:var(--accent2)}
-.ai-content strong{color:#e2d9ff;font-weight:600}
-.ai-content em{color:var(--muted2)}
-.ai-content code{font-family:'Courier New',monospace;font-size:.82em;color:var(--accent2);background:rgba(0,229,255,.1);padding:2px 5px;border-radius:4px}
-.ai-content pre{background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:8px;padding:10px;overflow-x:auto;margin:8px 0;font-size:.8em;font-family:'Courier New',monospace}
-/* Typing dots */
-.typing-dots{display:inline-flex;gap:4px;align-items:center;height:18px}
-.typing-dots span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:dotbounce 1.2s infinite}
-.typing-dots span:nth-child(2){animation-delay:.2s}
-.typing-dots span:nth-child(3){animation-delay:.4s}
-@keyframes dotbounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
-.analyze-init{text-align:center;color:var(--muted);font-size:.82rem;padding:24px;line-height:2.2;margin:auto}
-.analyze-init strong{display:block;font-size:1.8rem;margin-bottom:8px}
-@media(max-width:640px){
-  #analyze-overlay .modal{height:96vh}
-  .a-bubble.ai{max-width:100%}
-  .analyze-input-row{padding:8px 12px}
-  #analyze-input{font-size:.84rem}
+/* Buttons */
+.btn{
+  padding:9px 16px;border-radius:9px;border:none;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.82rem;font-weight:700;
+  transition:all .15s;display:inline-flex;align-items:center;gap:7px;white-space:nowrap
+}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#9c7dff);color:white}
+.btn-primary:hover:not(:disabled){opacity:.9}
+.btn-danger{background:rgba(248,113,113,.15);border:1px solid rgba(248,113,113,.3);color:var(--danger)}
+.btn-danger:hover:not(:disabled){background:rgba(248,113,113,.25)}
+.btn-ghost{background:var(--surface2);border:1px solid var(--border2);color:var(--text)}
+.btn-ghost:hover:not(:disabled){background:var(--surface3)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-full{width:100%;justify-content:center}
+.msg-box{font-size:.78rem;padding:9px 12px;border-radius:8px;margin-top:8px;display:none}
+.msg-box.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:block}
+.msg-box.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--success);display:block}
+
+/* ── Analyze modal ── */
+.analyze-modal .modal{max-width:680px;height:80vh}
+.analyze-area{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
+.analyze-area::-webkit-scrollbar{width:3px}
+.analyze-area::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.analyze-input-wrap{
+  padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;
+  display:flex;gap:8px;align-items:flex-end
+}
+.analyze-ta{
+  flex:1;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:9px 12px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;
+  outline:none;resize:none;max-height:100px;transition:border-color .2s
+}
+.analyze-ta:focus{border-color:rgba(124,92,252,.4)}
+.analyze-ta::placeholder{color:var(--muted)}
+.analyze-send-btn{
+  width:33px;height:33px;background:var(--accent);border:none;
+  border-radius:8px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:white;flex-shrink:0;transition:opacity .2s
+}
+.analyze-send-btn:hover:not(:disabled){opacity:.85}
+.analyze-send-btn:disabled{background:rgba(124,92,252,.3);cursor:not-allowed}
+
+/* History cards */
+.hist-list{display:flex;flex-direction:column;gap:8px}
+.hist-card{
+  background:var(--surface2);border:1px solid var(--border);border-radius:11px;
+  overflow:hidden;animation:fadeUp .2s ease both
+}
+.hist-card-hd{
+  padding:8px 12px;background:rgba(0,0,0,.2);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between
+}
+.hist-card-title{font-size:.76rem;font-weight:600;color:#c4b5fd}
+.hist-card-time{font-size:.62rem;color:var(--muted);font-family:'Courier New',monospace}
+.hist-card-body{padding:10px 12px;font-size:.79rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+
+/* ── Feedback panel ── */
+.fb-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;justify-content:flex-end
+}
+.fb-panel-overlay.open{display:flex}
+.fb-panel{
+  width:380px;max-width:100%;background:var(--surface);
+  border-left:1px solid var(--border2);display:flex;flex-direction:column;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
+}
+.fb-panel-overlay.open .fb-panel{transform:translateX(0)}
+.fb-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0
+}
+.fb-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white}
+.fb-panel-body{flex:1;overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch}
+.fb-panel-body::-webkit-scrollbar{width:3px}
+.fb-panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.fb-item{background:var(--surface2);border:1px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;animation:fadeUp .2s ease both}
+.fb-item-body{padding:10px 13px}
+.fb-item-meta{font-size:.61rem;color:var(--muted);margin-bottom:5px;font-family:'Courier New',monospace}
+.fb-item-text{font-size:.81rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.fb-item-reply{margin:0 11px 10px;background:rgba(124,92,252,.08);border:1px solid rgba(124,92,252,.2);border-radius:8px;padding:8px 11px}
+.fb-item-reply-lbl{font-size:.59rem;font-weight:700;letter-spacing:.07em;color:#c4b5fd;text-transform:uppercase;margin-bottom:4px}
+.fb-item-reply-txt{font-size:.78rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.fb-item-foot{padding:7px 12px;border-top:1px solid var(--border);display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.1)}
+.fb-foot-time{font-size:.61rem;color:var(--muted);font-family:'Courier New',monospace;flex:1}
+.fb-foot-btn{
+  padding:3px 9px;border-radius:7px;border:1px solid var(--border2);
+  background:transparent;color:var(--muted2);font-size:.67rem;font-weight:600;
+  cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .14s
+}
+.fb-foot-btn:hover{background:rgba(124,92,252,.1);border-color:rgba(124,92,252,.3);color:#c4b5fd}
+.fb-foot-btn.del:hover{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.25);color:var(--danger)}
+.fb-panel-footer{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:8px}
+
+/* ── Appeals panel ── */
+.ap-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;justify-content:flex-end
+}
+.ap-panel-overlay.open{display:flex}
+.ap-panel{
+  width:480px;max-width:100%;background:var(--surface);
+  border-left:1px solid var(--border2);display:flex;flex-direction:column;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
+}
+.ap-panel-overlay.open .ap-panel{transform:translateX(0)}
+.ap-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0
+}
+.ap-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white;flex:1}
+.ap-panel-body{flex:1;overflow-y:auto;padding:14px;-webkit-overflow-scrolling:touch}
+.ap-panel-body::-webkit-scrollbar{width:3px}
+.ap-panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.ap-item{background:var(--surface2);border:1px solid var(--border);border-radius:12px;margin-bottom:12px;overflow:hidden}
+.ap-item-type{font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 12px;background:rgba(124,92,252,.07);color:#c4b5fd;border-bottom:1px solid var(--border)}
+.ap-item-body{padding:11px 13px;display:flex;flex-direction:column;gap:7px}
+.ap-item-title{font-size:.87rem;font-weight:700;color:var(--text);line-height:1.3}
+.ap-item-content{font-size:.78rem;color:var(--muted2);line-height:1.55;white-space:pre-wrap;word-break:break-word;
+  background:rgba(0,0,0,.2);border:1px solid var(--border);border-radius:7px;padding:8px 10px;max-height:100px;overflow-y:auto}
+.ap-item-del-reason{font-size:.72rem;color:var(--warning);background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.15);border-radius:7px;padding:6px 9px;line-height:1.5}
+.ap-item-appeal-msg{font-size:.78rem;color:var(--text);background:rgba(124,92,252,.06);border:1px solid rgba(124,92,252,.18);border-radius:7px;padding:8px 10px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.ap-item-meta{font-size:.62rem;color:var(--muted);font-family:'Courier New',monospace}
+.ap-note-ta{
+  width:100%;background:var(--surface3);border:1px solid var(--border2);
+  border-radius:7px;padding:7px 9px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.78rem;
+  outline:none;resize:none;min-height:48px;max-height:96px;transition:border-color .18s
+}
+.ap-note-ta:focus{border-color:rgba(124,92,252,.4)}
+.ap-note-ta::placeholder{color:var(--muted)}
+.ap-item-foot{padding:9px 12px;border-top:1px solid var(--border);display:flex;align-items:flex-end;gap:7px;flex-wrap:wrap}
+.ap-badge{
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:17px;height:17px;padding:0 4px;
+  background:var(--warning);border-radius:8px;
+  font-size:.58rem;font-weight:700;color:#000;
+  position:absolute;top:-4px;right:-4px
 }
 
-/* Tablet (≤1024px) */
-@media (max-width: 1024px) and (min-width: 821px) {
-  #panel-classes{width:130px}
-  #panel-students{width:200px}
-  #sub-convs{width:200px}
-  .admin-name{display:none}
-  .stat{min-width:70px;padding:6px 11px}
-  .stat-val{font-size:1.1rem}
+/* ── Reply modal ── */
+.reply-ta{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:10px 13px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.84rem;
+  outline:none;resize:vertical;min-height:100px;max-height:200px;
+  transition:border-color .2s
 }
+.reply-ta:focus{border-color:rgba(124,92,252,.45);box-shadow:0 0 0 3px rgba(124,92,252,.08)}
+.reply-ta::placeholder{color:var(--muted)}
 
-/* Mobile + iPad portrait (≤820px) — stacked panel layout */
-@media (max-width: 820px) {
-  /* Full height fix for iOS Safari */
-  html,body{height:100%;height:-webkit-fill-available}
-
-  /* Header — single compact row, no wrap */
-  .header{padding:8px 14px;gap:6px;flex-wrap:nowrap}
-  .logo{font-size:.88rem;gap:6px}
-  .logo-icon{width:24px;height:24px}
-  .admin-badge{padding:2px 7px;font-size:.6rem}
-  .settings-btn span{display:none}
-  .settings-btn{padding:5px 9px;font-size:.73rem}
-  .logout-btn{display:none}
-  .admin-name{display:none}
-  .head-right{gap:6px}
-
-  /* Stats bar */
-  .stats-bar{padding:6px 12px;gap:6px}
-  .stat{min-width:68px;padding:5px 11px}
-  .stat-val{font-size:1.05rem}
-  .stat-lbl{font-size:.6rem}
-
-  /* Panel tabs show */
-  .panel-tabs{display:flex}
-
-  /* Stacked panels — panels container fills remaining height */
-  .panels{position:relative;min-height:0}
-
-  /* Each panel: absolute, full size, slide in/out */
-  .panel{position:absolute;inset:0;width:100% !important;border-right:none;z-index:1;transition:transform .28s cubic-bezier(.4,0,.2,1)}
-  .panel.hidden{transform:translateX(-100%);pointer-events:none}
-
-  /* panel-classes gets a logout footer */
-  #panel-classes{display:flex;flex-direction:column}
-  #panel-classes .panel-body{flex:1;overflow-y:auto}
-  .mobile-panel-footer{display:block}
-
-  /* panel-right: full size absolute, flex column */
-  #panel-right{position:absolute;inset:0;width:100% !important;flex-direction:column;z-index:1;transition:transform .28s cubic-bezier(.4,0,.2,1)}
-  #panel-right.hidden{transform:translateX(-100%);pointer-events:none}
-
-  /* Convs mode: sub-convs fills space, sub-msgs hidden */
-  #panel-right.mobile-convs #sub-convs{display:flex;flex:1;max-height:none;border-bottom:none}
-  #panel-right.mobile-convs #sub-msgs{display:none}
-
-  /* Msgs mode: sub-msgs fills space, sub-convs hidden */
-  #panel-right.mobile-msgs #sub-convs{display:none}
-  #panel-right.mobile-msgs #sub-msgs{display:flex;flex:1}
-
-  /* sub-convs/sub-msgs base resets */
-  #sub-convs{width:100% !important;min-width:0 !important;border-right:none}
-  #sub-msgs{flex:1;min-height:0}
-  .msgs-back-btn{display:flex}
-
-  /* Message bubbles */
-  .mb{max-width:92%;font-size:.85rem}
-  #msgs-body{padding:12px}
-
-  /* Context menu */
-  #ctx-menu{min-width:178px}
-
-  /* Modals → bottom sheet */
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .panel-classes{width:130px}
+  .panel-students{width:200px}
+  .panel-convs{width:200px}
+}
+@media(max-width:768px){
+  .stats-bar{gap:7px;padding:10px 12px}
+  .stat-num{font-size:1.2rem}
+  .stat-label{font-size:.6rem}
+  .mobile-tabs{display:flex}
+  .panel{position:absolute;top:0;left:0;right:0;bottom:0;width:100%!important;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)}
+  .panel.active{transform:translateX(0)}
+  .hdr-btn span{display:none}
+  .hdr-btn{padding:7px}
+  .app-header{padding:10px 13px;gap:8px}
+  .fb-panel{width:100%}
   .modal-overlay{align-items:flex-end;padding:0}
-  .modal{border-radius:20px 20px 0 0;max-height:93vh;border-left:none;border-right:none;border-bottom:none;max-width:100%}
-  .modal-body{padding:16px 16px}
-
-  /* Analyze modal */
-  #analyze-overlay .modal{max-width:100%;border-radius:20px 20px 0 0;height:96vh;max-height:96vh}
-  .analyze-tabs{padding:6px 12px 0;gap:1px;overflow-x:auto}
-  .analyze-tab{padding:7px 12px;font-size:.76rem;white-space:nowrap}
-
-  /* KaTeX overflow */
-  .katex-display{overflow-x:auto;overflow-y:hidden}
-  .katex{font-size:.95em}
+  .modal{border-radius:22px 22px 0 0;max-height:93vh;border-left:none;border-right:none;border-bottom:none;max-width:100%}
+  .modal-body{padding:14px 16px}
+  .analyze-modal .modal{height:90vh}
 }
-
-/* Small phones (≤420px) */
-@media (max-width: 420px) {
-  .header{padding:7px 10px}
-  .logo-icon{width:22px;height:22px}
-  .logo{font-size:.8rem}
-  .admin-badge{display:none}
-  .stat-val{font-size:.95rem}
-  .stat-lbl{font-size:.56rem}
-  .mb{max-width:98%;font-size:.82rem}
-  .panel-tab-btn{padding:9px 10px;font-size:.72rem}
-  .conv-row-title{font-size:.76rem}
-  .mb-role{font-size:.58rem}
+@media(max-width:480px){
+  .stats-bar{grid-template-columns:1fr 1fr;display:grid}
+  .stat-card{padding:9px 11px}
+  .stat-num{font-size:1.1rem}
+  .stat-label{font-size:.58rem}
 }
+/* ══ TOAST ══ */
+.toast-container{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{padding:10px 16px;border-radius:10px;font-size:.83rem;color:var(--text);background:var(--surface);border:1px solid var(--border2);box-shadow:0 4px 20px rgba(0,0,0,.5);opacity:0;transform:translateY(8px);transition:opacity .2s,transform .2s;pointer-events:none;max-width:300px;display:flex;align-items:center;gap:8px}
+.toast-icon{font-size:.9rem;flex-shrink:0}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.success{border-color:rgba(52,211,153,.35)}
+.toast.error{border-color:rgba(248,113,113,.35)}
+.toast.warning{border-color:rgba(251,191,36,.35)}
+/* ══ CONFIRM MODAL ══ */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);z-index:1900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s}
+.confirm-overlay.open{opacity:1;pointer-events:all}
+.confirm-box{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:22px 24px;max-width:320px;width:90%;box-shadow:0 8px 40px rgba(0,0,0,.6)}
+.confirm-text{font-size:.88rem;color:var(--text);margin-bottom:18px;line-height:1.5}
+.confirm-btns{display:flex;gap:8px;justify-content:flex-end}
+.confirm-ok{background:var(--danger);border:none;color:#fff;padding:7px 18px;border-radius:8px;cursor:pointer;font-size:.82rem;font-weight:600;transition:opacity .12s}
+.confirm-ok.primary{background:var(--accent)}
+.confirm-ok:hover{opacity:.85}
+.confirm-cancel{background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--muted);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:.82rem;transition:background .12s}
+.confirm-cancel:hover{background:rgba(255,255,255,.1)}
 </style>
 </head>
 <body>
+<div class="bg-orbs"><div class="bg-orb bg-orb-1"></div><div class="bg-orb bg-orb-2"></div></div>
 
-<div class="header">
+<!-- ═══ HEADER ═══ -->
+<div class="app-header">
   <div class="logo">
-    <div class="logo-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+    <div class="logo-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
     Axon Admin
-    <span class="admin-badge"><span class="admin-badge-dot"></span>ADMIN</span>
   </div>
-  <div class="head-right">
-    <span class="admin-name" id="admin-name"></span>
-    <button class="settings-btn" onclick="openAdminSettings()">⚙️ <span>Cài đặt</span></button>
-    <button class="logout-btn" onclick="logout()">Đăng xuất</button>
+  <span class="admin-badge">Quản trị</span>
+  <div class="spacer"></div>
+  <div class="header-actions">
+    <button class="hdr-btn" onclick="location.href='/forum'">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      <span>Diễn đàn</span>
+    </button>
+    <button class="hdr-btn" onclick="openAppealsPanel()" style="position:relative">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Phê duyệt</span>
+      <span class="ap-badge" id="ap-badge" style="display:none"></span>
+    </button>
+    <button class="hdr-btn" onclick="openFeedbackPanel()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      <span>Phản hồi</span>
+      <span class="fb-badge" id="fb-badge" style="display:none"></span>
+    </button>
+    <button class="hdr-btn" onclick="openAdminSettings()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>Cài đặt</span>
+    </button>
+    <button class="hdr-btn danger" onclick="logout()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <span>Đăng xuất</span>
+    </button>
   </div>
 </div>
 
+<!-- ═══ STATS BAR ═══ -->
 <div class="stats-bar">
-  <div class="stat"><span class="stat-val" id="st-classes">—</span><span class="stat-lbl">Lớp</span></div>
-  <div class="stat"><span class="stat-val" id="st-students">—</span><span class="stat-lbl">Học sinh</span></div>
-  <div class="stat"><span class="stat-val" id="st-convs">—</span><span class="stat-lbl">Hội thoại</span></div>
-  <div class="stat"><span class="stat-val" id="st-msgs">—</span><span class="stat-lbl">Tin nhắn</span></div>
+  <div class="stat-card"><div class="stat-num" id="st-classes">0</div><div class="stat-label">Lớp học</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-students">0</div><div class="stat-label">Học sinh</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-convs">0</div><div class="stat-label">Hội thoại</div></div>
+  <div class="stat-card"><div class="stat-num" id="st-msgs">0</div><div class="stat-label">Tin nhắn</div></div>
 </div>
 
-<!-- Mobile panel tabs -->
-<div class="panel-tabs" id="panel-tabs">
-  <button class="panel-tab-btn active" onclick="showMobilePanel('classes')">📚 Lớp</button>
-  <button class="panel-tab-btn" onclick="showMobilePanel('students')">👤 Học sinh</button>
-  <button class="panel-tab-btn" onclick="showMobilePanel('convs')">💬 Hội thoại</button>
-  <button class="panel-tab-btn" onclick="showMobilePanel('msgs')">📝 Tin nhắn</button>
+<!-- ═══ MOBILE TABS ═══ -->
+<div class="mobile-tabs" id="mobile-tabs">
+  <button class="mobile-tab active" onclick="showMobilePanel('classes')">Lớp</button>
+  <button class="mobile-tab" onclick="showMobilePanel('students')">Học sinh</button>
+  <button class="mobile-tab" onclick="showMobilePanel('convs')">Hội thoại</button>
+  <button class="mobile-tab" onclick="showMobilePanel('msgs')">Tin nhắn</button>
 </div>
 
-<div class="panels" id="panels">
-  <div class="panel" id="panel-classes">
-    <div class="panel-head"><span class="panel-title">📚 Lớp học</span></div>
-    <div class="panel-body" id="class-list"><div class="empty-hint">Đang tải…</div></div>
-    <div class="mobile-panel-footer">
-      <button class="mobile-logout-full" onclick="logout()">🚪 Đăng xuất</button>
+<!-- ═══ MAIN BODY ═══ -->
+<div class="main-body" id="main-body">
+  <!-- Classes -->
+  <div class="panel panel-classes active" id="panel-classes">
+    <div class="panel-header">
+      <div class="panel-title">Lớp học</div>
+      <div class="panel-count" id="cls-count">0</div>
+    </div>
+    <div class="panel-body" id="cls-list"></div>
+  </div>
+
+  <div class="resizer" id="resizer-1" title="Kéo để thay đổi kích thước"></div>
+
+  <!-- Students -->
+  <div class="panel panel-students" id="panel-students">
+    <div class="search-wrap">
+      <input class="search-input" type="search" id="student-search" placeholder="Tìm học sinh…" oninput="filterStudents(this.value)">
+    </div>
+    <div class="panel-header" style="padding:7px 12px">
+      <div class="panel-title" id="st-panel-title">Học sinh</div>
+      <div class="panel-count" id="st-count">0</div>
+    </div>
+    <div class="panel-body" id="student-list">
+      <div class="panel-empty">← Chọn lớp</div>
     </div>
   </div>
 
-  <div class="panel hidden" id="panel-students">
-    <div class="panel-head">
-      <span class="panel-title">👤 Học sinh</span>
-      <span class="panel-count" id="student-count"></span>
+  <div class="resizer" id="resizer-2" title="Kéo để thay đổi kích thước"></div>
+
+  <!-- Conversations -->
+  <div class="panel panel-convs" id="sub-convs">
+    <div class="panel-header">
+      <div class="panel-title" id="conv-panel-title">Hội thoại</div>
+      <div class="panel-count" id="conv-count">0</div>
     </div>
-    <div class="search-wrap"><input class="search-input" id="s-search" placeholder="Tìm tên, CCCD…" oninput="filterStudents(this.value)"></div>
-    <div class="panel-body" id="student-list"><div class="empty-hint">← Chọn lớp trước</div></div>
+    <div class="panel-body" id="conv-list">
+      <div class="panel-empty">← Chọn học sinh</div>
+    </div>
   </div>
 
-  <div id="panel-right" class="hidden mobile-convs">
-    <div id="sub-convs">
-      <div class="panel-head"><span class="panel-title">💬 Hội thoại</span></div>
-      <div class="panel-body" id="conv-list"><div class="empty-hint">← Chọn học sinh</div></div>
+  <div class="resizer" id="resizer-3" title="Kéo để thay đổi kích thước"></div>
+
+  <!-- Messages -->
+  <div class="panel panel-msgs" id="sub-msgs">
+    <div class="msgs-header">
+      <button class="msgs-back-btn" onclick="showMobilePanel('convs')">&#8592; Hội thoại</button>
+      <div class="msgs-header-title" id="msgs-title">Chọn hội thoại để xem tin nhắn</div>
     </div>
-    <div id="sub-msgs">
-      <div class="msgs-head" id="msgs-head">
-        <button class="msgs-back-btn" onclick="showMobilePanel('convs')">←</button>
-        <span>Chọn hội thoại để xem</span>
+    <div class="msgs-area" id="msgs-area">
+      <div class="msgs-placeholder">
+        <div class="msgs-placeholder-icon">💬</div>
+        <p>Chọn một học sinh và hội thoại<br>để xem nội dung tin nhắn</p>
       </div>
-      <div id="msgs-body"><div class="placeholder"><strong>💬</strong>Chọn hội thoại<br>để xem lịch sử</div></div>
     </div>
   </div>
 </div>
 
-<!-- CONTEXT MENU -->
-<div id="ctx-menu">
-  <div class="ctx-item" onclick="ctxDetail()">🪪 Xem tài khoản chi tiết</div>
-  <div class="ctx-item" onclick="ctxAnalyze()">🧠 Phân tích học sinh</div>
+<!-- ═══ CONTEXT MENU ═══ -->
+<div class="ctx-menu" id="ctx-menu" style="display:none">
+  <button class="ctx-item" onclick="ctxDetail()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>Xem chi tiết</button>
+  <button class="ctx-item" onclick="ctxAnalyze()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Phân tích AI</button>
   <div class="ctx-sep"></div>
-  <div class="ctx-item danger" onclick="ctxResetPw()">🔑 Reset mật khẩu mặc định</div>
+  <button class="ctx-item danger" onclick="ctxResetPw()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Đặt lại mật khẩu</button>
 </div>
-
-<!-- AI ANALYZE MODAL -->
-<div class="modal-overlay" id="analyze-overlay" onclick="closeAnalyzeBg(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">🧠 Phân tích — <span id="analyze-student-name">…</span></div>
-      <button class="modal-close" onclick="closeAnalyze()">✕</button>
-    </div>
-    <div class="analyze-tabs">
-      <button class="analyze-tab active" onclick="switchAnalyzeTab('ai')" id="atab-ai">🤖 Phân tích AI</button>
-      <button class="analyze-tab" onclick="switchAnalyzeTab('hist')" id="atab-hist">📋 Lịch sử hội thoại</button>
-    </div>
-    <!-- Tab: AI Chat -->
-    <div class="analyze-panel active" id="apanel-ai">
-      <div class="analyze-chat">
-        <div id="analyze-msgs">
-          <div class="analyze-init"><strong>⏳</strong>Đang tóm tắt hội thoại…<br><span style="font-size:.75rem;color:var(--muted)">Vui lòng chờ trong giây lát</span></div>
-        </div>
-        <div class="analyze-input-row">
-          <textarea id="analyze-input" placeholder="Hỏi về học sinh này…" rows="1" onkeydown="analyzeKeydown(event)"></textarea>
-          <button id="analyze-send" onclick="sendAnalyze()">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-    <!-- Tab: History -->
-    <div class="analyze-panel" id="apanel-hist">
-      <div class="analyze-hist-body" id="analyze-conv-ctx">
-        <div style="padding:20px;color:var(--muted);font-size:.82rem;text-align:center">Đang tải…</div>
-      </div>
+<!-- ═══ TOAST ═══ -->
+<div class="toast-container" id="toast-container"></div>
+<!-- ═══ CONFIRM MODAL ═══ -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-text" id="confirm-text"></div>
+    <div class="confirm-btns">
+      <button class="confirm-cancel" id="confirm-cancel">Hủy</button>
+      <button class="confirm-ok" id="confirm-ok">Xác nhận</button>
     </div>
   </div>
 </div>
 
-<!-- STUDENT DETAIL MODAL -->
+<!-- ═══ DETAIL MODAL ═══ -->
 <div class="modal-overlay" id="detail-overlay" onclick="closeDetailBg(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">🪪 Tài khoản học sinh</div>
+      <div class="modal-title">👤 Chi tiết học sinh</div>
       <button class="modal-close" onclick="closeDetail()">✕</button>
     </div>
-    <div class="modal-tabs">
-      <button class="tab-btn active" onclick="switchTab('info')">Thông tin</button>
-      <button class="tab-btn" onclick="switchTab('pw')">Mật khẩu</button>
-    </div>
     <div class="modal-body">
-      <div class="tab-panel active" id="tab-info">
-        <div class="detail-av" id="dc-av">?</div>
+      <div class="modal-tabs">
+        <button class="modal-tab active" id="tab-info" onclick="switchTab('info')">Thông tin</button>
+        <button class="modal-tab" id="tab-pw" onclick="switchTab('pw')">Đặt lại mật khẩu</button>
+      </div>
+      <div class="tab-panel active" id="panel-info">
         <div class="info-grid">
-          <div class="info-item full"><div class="info-lbl">Họ và tên</div><div class="info-val" id="dc-name">—</div></div>
-          <div class="info-item"><div class="info-lbl">Lớp</div><div class="info-val" id="dc-class">—</div></div>
-          <div class="info-item"><div class="info-lbl">Giới tính</div><div class="info-val" id="dc-gender">—</div></div>
-          <div class="info-item full"><div class="info-lbl">Ngày sinh</div><div class="info-val" id="dc-dob">—</div></div>
-          <div class="info-item full"><div class="info-lbl">Số CCCD</div><div class="info-val" id="dc-cccd" style="font-family:'Courier New',monospace;letter-spacing:.05em">—</div></div>
+          <div class="info-item full"><div class="info-lbl">Họ và tên</div><div class="info-val" id="d-name">—</div></div>
+          <div class="info-item"><div class="info-lbl">Lớp</div><div class="info-val" id="d-class">—</div></div>
+          <div class="info-item"><div class="info-lbl">Giới tính</div><div class="info-val" id="d-gender">—</div></div>
+          <div class="info-item"><div class="info-lbl">Ngày sinh</div><div class="info-val" id="d-dob">—</div></div>
+          <div class="info-item"><div class="info-lbl">CCCD</div><div class="info-val" id="d-cccd">—</div></div>
+          <div class="info-item full"><div class="info-lbl">Trạng thái mật khẩu</div><div class="info-val" id="d-pw-status">—</div></div>
         </div>
       </div>
-      <div class="tab-panel" id="tab-pw">
-        <div class="info-item full"><div class="info-lbl">Trạng thái mật khẩu</div><div class="pw-row"><span class="pw-val" id="dc-pw">—</span><span class="pw-tag" id="dc-pw-tag">—</span></div></div>
-        <button class="reset-btn" id="dc-reset-btn" onclick="doResetPw()">🔑 Reset về mật khẩu mặc định</button>
-        <div class="reset-msg" id="dc-reset-msg"></div>
+      <div class="tab-panel" id="panel-pw">
+        <div style="font-size:.82rem;color:var(--muted);line-height:1.75;margin-bottom:14px">Đặt lại mật khẩu về mặc định (ngày sinh dạng <code style="font-family:'Courier New',monospace;font-size:.85em;color:var(--accent2)">DDMMYYYY</code>). Học sinh sẽ phải đổi mật khẩu khi đăng nhập lại.</div>
+        <div class="msg-box" id="reset-msg"></div>
+        <button class="btn btn-danger btn-full" id="reset-btn" onclick="doResetPw()">🔒 Đặt lại mật khẩu về mặc định</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ADMIN SETTINGS MODAL -->
+<!-- ═══ ANALYZE MODAL ═══ -->
+<div class="modal-overlay analyze-modal" id="analyze-overlay" onclick="closeAnalyzeBg(event)">
+  <div class="modal" style="max-width:680px;height:80vh">
+    <div class="modal-header">
+      <div class="modal-title">🧠 Phân tích AI — <span id="az-name" style="color:#c4b5fd"></span></div>
+      <button class="modal-close" onclick="closeAnalyze()">✕</button>
+    </div>
+    <div class="modal-tabs" style="padding:0 20px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <button class="modal-tab active" id="az-tab-ai" onclick="switchAnalyzeTab('ai')">Trò chuyện AI</button>
+      <button class="modal-tab" id="az-tab-hist" onclick="switchAnalyzeTab('hist')">Lịch sử hội thoại</button>
+    </div>
+    <div class="tab-panel active" id="az-panel-ai">
+      <div class="analyze-area" id="analyze-area"></div>
+      <div class="analyze-input-wrap">
+        <textarea class="analyze-ta" id="analyze-inp" rows="1" placeholder="Hỏi thêm về học sinh này…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAnalyze()}" oninput="autoResizeTextarea(this)"></textarea>
+        <button class="analyze-send-btn" id="analyze-send-btn" onclick="sendAnalyze()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="tab-panel" id="az-panel-hist">
+      <div class="hist-list" id="hist-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APPEALS PANEL ═══ -->
+<div class="ap-panel-overlay" id="ap-panel-overlay" onclick="closeAppealsPanelBg(event)">
+  <div class="ap-panel">
+    <div class="ap-panel-header">
+      <div class="ap-panel-title">✅ Phê duyệt bài viết</div>
+      <button class="modal-close" onclick="closeAppealsPanel()">&#x2715;</button>
+    </div>
+    <div class="ap-panel-body" id="ap-panel-body">
+      <div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)">Không có đơn phản hồi nào</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FEEDBACK PANEL ═══ -->
+<div class="fb-panel-overlay" id="fb-panel-overlay" onclick="closeFeedbackPanelBg(event)">
+  <div class="fb-panel">
+    <div class="fb-panel-header">
+      <div class="fb-panel-title">💬 Phản hồi học sinh</div>
+      <button class="modal-close" onclick="closeFeedbackPanel()">✕</button>
+    </div>
+    <div class="fb-panel-body" id="fb-list"></div>
+    <div class="fb-panel-footer">
+      <button class="btn btn-danger" style="flex:1;justify-content:center" onclick="clearAllFeedback()">🗑 Xóa tất cả</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REPLY MODAL ═══ -->
+<div class="modal-overlay" id="reply-overlay" onclick="closeReplyBg(event)">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header">
+      <div class="modal-title">↩ Phản hồi</div>
+      <button class="modal-close" onclick="closeReply()">✕</button>
+    </div>
+    <div class="modal-body">
+      <textarea class="reply-ta" id="reply-ta" placeholder="Nhập phản hồi cho học sinh…"></textarea>
+      <div class="msg-box" id="reply-msg"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeReply()">Huỷ</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" id="reply-send-btn" onclick="sendReply()">Gửi phản hồi</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADMIN SETTINGS MODAL ═══ -->
 <div class="modal-overlay" id="admin-settings-overlay" onclick="closeAdminSettingsBg(event)">
-  <div class="modal">
+  <div class="modal" style="max-width:400px">
     <div class="modal-header">
       <div class="modal-title">⚙️ Cài đặt tài khoản Admin</div>
       <button class="modal-close" onclick="closeAdminSettings()">✕</button>
     </div>
-    <div class="modal-body" style="display:flex;flex-direction:column;gap:13px">
-      <div class="field-group"><label>Tên đăng nhập mới</label><input class="s-input" type="text" id="a-username" placeholder="Nhập tên đăng nhập mới"></div>
-      <div class="divider"></div>
-      <div class="field-group"><label>Mật khẩu hiện tại</label><input class="s-input" type="password" id="a-cur-pw" placeholder="Bắt buộc để xác nhận"></div>
-      <div class="field-group"><label>Mật khẩu mới</label><input class="s-input" type="password" id="a-new-pw" placeholder="Tối thiểu 6 ký tự"></div>
-      <div class="field-group"><label>Xác nhận mật khẩu mới</label><input class="s-input" type="password" id="a-new-pw2" placeholder="Nhập lại mật khẩu mới"></div>
-      <div class="a-msg" id="a-msg"></div>
-      <button class="btn-save" onclick="saveAdminSettings()">💾 Lưu thay đổi</button>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Tên đăng nhập mới</label><input class="form-input" type="text" id="as-username" placeholder="Để trống nếu không đổi" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">Mật khẩu hiện tại</label><input class="form-input" type="password" id="as-cur-pw" placeholder="Bắt buộc để xác nhận" autocomplete="current-password"></div>
+      <div class="form-group"><label class="form-label">Mật khẩu mới</label><input class="form-input" type="password" id="as-new-pw" placeholder="Để trống nếu không đổi" autocomplete="new-password"></div>
+      <div class="msg-box" id="as-msg"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeAdminSettings()">Huỷ</button>
+      <button class="btn btn-primary" style="flex:1;justify-content:center" id="as-save-btn" onclick="saveAdminSettings()">Lưu thay đổi</button>
     </div>
   </div>
 </div>
 
 <script>
-const token=localStorage.getItem('hc_token'),role=localStorage.getItem('hc_role');
-if(!token||role!=='admin')location.href='/admin';
-document.getElementById('admin-name').textContent=localStorage.getItem('hc_fullName')||'Admin';
-const authH=()=>({'Content-Type':'application/json','Authorization':'Bearer '+token});
+// Kiểm tra session admin qua cookie
+(async () => {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!r.ok) { location.href = '/admin'; return; }
+    const d = await r.json();
+    if (d.role !== 'admin') location.href = '/admin';
+  } catch { location.href = '/admin'; }
+})();
+const authH = () => ({ 'Content-Type': 'application/json' });
 
-let allStudents=[],ctxStudent=null,detailStudent=null;
-const isMobile=()=>window.innerWidth<=820;
+// ── Copy code block ──
+function copyCode(btn) {
+  const code = btn.nextElementSibling?.querySelector('code')?.textContent || '';
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = '✓ Đã copy'; btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  }).catch(() => { btn.textContent = 'Lỗi'; setTimeout(() => { btn.textContent = 'Copy'; }, 1500); });
+}
 
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function fmt(d){const dt=new Date(d);return dt.toLocaleDateString('vi-VN',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+dt.toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'});}
-function renderMd(raw){
-  const protects=[];
-  const protect=(html)=>{protects.push(html);return `%%P${protects.length-1}%%`;};
+// ── Utilities ──
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(d) { if (!d) return '—'; return new Date(d).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+function autoResizeTextarea(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 100) + 'px'; }
 
-  // 1. Protect fenced code blocks
-  let t=raw.replace(/```[\s\S]*?```/g,m=>
-    protect(`<pre><code>${esc(m.replace(/```\w*\n?/,'').replace(/```$/,'').trim())}</code></pre>`)
-  );
-
-  // 2. Protect LaTeX delimiters as-is — KaTeX auto-render will handle them after DOM insert
-  //    But we must protect them from italic/bold regex mangling
-  t=t.replace(/\\\[[\s\S]*?\\\]/g,m=>protect(m));
-  t=t.replace(/\\\([\s\S]*?\\\)/g,m=>protect(m));
-  t=t.replace(/\$\$[\s\S]*?\$\$/g,m=>protect(m));
-  t=t.replace(/\$([^\$\n]+?)\$/g,m=>protect(m));
-
-  // 3. Protect bullet lines (* item) BEFORE italic regex eats the asterisks
-  t=t.replace(/^(\* .+)$/gm,(_,line)=>`%%BULLET%%${line.slice(2)}`);
-
-  // 4. Inline code
-  t=t.replace(/`([^`\n]+)`/g,(_,c)=>protect(`<code>${esc(c)}</code>`));
-
-  // 5. Headings
-  t=t.replace(/^###\s+(.+)$/gm,'<h3>$1</h3>');
-  t=t.replace(/^##\s+(.+)$/gm,'<h3>$1</h3>');
-
-  // 6. Bold then italic
-  t=t.replace(/\*\*(.+?)\*\*/gs,'<strong>$1</strong>');
-  t=t.replace(/\*(.+?)\*/gs,'<em>$1</em>');
-
-  // 7. Process lines: lists vs paragraphs
-  const lines=t.split('\n');
-  const out=[];
-  let inUl=false,inOl=false,paraLines=[];
-  const flushPara=()=>{
-    if(paraLines.length){out.push(`<p>${paraLines.join('<br>')}</p>`);paraLines=[];}
-  };
-  for(let i=0;i<lines.length;i++){
-    const line=lines[i];
-    const isBullet=line.startsWith('%%BULLET%%');
-    const ulMatch=!isBullet&&line.match(/^[-•]\s+(.+)/);
-    const olMatch=line.match(/^\d+\.\s+(.+)/);
-    if(isBullet||ulMatch){
-      flushPara();
-      if(inOl){out.push('</ol>');inOl=false;}
-      if(!inUl){out.push('<ul>');inUl=true;}
-      out.push(`<li>${isBullet?line.slice(10):ulMatch[1]}</li>`);
-    }else if(olMatch){
-      flushPara();
-      if(inUl){out.push('</ul>');inUl=false;}
-      if(!inOl){out.push('<ol>');inOl=true;}
-      out.push(`<li>${olMatch[1]}</li>`);
-    }else{
-      if(inUl){out.push('</ul>');inUl=false;}
-      if(inOl){out.push('</ol>');inOl=false;}
-      const trimmed=line.trim();
-      if(trimmed===''||line.startsWith('<h3>')||line.startsWith('%%P')){
-        flushPara();out.push(line);
-      }else{
-        paraLines.push(line);
-      }
-    }
+// ── Markdown renderer (same logic as chat.html) ──
+function renderMd(raw) {
+  const protects = []; const protect = html => { protects.push(html); return `%%P${protects.length-1}%%`; };
+  let t = raw.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,l,c) => protect(`<div class="code-block"><button class="copy-btn" onclick="copyCode(this)">Copy</button><pre><code>${esc(c.trim())}</code></pre></div>`));
+  t = t.replace(/\\\[[\s\S]*?\\\]/g,m=>protect(m)); t = t.replace(/\\\([\s\S]*?\\\)/g,m=>protect(m));
+  t = t.replace(/\$\$[\s\S]*?\$\$/g,m=>protect(m)); t = t.replace(/\$([^\$\n]+?)\$/g,m=>protect(m));
+  t = t.replace(/^(\* .+)$/gm,(_,l)=>`%%BULLET%%${l.slice(2)}`);
+  t = t.replace(/`([^`\n]+)`/g,(_,c)=>protect(`<code>${esc(c)}</code>`));
+  t = t.replace(/^#### (.+)$/gm,'<h4>$1</h4>'); t = t.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  t = t.replace(/^## (.+)$/gm,'<h2>$1</h2>'); t = t.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  t = t.replace(/\*\*(.+?)\*\*/gs,'<strong>$1</strong>'); t = t.replace(/\*(.+?)\*/gs,'<em>$1</em>');
+  const lines = t.split('\n'); const out = []; let inUl=false, inOl=false, paraLines=[];
+  const flushPara = () => { if (paraLines.length) { out.push(`<p>${paraLines.join('<br>')}</p>`); paraLines=[]; } };
+  for (let i=0; i<lines.length; i++) {
+    const line = lines[i]; const isBullet = line.startsWith('%%BULLET%%');
+    const ulMatch = !isBullet && line.match(/^[-•]\s+(.+)/); const olMatch = line.match(/^\d+\.\s+(.+)/);
+    if (/^---+$/.test(line)) { flushPara(); if(inUl){out.push('</ul>');inUl=false;} if(inOl){out.push('</ol>');inOl=false;} out.push('<hr>'); continue; }
+    if (isBullet||ulMatch) { flushPara(); if(inOl){out.push('</ol>');inOl=false;} if(!inUl){out.push('<ul>');inUl=true;} out.push(`<li>${isBullet?line.slice(10):ulMatch[1]}</li>`); }
+    else if (olMatch) { flushPara(); if(inUl){out.push('</ul>');inUl=false;} if(!inOl){out.push('<ol>');inOl=true;} out.push(`<li>${olMatch[1]}</li>`); }
+    else { if(inUl){out.push('</ul>');inUl=false;} if(inOl){out.push('</ol>');inOl=false;} if(line.trim()===''||/^<[h1-4]|^%%P/.test(line)){flushPara();out.push(line);}else{paraLines.push(line);} }
   }
-  flushPara();
-  if(inUl)out.push('</ul>');
-  if(inOl)out.push('</ol>');
-
-  // 8. Restore all protected blocks
-  let result=out.join('');
+  flushPara(); if(inUl) out.push('</ul>'); if(inOl) out.push('</ol>');
+  let result = out.join('');
   protects.forEach((p,i)=>{result=result.replaceAll(`%%P${i}%%`,p);});
   return result;
 }
-
-function renderMath(el){
-  if(typeof renderMathInElement==='function'){
-    renderMathInElement(el,{
-      delimiters:[
-        {left:'$$',right:'$$',display:true},
-        {left:'\\[',right:'\\]',display:true},
-        {left:'$',right:'$',display:false},
-        {left:'\\(',right:'\\)',display:false}
-      ],
-      throwOnError:false
-    });
-  }
+function renderMath(el) {
+  if (typeof renderMathInElement === 'function') renderMathInElement(el, { delimiters:[{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false}], throwOnError:false });
 }
 
-// Mobile panel switching
-function showMobilePanel(name){
-  if(!isMobile())return;
-  const allPanelIds=['panel-classes','panel-students','panel-right'];
-  
-  // Determine which DOM panel to show
-  const targetId = (name==='convs'||name==='msgs') ? 'panel-right' : ('panel-'+name);
-  
-  allPanelIds.forEach(id=>{
-    const el=document.getElementById(id);
-    if(!el)return;
-    el.classList.toggle('hidden', id!==targetId);
+// ── Count-up animation ──
+function countUp(id, target) {
+  const el = document.getElementById(id); if (!el) return;
+  const duration = 700; const start = Date.now(); const startVal = 0;
+  const step = () => {
+    const elapsed = Date.now() - start; const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(startVal + (target - startVal) * eased);
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// ── Skeleton helpers ──
+function skeletonClasses(n=5) {
+  return Array.from({length:n}, () =>
+    `<div class="sk-cls-item"><div class="sk sk-cls-icon"></div><div class="sk-cls-text"><div class="sk sk-cls-name"></div><div class="sk sk-cls-sub"></div></div></div>`
+  ).join('');
+}
+function skeletonStudents(n=6) {
+  return Array.from({length:n}, () =>
+    `<div class="sk-st-item"><div class="sk sk-st-av"></div><div class="sk-st-info"><div class="sk sk-st-name"></div><div class="sk sk-st-cccd"></div></div><div class="sk sk-st-pill"></div></div>`
+  ).join('');
+}
+
+// ── Stats ──
+async function loadStats() {
+  const res = await fetch('/api/admin/stats', { credentials:'include', headers: authH() });
+  if (!res.ok) return;
+  const d = await res.json();
+  countUp('st-classes', d.totalClasses || 0);
+  countUp('st-students', d.totalStudents || 0);
+  countUp('st-convs', d.totalConvs || 0);
+  countUp('st-msgs', d.totalMsgs || 0);
+}
+
+// ── Classes ──
+async function loadClasses() {
+  const el = document.getElementById('cls-list');
+  el.innerHTML = skeletonClasses(5);
+  const res = await fetch('/api/admin/classes', { credentials:'include', headers: authH() });
+  if (!res.ok) { el.innerHTML = '<div class="panel-empty">Lỗi tải dữ liệu</div>'; return; }
+  const classes = await res.json();
+  document.getElementById('cls-count').textContent = classes.length;
+  el.innerHTML = '';
+  classes.forEach(cls => {
+    const btn = document.createElement('button'); btn.className = 'cls-item';
+    const grade = cls.charAt(0); const section = cls.slice(1);
+    btn.innerHTML = `<div class="cls-icon">${grade}</div><div><div class="cls-name">${cls}</div><div class="cls-count">Khối ${grade}</div></div>`;
+    btn.onclick = () => selectClass(cls, btn);
+    el.appendChild(btn);
   });
-  
-  // Handle panel-right sub-panel mode
-  const pr=document.getElementById('panel-right');
-  if(name==='convs'){
-    pr.classList.remove('mobile-msgs');
-    pr.classList.add('mobile-convs');
-  } else if(name==='msgs'){
-    pr.classList.remove('mobile-convs');
-    pr.classList.add('mobile-msgs');
-  }
-  
-  // Update tab active state
-  document.querySelectorAll('.panel-tab-btn').forEach((b,i)=>{
-    b.classList.toggle('active',['classes','students','convs','msgs'][i]===name);
-  });
+  if (classes.length) selectClass(classes[0], el.querySelector('.cls-item'));
 }
 
-// STATS
-async function loadStats(){
-  const data=await fetch('/api/admin/stats',{headers:authH()}).then(r=>r.json());
-  document.getElementById('st-classes').textContent=data.totalClasses;
-  document.getElementById('st-students').textContent=data.totalStudents;
-  document.getElementById('st-convs').textContent=data.totalConvs;
-  document.getElementById('st-msgs').textContent=data.totalMsgs;
-}
-
-// CLASSES
-async function loadClasses(){
-  const classes=await fetch('/api/admin/classes',{headers:authH()}).then(r=>r.json());
-  const el=document.getElementById('class-list');
-  if(!classes.length){el.innerHTML='<div class="empty-hint">Chưa có lớp nào</div>';return;}
-  el.innerHTML='';
-  classes.forEach(c=>{
-    const item=document.createElement('div');item.className='class-item';
-    item.innerHTML=`<span>${esc(c)}</span><span class="class-count">—</span>`;
-    item.addEventListener('click',()=>{selectClass(c,item);});
-    el.appendChild(item);
-  });
-}
-async function selectClass(cls,el){
-  document.querySelectorAll('.class-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('s-search').value='';
-  resetRight();
-  const res=await fetch(`/api/admin/classes/${encodeURIComponent(cls)}/students`,{headers:authH()});
-  allStudents=await res.json();
+let currentClass = null, allStudents = [], currentStudent = null;
+async function selectClass(cls, el) {
+  currentClass = cls;
+  document.querySelectorAll('.cls-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('st-panel-title').textContent = 'Lớp ' + cls;
+  const stEl = document.getElementById('student-list');
+  stEl.innerHTML = skeletonStudents(6);
+  const res = await fetch(`/api/admin/classes/${cls}/students`, { credentials:'include', headers: authH() });
+  if (!res.ok) { stEl.innerHTML = '<div class="panel-empty">Lỗi tải học sinh</div>'; return; }
+  allStudents = await res.json();
   renderStudents(allStudents);
-  el.querySelector('.class-count').textContent=allStudents.length;
-  document.getElementById('student-count').textContent=allStudents.length+' hs';
-  if(isMobile())showMobilePanel('students');
+  showMobilePanel('students');
 }
-function renderStudents(list){
-  const el=document.getElementById('student-list');
-  if(!list.length){el.innerHTML='<div class="empty-hint">Không có học sinh</div>';return;}
-  el.innerHTML='';
-  list.forEach(s=>{
-    const item=document.createElement('div');item.className='student-item';
-    const pwClass=s.mustChangePassword?'default':'changed';
-    item.innerHTML=`<div class="s-av">${esc(s.fullName.split(' ').pop().charAt(0).toUpperCase())}</div><div class="s-info"><div class="s-name">${esc(s.fullName)}</div><div class="s-meta">${esc(s.cccd||'')} · ${s.convCount||0} HT</div></div><div class="s-pw-dot ${pwClass}"></div>`;
-    item.addEventListener('click',e=>{hideCtx();selectStudent(s,item);});
-    item.addEventListener('contextmenu',e=>{e.preventDefault();showCtx(e,s,item);});
-    el.appendChild(item);
-  });
-}
-function filterStudents(q){renderStudents(allStudents.filter(s=>s.fullName.toLowerCase().includes(q.toLowerCase())||(s.cccd||'').includes(q)));}
 
-async function selectStudent(student,el){
-  document.querySelectorAll('.student-item').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-  resetRight();
-  const convs=await fetch(`/api/admin/users/${student._id}/conversations`,{headers:authH()}).then(r=>r.json());
-  renderConvs(convs,student);
-  if(isMobile())showMobilePanel('convs');
-}
-function renderConvs(convs,student){
-  const el=document.getElementById('conv-list');
-  if(!convs.length){el.innerHTML=`<div class="empty-hint">${esc(student.fullName)}<br>chưa có hội thoại</div>`;return;}
-  el.innerHTML='';
-  convs.forEach(c=>{
-    const item=document.createElement('div');item.className='conv-row';
-    item.innerHTML=`<div class="conv-row-title">${esc(c.title)}</div><div class="conv-row-meta"><span>${c.msgCount} tin</span><span>${fmt(c.updatedAt)}</span></div>`;
-    item.addEventListener('click',()=>{selectConv(c,student,item);});
-    el.appendChild(item);
+function renderStudents(list) {
+  const el = document.getElementById('student-list');
+  document.getElementById('st-count').textContent = list.length;
+  el.innerHTML = '';
+  if (!list.length) { el.innerHTML = '<div class="panel-empty">Không có học sinh</div>'; return; }
+  list.forEach(st => {
+    const div = document.createElement('div'); div.className = 'student-item';
+    const initials = st.fullName?.split(' ').pop()?.charAt(0)?.toUpperCase() || '?';
+    const changed = !st.mustChangePassword;
+    div.innerHTML = `<div class="st-av">${initials}</div><div class="st-info"><div class="st-name">${esc(st.fullName)}</div><div class="st-class">${st.cccd||'?'}</div></div><span class="st-pw-pill ${changed?'changed':'unchanged'}">${changed?'Đã đổi':'Chưa đổi'}</span><button class="st-more-btn" title="Tùy chọn" onclick="showCtxBtn(event,arguments[0])" data-idx="">⋯</button>`;
+    const btn = div.querySelector('.st-more-btn');
+    btn.addEventListener('click', e => { e.stopPropagation(); showCtx(e, st, div); });
+    div.onclick = () => { selectStudent(st, div); };
+    div.oncontextmenu = e => showCtx(e, st, div);
+    el.appendChild(div);
   });
 }
-async function selectConv(conv,student,el){
-  document.querySelectorAll('.conv-row').forEach(i=>i.classList.remove('active'));
-  el.classList.add('active');
-  const msgHead=document.getElementById('msgs-head');
-  msgHead.innerHTML=`<button class="msgs-back-btn" onclick="showMobilePanel('convs')" style="display:${isMobile()?'flex':'none'}">←</button><b>${esc(student.fullName)}</b> · ${esc(conv.title)}`;
-  const msgs=await fetch(`/api/admin/conversations/${conv._id}/messages`,{headers:authH()}).then(r=>r.json());
-  const body=document.getElementById('msgs-body');
-  if(!msgs.length){body.innerHTML='<div class="placeholder"><strong>—</strong>Hội thoại trống</div>';return;}
-  body.innerHTML='';
-  msgs.forEach(m=>{
-    const div=document.createElement('div');div.className='mb '+m.role;
-    if(m.role==='user'){
-      div.innerHTML=`<div class="mb-role">👤 ${esc(student.fullName)}</div>${esc(m.content).replace(/\n/g,'<br>')}`;
-    }else{
-      div.innerHTML=`<div class="mb-role">🤖 Axon AI</div><div class="ai-content">${renderMd(m.content)}</div>`;
+
+function filterStudents(q) {
+  const lower = q.toLowerCase();
+  const filtered = allStudents.filter(s => (s.fullName||'').toLowerCase().includes(lower) || (s.cccd||'').includes(lower));
+  renderStudents(filtered);
+}
+
+async function selectStudent(student, el) {
+  currentStudent = student;
+  document.querySelectorAll('.student-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const res = await fetch(`/api/admin/users/${student._id}/conversations`, { credentials:'include', headers: authH() });
+  const convs = await res.json();
+  renderConvs(convs, student);
+  showMobilePanel('convs');
+}
+
+function renderConvs(convs, student) {
+  const el = document.getElementById('conv-list');
+  document.getElementById('conv-count').textContent = convs.length;
+  document.getElementById('conv-panel-title').textContent = student.fullName?.split(' ').pop() || 'Hội thoại';
+  el.innerHTML = '';
+  if (!convs.length) { el.innerHTML = '<div class="panel-empty">Chưa có hội thoại nào</div>'; return; }
+  convs.forEach(c => {
+    const div = document.createElement('div'); div.className = 'conv-item';
+    div.innerHTML = `<div class="conv-item-title">${esc(c.title)}</div><div class="conv-item-meta">${fmt(c.updatedAt)}</div>`;
+    div.onclick = () => { selectConv(c, student, div); };
+    el.appendChild(div);
+  });
+}
+
+async function selectConv(conv, student, el) {
+  document.querySelectorAll('.conv-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  document.getElementById('msgs-title').textContent = conv.title;
+  const msgsArea = document.getElementById('msgs-area');
+  msgsArea.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted);font-size:.8rem">Đang tải…</div>';
+  const res = await fetch(`/api/admin/conversations/${conv._id}/messages`, { credentials:'include', headers: authH() });
+  const msgs = await res.json();
+  showMobilePanel('msgs');
+  if (!msgs.length) { msgsArea.innerHTML = '<div class="msgs-placeholder"><div class="msgs-placeholder-icon">💬</div><p>Hội thoại này chưa có tin nhắn</p></div>'; return; }
+  msgsArea.innerHTML = '';
+  const initials = student.fullName?.split(' ').pop()?.charAt(0)?.toUpperCase() || '?';
+  msgs.forEach(m => {
+    const isUser = m.role === 'user';
+    const row = document.createElement('div'); row.className = 'msg-row' + (isUser?' user':'');
+    const av = document.createElement('div'); av.className = 'msg-av ' + (isUser?'av-user':'av-ai');
+    av.innerHTML = isUser ? initials : '<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+    const bub = document.createElement('div'); bub.className = 'msg-bub ' + (isUser?'bub-user':'bub-ai');
+    bub.innerHTML = isUser ? esc(m.content).replace(/\n/g,'<br>') : renderMd(m.content);
+    row.appendChild(av); row.appendChild(bub); msgsArea.appendChild(row);
+    if (!isUser) renderMath(bub);
+  });
+  msgsArea.scrollTop = msgsArea.scrollHeight;
+}
+
+// ── Mobile panels ──
+const mobilePanelMap = { classes: 'panel-classes', students: 'panel-students', convs: 'sub-convs', msgs: 'sub-msgs' };
+function showMobilePanel(name) {
+  if (window.innerWidth > 768) return;
+  const tabBtns = document.querySelectorAll('.mobile-tab');
+  tabBtns.forEach((btn, i) => { btn.classList.toggle('active', ['classes','students','convs','msgs'][i] === name); });
+  Object.entries(mobilePanelMap).forEach(([k, id]) => { const el = document.getElementById(id); if (el) el.classList.toggle('active', k === name); });
+}
+
+// ── Context menu ──
+let ctxStudent = null, ctxEl = null;
+
+// ── Toast ──
+const TOAST_ICONS = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+function toast(msg, type = 'info', duration = 3000) {
+  const c = document.getElementById('toast-container');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<span class="toast-icon">${TOAST_ICONS[type] || ''}</span><span>${msg}</span>`;
+  c.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('show'));
+  setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 250); }, duration);
+}
+
+// ── Confirm modal ──
+function showConfirm(msg, okLabel = 'Xác nhận', type = 'danger') {
+  return new Promise(resolve => {
+    document.getElementById('confirm-text').textContent = msg;
+    const okBtn = document.getElementById('confirm-ok');
+    okBtn.textContent = okLabel;
+    okBtn.className = 'confirm-ok ' + type;
+    const overlay = document.getElementById('confirm-overlay');
+    overlay.classList.add('open');
+    const cancelBtn = document.getElementById('confirm-cancel');
+    function done(val) {
+      overlay.classList.remove('open');
+      okBtn.removeEventListener('click', onOk);
+      cancelBtn.removeEventListener('click', onCancel);
+      resolve(val);
     }
-    body.appendChild(div);
+    function onOk() { done(true); }
+    function onCancel() { done(false); }
+    okBtn.addEventListener('click', onOk);
+    cancelBtn.addEventListener('click', onCancel);
   });
-  renderMath(body);
-  body.scrollTop=body.scrollHeight;
-  if(isMobile())showMobilePanel('msgs');
 }
-function resetRight(){
-  document.getElementById('conv-list').innerHTML='<div class="empty-hint">← Chọn học sinh</div>';
-  document.getElementById('msgs-body').innerHTML='<div class="placeholder"><strong>💬</strong>Chọn hội thoại<br>để xem lịch sử</div>';
-  document.getElementById('msgs-head').innerHTML='<button class="msgs-back-btn" onclick="showMobilePanel(\'convs\')" style="display:none">←</button><span>Chọn hội thoại để xem</span>';
+function showCtx(e, student, itemEl) {
+  e.preventDefault(); e.stopPropagation();
+  ctxStudent = student; ctxEl = itemEl;
+  const menu = document.getElementById('ctx-menu');
+  menu.style.display = 'block';
+  // If triggered by button, position near button
+  const rect = (e.currentTarget && e.currentTarget.classList?.contains('st-more-btn'))
+    ? e.currentTarget.getBoundingClientRect()
+    : null;
+  const x = rect ? Math.min(rect.right, window.innerWidth - 200) : Math.min(e.clientX, window.innerWidth - 200);
+  const y = rect ? Math.min(rect.bottom + 4, window.innerHeight - 160) : Math.min(e.clientY, window.innerHeight - 160);
+  menu.style.left = x + 'px'; menu.style.top = y + 'px';
 }
+function hideCtx() { document.getElementById('ctx-menu').style.display = 'none'; ctxStudent = null; }
+document.addEventListener('click', hideCtx);
+document.addEventListener('contextmenu', e => { if (!document.getElementById('ctx-menu').contains(e.target)) hideCtx(); });
 
-// CTX MENU
-const ctxMenu=document.getElementById('ctx-menu');
-function showCtx(e,student,itemEl){
-  ctxStudent=student;
-  document.querySelectorAll('.student-item').forEach(i=>i.classList.remove('active'));
-  itemEl.classList.add('active');
-  const x=Math.min(e.clientX,window.innerWidth-200);
-  const y=Math.min(e.clientY,window.innerHeight-140);
-  ctxMenu.style.left=x+'px';ctxMenu.style.top=y+'px';
-  ctxMenu.classList.add('show');
-}
-function hideCtx(){ctxMenu.classList.remove('show');}
-document.addEventListener('click',hideCtx);
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){hideCtx();closeDetail();closeAdminSettings();}});
-function ctxDetail(){hideCtx();openDetail(ctxStudent);}
-function ctxAnalyze(){hideCtx();if(ctxStudent)openAnalyze(ctxStudent);}
-async function ctxResetPw(){
-  hideCtx();if(!ctxStudent)return;
-  if(!confirm(`Reset mật khẩu của ${ctxStudent.fullName}?`))return;
-  const res=await fetch(`/api/admin/users/${ctxStudent._id}/reset-password`,{method:'POST',headers:authH()});
-  const data=await res.json();
-  if(res.ok)alert(`✅ Đã reset!\nMật khẩu mới: ${data.defaultPw}`);
-  else alert('❌ Lỗi: '+data.error);
-}
+function ctxDetail() { const s = ctxStudent; hideCtx(); if (s) openDetail(s); }
+function ctxAnalyze() { const s = ctxStudent; hideCtx(); if (s) openAnalyze(s); }
+function ctxResetPw() { const s = ctxStudent; hideCtx(); if (s) { openDetail(s); switchTab('pw'); } }
 
-// DETAIL MODAL
-function switchTab(tab){
-  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(tab==='info'&&i===0)||(tab==='pw'&&i===1)));
-  document.getElementById('tab-info').classList.toggle('active',tab==='info');
-  document.getElementById('tab-pw').classList.toggle('active',tab==='pw');
-}
-async function openDetail(student){
-  const data=await fetch(`/api/admin/users/${student._id}`,{headers:authH()}).then(r=>r.json());
-  detailStudent=data;
-  document.getElementById('dc-av').textContent=data.fullName.split(' ').pop().charAt(0).toUpperCase();
-  document.getElementById('dc-name').textContent=data.fullName;
-  document.getElementById('dc-class').textContent=data.className||'—';
-  document.getElementById('dc-gender').textContent=data.gender||'—';
-  document.getElementById('dc-dob').textContent=data.dob||'—';
-  document.getElementById('dc-cccd').textContent=data.cccd||'—';
-  const pwVal=document.getElementById('dc-pw'),pwTag=document.getElementById('dc-pw-tag');
-  if(data.defaultPw){pwVal.textContent=data.defaultPw;pwTag.textContent='Chưa đổi';pwTag.className='pw-tag default';}
-  else{pwVal.textContent='••••••••';pwTag.textContent='Đã đổi';pwTag.className='pw-tag changed';}
-  document.getElementById('dc-reset-msg').className='reset-msg';
-  document.getElementById('dc-reset-btn').disabled=false;
+// ── Detail modal ──
+let detailStudent = null;
+function openDetail(student) {
+  detailStudent = student;
+  document.getElementById('d-name').textContent = student.fullName || '—';
+  document.getElementById('d-class').textContent = student.className || '—';
+  document.getElementById('d-gender').textContent = student.gender || '—';
+  document.getElementById('d-dob').textContent = student.dob || '—';
+  document.getElementById('d-cccd').textContent = student.cccd || '—';
+  document.getElementById('d-pw-status').innerHTML = !student.mustChangePassword
+    ? '<span style="color:var(--success)">✓ Đã đổi mật khẩu</span>'
+    : '<span style="color:var(--warning)">⚠ Chưa đổi mật khẩu mặc định</span>';
+  document.getElementById('reset-msg').className = 'msg-box';
   switchTab('info');
   document.getElementById('detail-overlay').classList.add('open');
 }
-function closeDetail(){document.getElementById('detail-overlay').classList.remove('open');}
-function closeDetailBg(e){if(e.target===document.getElementById('detail-overlay'))closeDetail();}
-async function doResetPw(){
-  if(!detailStudent)return;
-  if(!confirm(`Reset mật khẩu của ${detailStudent.fullName}?`))return;
-  const btn=document.getElementById('dc-reset-btn'),msg=document.getElementById('dc-reset-msg');
-  btn.disabled=true;btn.textContent='Đang reset…';
-  const res=await fetch(`/api/admin/users/${detailStudent._id}/reset-password`,{method:'POST',headers:authH()});
-  const data=await res.json();
-  if(res.ok){msg.textContent=`✅ Mật khẩu mới: ${data.defaultPw}`;msg.className='reset-msg ok';document.getElementById('dc-pw').textContent=data.defaultPw;document.getElementById('dc-pw-tag').textContent='Chưa đổi';document.getElementById('dc-pw-tag').className='pw-tag default';}
-  else{msg.textContent='❌ '+data.error;msg.className='reset-msg err';}
-  btn.disabled=false;btn.textContent='🔑 Reset về mật khẩu mặc định';
+function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
+function closeDetailBg(e) { if (e.target === document.getElementById('detail-overlay')) closeDetail(); }
+
+function switchTab(tab) {
+  document.getElementById('tab-info').classList.toggle('active', tab === 'info');
+  document.getElementById('tab-pw').classList.toggle('active', tab === 'pw');
+  document.getElementById('panel-info').classList.toggle('active', tab === 'info');
+  document.getElementById('panel-pw').classList.toggle('active', tab === 'pw');
 }
 
-// ADMIN SETTINGS
-function openAdminSettings(){document.getElementById('admin-settings-overlay').classList.add('open');document.getElementById('a-msg').className='a-msg';['a-username','a-cur-pw','a-new-pw','a-new-pw2'].forEach(id=>document.getElementById(id).value='');}
-function closeAdminSettings(){document.getElementById('admin-settings-overlay').classList.remove('open');}
-function closeAdminSettingsBg(e){if(e.target===document.getElementById('admin-settings-overlay'))closeAdminSettings();}
-async function saveAdminSettings(){
-  const uname=document.getElementById('a-username').value.trim();
-  const curPw=document.getElementById('a-cur-pw').value;
-  const newPw=document.getElementById('a-new-pw').value;
-  const newPw2=document.getElementById('a-new-pw2').value;
-  const msg=document.getElementById('a-msg');msg.className='a-msg';
-  if(!curPw){msg.textContent='Vui lòng nhập mật khẩu hiện tại';msg.className='a-msg err';return;}
-  if(newPw&&newPw!==newPw2){msg.textContent='Mật khẩu mới không khớp';msg.className='a-msg err';return;}
-  if(newPw&&newPw.length<6){msg.textContent='Mật khẩu mới tối thiểu 6 ký tự';msg.className='a-msg err';return;}
-  try{
-    const res=await fetch('/api/admin/settings',{method:'POST',headers:authH(),body:JSON.stringify({newUsername:uname||undefined,currentPassword:curPw,newPassword:newPw||undefined})});
-    const data=await res.json();
-    if(!res.ok){msg.textContent=data.error||'Lỗi cập nhật';msg.className='a-msg err';return;}
-    msg.textContent='✓ Đã cập nhật! Đăng nhập lại sau 2 giây…';msg.className='a-msg ok';
-    setTimeout(()=>logout(),2000);
-  }catch{msg.textContent='Lỗi kết nối server';msg.className='a-msg err';}
+async function doResetPw() {
+  if (!detailStudent) return;
+  if (!await showConfirm('Đặt lại mật khẩu về mặc định?', 'Đặt lại', 'primary')) return;
+  const btn = document.getElementById('reset-btn'); const msg = document.getElementById('reset-msg');
+  btn.disabled = true; btn.textContent = 'Đang xử lý…';
+  try {
+    const res = await fetch(`/api/admin/users/${detailStudent._id}/reset-password`, { method: 'POST', credentials:'include', headers: authH() });
+    const data = await res.json();
+    if (!res.ok) { msg.textContent = data.error || 'Lỗi'; msg.className = 'msg-box err'; return; }
+    msg.textContent = '✓ Đặt lại thành công! Mật khẩu mới: ' + (data.newPassword || 'ngày sinh'); msg.className = 'msg-box ok';
+    if (currentStudent?._id === detailStudent._id) { currentStudent.mustChangePassword = true; }
+    const stEl = document.querySelector(`.student-item.active .st-pw-pill`);
+    if (stEl) { stEl.className = 'st-pw-pill unchanged'; stEl.textContent = 'Chưa đổi'; }
+  } catch { msg.textContent = 'Lỗi kết nối'; msg.className = 'msg-box err'; }
+  finally { btn.disabled = false; btn.textContent = '🔒 Đặt lại mật khẩu về mặc định'; }
 }
-function logout(){['hc_token','hc_role','hc_fullName','hc_className','hc_gender','hc_dob','hc_mustChangePw'].forEach(k=>localStorage.removeItem(k));location.href='/admin';}
 
-
-// ── AI ANALYZE ──
-let analyzeStudent=null, analyzeChatHistory=[], analyzeSummaries=[];
-
-async function openAnalyze(student){
-  analyzeStudent=student;
-  analyzeChatHistory=[];
-  analyzeSummaries=[];
-  document.getElementById('analyze-student-name').textContent=student.fullName;
-  document.getElementById('analyze-msgs').innerHTML='<div class="analyze-init"><strong>⏳</strong>Đang tóm tắt hội thoại…<br><span style="font-size:.72rem;color:var(--muted)">Backend đang xử lý, vui lòng chờ</span></div>';
-  document.getElementById('analyze-conv-ctx').innerHTML='<div style="padding:16px;color:var(--muted);font-size:.75rem;text-align:center">Đang tải…</div>';
-  document.getElementById('analyze-input').value='';
-  document.getElementById('analyze-send').disabled=true;
+// ── Analyze modal ──
+let analyzeStudent = null, analyzeMsgs = [], analyzeBusy = false, analyzeSummaries = [];
+async function openAnalyze(student) {
+  analyzeStudent = student;
+  document.getElementById('az-name').textContent = student.fullName || '?';
+  document.getElementById('analyze-area').innerHTML = '';
+  document.getElementById('hist-list').innerHTML = '<div style="padding:20px;text-align:center;font-size:.8rem;color:var(--muted)">Đang tải…</div>';
+  document.getElementById('analyze-inp').value = '';
+  switchAnalyzeTab('ai');
   document.getElementById('analyze-overlay').classList.add('open');
+  analyzeMsgs = [];
+  await runInitialAnalysis();
+}
+function closeAnalyze() { document.getElementById('analyze-overlay').classList.remove('open'); }
+function closeAnalyzeBg(e) { if (e.target === document.getElementById('analyze-overlay')) closeAnalyze(); }
 
-  try{
-    const res=await fetch(`/api/admin/prepare-analysis/${student._id}`,{method:'POST',headers:authH()});
-    const data=await res.json();
-    if(!res.ok)throw new Error(data.error||'Lỗi chuẩn bị');
-    analyzeStudent=data.student||student;
-    analyzeSummaries=data.summaries||[];
+async function runInitialAnalysis() {
+  addTypingBubble();
+  try {
+    const res = await fetch(`/api/admin/prepare-analysis/${analyzeStudent._id}`, { credentials:'include', headers: authH() });
+    const data = await res.json();
+    analyzeSummaries = data.summaries || [];
     renderAnalyzeCtx(data);
-    await runInitialAnalysis();
-  }catch(e){
-    document.getElementById('analyze-msgs').innerHTML=`<div class="analyze-init"><strong>❌</strong>${e.message}</div>`;
-    document.getElementById('analyze-send').disabled=false;
-  }
+    const initPrompt = `Tóm tắt ngắn gọn tình hình học sinh ${analyzeStudent.fullName}: điểm mạnh, yếu, và gợi ý hỗ trợ.`;
+    analyzeMsgs = [{ role: 'user', content: initPrompt }];
+    removeTypingBubble();
+    await streamAnalyze();
+  } catch (e) { removeTypingBubble(); addAnalyzeBubble('ai', 'Không thể tải dữ liệu phân tích.'); }
 }
 
-function renderAnalyzeCtx(data){
-  const el=document.getElementById('analyze-conv-ctx');
-  if(!data.summaries||!data.summaries.length){
-    el.innerHTML='<div style="padding:20px;color:var(--muted);font-size:.82rem;text-align:center">Chưa có hội thoại nào</div>';return;
-  }
-  el.innerHTML=`<div style="padding:10px 14px 6px;font-size:.68rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:700">${data.totalConvs} cuộc hội thoại · ${data.totalMsgs} tin nhắn</div>`;
-  data.summaries.forEach((s,i)=>{
-    const block=document.createElement('div');block.className='ctx-conv-block';
-    const title=document.createElement('div');title.className='ctx-conv-title';
-    title.innerHTML=`<span class="ctx-conv-num">${i+1}</span>${esc(s.title||'Hội thoại')} <span style="margin-left:auto;font-size:.65rem;color:var(--muted);font-family:'Courier New',monospace">${s.msgCount} tin</span>`;
-    block.appendChild(title);
-    const sum=document.createElement('div');sum.className='ctx-conv-sum';
-    sum.textContent=s.summary;
-    block.appendChild(sum);
-    el.appendChild(block);
+function renderAnalyzeCtx(data) {
+  const hist = document.getElementById('hist-list'); hist.innerHTML = '';
+  if (!data.summaries?.length) { hist.innerHTML = '<div style="text-align:center;padding:20px;font-size:.82rem;color:var(--muted)">Học sinh chưa có hội thoại nào</div>'; return; }
+  data.summaries.forEach(s => {
+    const card = document.createElement('div'); card.className = 'hist-card';
+    card.innerHTML = `<div class="hist-card-hd"><span class="hist-card-title">${esc(s.title)}</span><span class="hist-card-time">${fmt(s.updatedAt)}</span></div><div class="hist-card-body">${esc(s.summary||'(chưa có tóm tắt)')}</div>`;
+    hist.appendChild(card);
   });
 }
 
-async function runInitialAnalysis(){
-  const msgs=document.getElementById('analyze-msgs');
-  msgs.innerHTML='';
-  const initialMsg=`Hãy phân tích tổng quan học sinh ${analyzeStudent.fullName} dựa trên các tóm tắt hội thoại. Đánh giá: mức độ tương tác, chủ đề thường hỏi, điểm mạnh, điểm cần cải thiện, và nhận xét chung.`;
-  addAnalyzeBubble('user',`📊 Phân tích tổng quan học sinh ${analyzeStudent.fullName}`);
-  analyzeChatHistory.push({role:'user',content:initialMsg});
-  const typingBubble=addTypingBubble();
-  const btn=document.getElementById('analyze-send');btn.disabled=true;
-  try{
-    const res=await fetch('/api/admin/ai-analyze',{method:'POST',headers:authH(),
-      body:JSON.stringify({student:analyzeStudent,summaries:analyzeSummaries,messages:analyzeChatHistory})});
-    const data=await res.json();
-    const reply=data.reply||data.error||'Không có phản hồi.';
-    typingBubble.remove();addAnalyzeBubble('ai',reply);
-    analyzeChatHistory.push({role:'assistant',content:reply});
-  }catch(e){typingBubble.remove();addAnalyzeBubble('ai','❌ Lỗi kết nối server.');}
-  btn.disabled=false;
+function addAnalyzeBubble(role, text) {
+  const area = document.getElementById('analyze-area');
+  const row = document.createElement('div'); row.className = 'msg-row' + (role==='user'?' user':'');
+  const av = document.createElement('div'); av.className = 'msg-av ' + (role==='ai'?'av-ai':'av-user');
+  av.innerHTML = role==='ai' ? '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>' : 'A';
+  const bub = document.createElement('div'); bub.className = 'msg-bub ' + (role==='ai'?'bub-ai':'bub-user');
+  bub.innerHTML = role==='ai' ? renderMd(text) : esc(text).replace(/\n/g,'<br>');
+  row.appendChild(av); row.appendChild(bub); area.appendChild(row);
+  if (role==='ai') renderMath(bub);
+  area.scrollTop = area.scrollHeight;
+  return bub;
 }
 
-async function sendAnalyze(){
-  const input=document.getElementById('analyze-input');
-  const text=input.value.trim();if(!text)return;
-  input.value='';autoResizeTextarea(input);
-  addAnalyzeBubble('user',text);
-  analyzeChatHistory.push({role:'user',content:text});
-  const typingBubble=addTypingBubble();
-  const btn=document.getElementById('analyze-send');btn.disabled=true;
-  try{
-    const res=await fetch('/api/admin/ai-analyze',{method:'POST',headers:authH(),
-      body:JSON.stringify({student:analyzeStudent,summaries:analyzeSummaries,messages:analyzeChatHistory})});
-    const data=await res.json();
-    const reply=data.reply||data.error||'Không có phản hồi.';
-    typingBubble.remove();addAnalyzeBubble('ai',reply);
-    analyzeChatHistory.push({role:'assistant',content:reply});
-  }catch(e){typingBubble.remove();addAnalyzeBubble('ai','❌ Lỗi kết nối server.');}
-  btn.disabled=false;
+let typingRow = null;
+function addTypingBubble() {
+  const area = document.getElementById('analyze-area');
+  typingRow = document.createElement('div'); typingRow.className = 'msg-row'; typingRow.id='az-typing';
+  const av = document.createElement('div'); av.className = 'msg-av av-ai';
+  av.innerHTML = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+  const bub = document.createElement('div'); bub.className = 'msg-bub bub-ai';
+  bub.innerHTML = '<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>';
+  typingRow.appendChild(av); typingRow.appendChild(bub); area.appendChild(typingRow);
+  area.scrollTop = area.scrollHeight;
+}
+function removeTypingBubble() { const t = document.getElementById('az-typing'); if(t) t.remove(); typingRow=null; }
+
+async function streamAnalyze() {
+  if (analyzeBusy) return; analyzeBusy = true;
+  const btn = document.getElementById('analyze-send-btn'); btn.disabled = true;
+  try {
+    const res = await fetch('/api/admin/ai-analyze', { method:'POST', credentials:'include', headers:authH(), body:JSON.stringify({ student:analyzeStudent, summaries:analyzeSummaries, messages:analyzeMsgs }) });
+    if (!res.ok) { addAnalyzeBubble('ai','Lỗi phân tích'); analyzeBusy=false; btn.disabled=false; return; }
+    const area = document.getElementById('analyze-area');
+    const row = document.createElement('div'); row.className = 'msg-row';
+    const av = document.createElement('div'); av.className = 'msg-av av-ai';
+    av.innerHTML = '<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+    const bub = document.createElement('div'); bub.className = 'msg-bub bub-ai'; bub.textContent = '';
+    row.appendChild(av); row.appendChild(bub); area.appendChild(row);
+    const reader = res.body.getReader(), dec = new TextDecoder('utf-8',{stream:true});
+    let full='', buf='';
+    while(true){
+      const {done,value} = await reader.read(); if(done) break;
+      buf += dec.decode(value); const lines=buf.split('\n'); buf=lines.pop();
+      for(const line of lines){
+        if(!line.startsWith('data:')) continue; const d=line.slice(5).trim(); if(d==='[DONE]') continue;
+        try{ const delta=JSON.parse(d).choices?.[0]?.delta?.content; if(delta){full+=delta;bub.innerHTML=renderMd(full);area.scrollTop=area.scrollHeight;} }catch{}
+      }
+    }
+    const reply = full || '(không có phản hồi)';
+    bub.innerHTML = renderMd(reply); renderMath(bub);
+    analyzeMsgs.push({ role:'assistant', content:reply });
+  } catch(e) { addAnalyzeBubble('ai','Lỗi: '+esc(e.message)); }
+  finally { analyzeBusy=false; btn.disabled=false; }
 }
 
-function addAnalyzeBubble(role,text){
-  const msgs=document.getElementById('analyze-msgs');
-  const div=document.createElement('div');div.className='a-bubble '+role;
-  if(role==='ai'){
-    const label=document.createElement('div');label.className='ai-label';
-    label.innerHTML='<span class="ai-label-dot"></span>Axon AI';
-    div.appendChild(label);
-    const content=document.createElement('div');content.className='ai-content';content.innerHTML=renderMd(text);
-    div.appendChild(content);
-  }else{div.textContent=text;}
-  msgs.appendChild(div);
-  if(role==='ai')renderMath(div);
-  msgs.scrollTop=msgs.scrollHeight;return div;
+async function sendAnalyze() {
+  const ta = document.getElementById('analyze-inp'); const text = ta.value.trim();
+  if (!text || analyzeBusy) return;
+  analyzeMsgs.push({ role:'user', content:text });
+  addAnalyzeBubble('user', text); ta.value=''; autoResizeTextarea(ta);
+  await streamAnalyze();
 }
-function addTypingBubble(){
-  const msgs=document.getElementById('analyze-msgs');
-  const div=document.createElement('div');div.className='a-bubble ai';
-  const label=document.createElement('div');label.className='ai-label';
-  label.innerHTML='<span class="ai-label-dot"></span>Axon AI · đang phân tích';
-  div.appendChild(label);
-  const dots=document.createElement('div');dots.className='typing-dots';
-  dots.innerHTML='<span></span><span></span><span></span>';
-  div.appendChild(dots);msgs.appendChild(div);msgs.scrollTop=msgs.scrollHeight;return div;
-}
-function analyzeKeydown(e){
-  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendAnalyze();}
-  autoResizeTextarea(e.target);
-}
-function autoResizeTextarea(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,100)+'px';}
-function switchAnalyzeTab(tab){
-  document.getElementById('atab-ai').classList.toggle('active',tab==='ai');
-  document.getElementById('atab-hist').classList.toggle('active',tab==='hist');
-  document.getElementById('apanel-ai').classList.toggle('active',tab==='ai');
-  document.getElementById('apanel-hist').classList.toggle('active',tab==='hist');
-}
-function closeAnalyze(){document.getElementById('analyze-overlay').classList.remove('open');}
-function closeAnalyzeBg(e){if(e.target===document.getElementById('analyze-overlay'))closeAnalyze();}
 
-Promise.all([loadStats(),loadClasses()]);
+function switchAnalyzeTab(tab) {
+  document.getElementById('az-tab-ai').classList.toggle('active', tab==='ai');
+  document.getElementById('az-tab-hist').classList.toggle('active', tab==='hist');
+  document.getElementById('az-panel-ai').classList.toggle('active', tab==='ai');
+  document.getElementById('az-panel-hist').classList.toggle('active', tab==='hist');
+}
+
+// ── Appeals panel ──────────────────────────────────────
+function openAppealsPanel() {
+  document.getElementById('ap-panel-overlay').classList.add('open');
+  loadAppeals();
+}
+function closeAppealsPanel() { document.getElementById('ap-panel-overlay').classList.remove('open'); }
+function closeAppealsPanelBg(e) { if (e.target === document.getElementById('ap-panel-overlay')) closeAppealsPanel(); }
+
+async function checkAppealsBadge() {
+  try {
+    const res = await fetch('/api/forum/admin/appeals', { credentials: 'include', headers: authH() });
+    if (!res.ok) return;
+    const items = await res.json();
+    const badge = document.getElementById('ap-badge');
+    if (!badge) return;
+    // Badge = số đơn đang chờ xử lý (pending)
+    if (items.length > 0) {
+      badge.textContent = items.length > 9 ? '9+' : items.length;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch { /* silent */ }
+}
+
+async function loadAppeals() {
+  const body = document.getElementById('ap-panel-body');
+  body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)">⏳ Đang tải…</div>';
+  try {
+    const res = await fetch('/api/forum/admin/appeals', { credentials: 'include', headers: authH() });
+    if (!res.ok) { body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--danger)">Lỗi tải dữ liệu</div>'; return; }
+    const items = await res.json();
+    renderAppeals(items);
+    checkAppealsBadge();
+  } catch { body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--danger)">Lỗi kết nối</div>'; }
+}
+
+function renderAppeals(items) {
+  const body = document.getElementById('ap-panel-body');
+  if (!items.length) { body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)">Không có đơn phản hồi nào đang chờ</div>'; return; }
+  body.innerHTML = items.map((item, i) => {
+    const isPost    = item.itemType === 'post';
+    const typeLabel = isPost ? '📄 Bài viết' : '💬 Bình luận';
+    const title     = isPost ? esc(item.title || '(không tiêu đề)') : '';
+    const content   = esc((item.content || '').slice(0, 300)) + ((item.content || '').length > 300 ? '…' : '');
+    const reason    = item.deletedReason ? `<div class="ap-item-del-reason">💬 Lý do bị xóa: ${esc(item.deletedReason)}</div>` : '';
+    const appealMsg = `<div style="font-size:.62rem;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Học sinh giải thích:</div><div class="ap-item-appeal-msg">${esc(item.appeal.message || '')}</div>`;
+    return `
+    <div class="ap-item" id="ap-item-${i}">
+      <div class="ap-item-type">${typeLabel} — ${esc(item.authorName || 'Ẩn danh')}</div>
+      <div class="ap-item-body">
+        ${title ? `<div class="ap-item-title">${title}</div>` : ''}
+        <div class="ap-item-content">${content}</div>
+        ${reason}
+        ${appealMsg}
+        <div class="ap-item-meta">Phản hồi lúc: ${fmt(item.appeal.appealedAt)}</div>
+        <textarea class="ap-note-ta" id="ap-note-${i}" placeholder="Ghi chú cho học sinh (tuỳ chọn)…"></textarea>
+      </div>
+      <div class="ap-item-foot">
+        <button class="btn btn-primary" style="font-size:.75rem;padding:6px 12px" onclick="resolveAppeal('${item.itemType}','${item._id}','approve',${i})">✅ Duyệt cho đăng</button>
+        <button class="btn btn-ghost" style="font-size:.75rem;padding:6px 12px;border-color:rgba(248,113,113,.3);color:var(--danger)" onclick="resolveAppeal('${item.itemType}','${item._id}','reject',${i})">❌ Từ chối</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function resolveAppeal(type, id, action, idx) {
+  const adminNote = (document.getElementById(`ap-note-${idx}`)?.value || '').trim();
+  const endpoint  = `/api/forum/admin/appeals/${type}/${id}/${action}`;
+  const r = await fetch(endpoint, {
+    method: 'POST', credentials: 'include',
+    headers: { ...authH(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ adminNote }),
+  });
+  const d = await r.json();
+  if (!r.ok) { toast(d.error || 'Lỗi xử lý', 'error'); return; }
+  const label = action === 'approve' ? 'Đã duyệt' : 'Đã từ chối';
+  toast(`${label} phản hồi thành công`, 'success');
+  const el = document.getElementById(`ap-item-${idx}`);
+  if (el) el.remove();
+  checkAppealsBadge();
+  // Nếu panel rỗng
+  const body = document.getElementById('ap-panel-body');
+  if (body && !body.querySelector('.ap-item')) {
+    body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)">Không còn đơn nào đang chờ</div>';
+  }
+}
+
+// ── Feedback badge ──
+async function checkFeedbackBadge() {
+  try {
+    const res = await fetch('/api/admin/feedback', { credentials: 'include', headers: authH() });
+    if (!res.ok) return;
+    const items = await res.json();
+    const count = items.filter(i => !i.adminRead).length;
+    const badge = document.getElementById('fb-badge');
+    if (!badge) return;
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.style.display = 'inline-flex';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch { /* silent */ }
+}
+
+// ── Feedback panel ──
+function openFeedbackPanel() {
+  document.getElementById('fb-panel-overlay').classList.add('open');
+  loadFeedback();
+}
+function closeFeedbackPanel() { document.getElementById('fb-panel-overlay').classList.remove('open'); }
+function closeFeedbackPanelBg(e) { if(e.target===document.getElementById('fb-panel-overlay')) closeFeedbackPanel(); }
+
+async function loadFeedback() {
+  const el = document.getElementById('fb-list');
+  el.innerHTML = '<div style="text-align:center;padding:20px;font-size:.8rem;color:var(--muted)">Đang tải…</div>';
+  try {
+    const res = await fetch('/api/admin/feedback', { headers:authH() });
+    const items = await res.json(); renderFeedback(items);
+  } catch { el.innerHTML = '<div style="text-align:center;padding:20px;font-size:.8rem;color:var(--muted)">Lỗi tải dữ liệu</div>'; }
+}
+
+function renderFeedback(items) {
+  const el = document.getElementById('fb-list'); el.innerHTML = '';
+  if (!items.length) { el.innerHTML = '<div style="text-align:center;padding:30px;font-size:.82rem;color:var(--muted);line-height:1.9">📭 Chưa có phản hồi nào</div>'; return; }
+  items.forEach(item => {
+    const card = document.createElement('div');
+    card.className = 'fb-item' + (item.adminRead ? '' : ' fb-unread');
+    card.dataset.fbid = item._id;
+    const unreadDot = item.adminRead ? '' : '<span class="unread-dot" title="Chưa xem"></span>';
+    const replyHtml = item.adminReply ? `<div class="fb-item-reply"><div class="fb-item-reply-lbl">↩ Phản hồi của bạn</div><div class="fb-item-reply-txt">${esc(item.adminReply)}</div></div>` : '';
+    // Chỉ cho phép đánh dấu đã xem sau khi đã phản hồi học sinh
+    const markReadBtn = (item.adminReply && !item.adminRead) ? `<button class="fb-foot-btn" onclick="markFeedbackRead('${item._id}',this)">✓ Đánh dấu đã xem</button>` : '';
+    card.innerHTML = `<div class="fb-item-body"><div class="fb-item-meta">${unreadDot}${fmt(item.createdAt)}</div><div class="fb-item-text">${esc(item.content)}</div></div>${replyHtml}<div class="fb-item-foot"><span class="fb-foot-time">${item.adminReply?'Đã phản hồi':'Chờ phản hồi'}</span>${markReadBtn}<button class="fb-foot-btn" onclick="openReply('${item._id}')">↩ Phản hồi</button><button class="fb-foot-btn del" onclick="deleteFeedback('${item._id}',this)">✕</button></div>`;
+    el.appendChild(card);
+  });
+}
+
+async function markFeedbackRead(id, btn) {
+  btn.disabled = true;
+  try {
+    await fetch('/api/admin/feedback/mark-read', {
+      method: 'POST', credentials: 'include',
+      headers: { ...authH(), 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ids: [id] }),
+    });
+  } catch { btn.disabled = false; return; }
+  const card = document.querySelector(`.fb-item[data-fbid="${id}"]`);
+  if (card) {
+    card.classList.remove('fb-unread');
+    card.querySelector('.unread-dot')?.remove();
+    btn.remove();
+  }
+  // Cập nhật badge
+  const badge = document.getElementById('fb-badge');
+  if (badge) {
+    const cur = parseInt(badge.textContent) || 0;
+    const next = cur - 1;
+    if (next <= 0) badge.style.display = 'none';
+    else badge.textContent = next > 99 ? '99+' : next;
+  }
+}
+
+async function deleteFeedback(id, btn) {
+  if (!await showConfirm('Xóa phản hồi này?', 'Xóa')) return;
+  btn.disabled = true;
+  await fetch(`/api/admin/feedback/${id}`, { method:'DELETE', credentials:'include', headers:authH() });
+  loadFeedback();
+  checkFeedbackBadge();
+}
+
+async function clearAllFeedback() {
+  if (!await showConfirm('Xóa tất cả phản hồi? Không thể hoàn tác.', 'Xóa hết')) return;
+  const res = await fetch('/api/admin/feedback', { headers:authH() });
+  const items = await res.json();
+  await Promise.all(items.map(i => fetch(`/api/admin/feedback/${i._id}`, { method:'DELETE', credentials:'include', headers:authH() })));
+  loadFeedback();
+  checkFeedbackBadge();
+}
+
+// ── Reply modal ──
+let replyFbId = null;
+function openReply(id) { replyFbId = id; document.getElementById('reply-ta').value=''; document.getElementById('reply-msg').className='msg-box'; document.getElementById('reply-overlay').classList.add('open'); }
+function closeReply() { document.getElementById('reply-overlay').classList.remove('open'); }
+function closeReplyBg(e) { if(e.target===document.getElementById('reply-overlay')) closeReply(); }
+async function sendReply() {
+  const text = document.getElementById('reply-ta').value.trim();
+  const msg = document.getElementById('reply-msg'); const btn = document.getElementById('reply-send-btn');
+  msg.className='msg-box'; if(!text){msg.textContent='Vui lòng nhập nội dung';msg.className='msg-box err';return;}
+  btn.disabled=true; btn.textContent='Đang gửi…';
+  try {
+    const res = await fetch(`/api/admin/feedback/${replyFbId}/reply`, { method:'POST', credentials:'include', headers:authH(), body:JSON.stringify({reply:text}) });
+    if(!res.ok){const d=await res.json();msg.textContent=d.error||'Lỗi';msg.className='msg-box err';return;}
+    msg.textContent='✓ Đã gửi phản hồi!'; msg.className='msg-box ok';
+    setTimeout(()=>{closeReply();loadFeedback();checkFeedbackBadge();},900);
+  } catch {msg.textContent='Lỗi kết nối';msg.className='msg-box err';}
+  finally {btn.disabled=false;btn.textContent='Gửi phản hồi';}
+}
+
+// ── Admin settings ──
+function openAdminSettings() { document.getElementById('admin-settings-overlay').classList.add('open'); ['as-username','as-cur-pw','as-new-pw'].forEach(id=>{document.getElementById(id).value=''}); document.getElementById('as-msg').className='msg-box'; }
+function closeAdminSettings() { document.getElementById('admin-settings-overlay').classList.remove('open'); }
+function closeAdminSettingsBg(e) { if(e.target===document.getElementById('admin-settings-overlay')) closeAdminSettings(); }
+async function saveAdminSettings() {
+  const newUsername = document.getElementById('as-username').value.trim();
+  const currentPassword = document.getElementById('as-cur-pw').value;
+  const newPassword = document.getElementById('as-new-pw').value;
+  const msg = document.getElementById('as-msg'); const btn = document.getElementById('as-save-btn');
+  msg.className='msg-box';
+  if (!currentPassword){msg.textContent='Vui lòng nhập mật khẩu hiện tại';msg.className='msg-box err';return;}
+  btn.disabled=true;btn.textContent='Đang lưu…';
+  try {
+    const res = await fetch('/api/admin/settings', { method:'POST', credentials:'include', headers:authH(), body:JSON.stringify({newUsername,currentPassword,newPassword:newPassword||undefined}) });
+    const data = await res.json();
+    if(!res.ok){msg.textContent=data.error||'Lỗi';msg.className='msg-box err';return;}
+    msg.textContent='✓ Lưu thành công!';msg.className='msg-box ok';
+    setTimeout(()=>closeAdminSettings(),1200);
+  } catch {msg.textContent='Lỗi kết nối';msg.className='msg-box err';}
+  finally{btn.disabled=false;btn.textContent='Lưu thay đổi';}
+}
+
+// ── Logout / keyboard ──
+async function logout() {
+  try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); } catch {}
+  localStorage.clear();
+  location.href = '/admin';
+}
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeDetail();closeAnalyze();closeFeedbackPanel();closeReply();closeAdminSettings(); } });
+
+// ── Panel resize ──
+(function () {
+  const MIN_W = 80, MAX_W = 560;
+  const HANDLES = [
+    { id: 'resizer-1', panelId: 'panel-classes',   key: 'adm_w_cls'  },
+    { id: 'resizer-2', panelId: 'panel-students',  key: 'adm_w_stu'  },
+    { id: 'resizer-3', panelId: 'sub-convs',       key: 'adm_w_cnv'  },
+  ];
+  // Restore saved widths on load
+  HANDLES.forEach(({ panelId, key }) => {
+    const saved = parseInt(localStorage.getItem(key), 10);
+    if (saved >= MIN_W && saved <= MAX_W) {
+      const el = document.getElementById(panelId);
+      if (el) el.style.width = saved + 'px';
+    }
+  });
+  HANDLES.forEach(({ id, panelId, key }) => {
+    const resizer = document.getElementById(id);
+    const panel   = document.getElementById(panelId);
+    if (!resizer || !panel) return;
+    // Double-click resets to default
+    resizer.addEventListener('dblclick', () => {
+      panel.style.width = '';
+      localStorage.removeItem(key);
+    });
+    resizer.addEventListener('mousedown', e => {
+      if (window.innerWidth <= 768) return;
+      e.preventDefault();
+      const startX = e.clientX;
+      const startW = panel.getBoundingClientRect().width;
+      resizer.classList.add('dragging');
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      function onMove(ev) {
+        const w = Math.max(MIN_W, Math.min(MAX_W, startW + ev.clientX - startX));
+        panel.style.width = w + 'px';
+      }
+      function onUp() {
+        resizer.classList.remove('dragging');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        localStorage.setItem(key, Math.round(panel.getBoundingClientRect().width));
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+})();
+
+// ── Init ──
+loadStats(); loadClasses(); checkFeedbackBadge(); checkAppealsBadge();
 </script>
 </body>
 </html>

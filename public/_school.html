@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Axon AI — Đăng nhập</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#050508;--surface:#0d0d14;--surface2:#12121e;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --accent:#7c5cfc;--accent2:#00e5ff;--accent-soft:rgba(124,92,252,.15);
+  --text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;
+  --danger:#f87171;--success:#34d399
+}
+html,body{height:100%;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-feature-settings:'calt','kern','liga';
+  display:flex;align-items:center;justify-content:center;
+  min-height:100vh;padding:20px;overflow:hidden
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4
+}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.bg-orb-1{width:600px;height:600px;background:radial-gradient(circle,#7c5cfc,transparent);opacity:.07;top:-150px;left:-150px;animation:orb1 22s ease-in-out infinite}
+.bg-orb-2{width:500px;height:500px;background:radial-gradient(circle,#00e5ff,transparent);opacity:.06;bottom:-120px;right:-100px;animation:orb2 28s ease-in-out infinite}
+.bg-orb-3{width:350px;height:350px;background:radial-gradient(circle,#9c5cfc,transparent);opacity:.04;top:45%;left:45%;animation:orb3 18s ease-in-out infinite}
+@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(80px,100px)}}
+@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-80px,-70px)}}
+@keyframes orb3{0%,100%{transform:scale(1)}50%{transform:scale(1.35)}}
+.card{
+  position:relative;z-index:10;background:var(--surface);
+  border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:40px 36px;
+  width:100%;max-width:420px;
+  box-shadow:0 40px 80px rgba(0,0,0,.55),0 0 0 1px rgba(124,92,252,.05);
+  animation:cardIn .55s cubic-bezier(.22,1,.36,1) both
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+.logo{display:flex;align-items:center;gap:10px;margin-bottom:28px;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:-.03em;color:white}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:11px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;box-shadow:0 4px 20px rgba(124,92,252,.4)}
+.logo-icon::after{content:'';position:absolute;top:-50%;left:-60%;width:40%;height:200%;background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);animation:logoShimmer 4s ease-in-out infinite}
+@keyframes logoShimmer{0%{left:-60%}40%,100%{left:130%}}
+.heading{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.65rem;letter-spacing:-.03em;color:white;text-align:center;margin-bottom:6px;line-height:1.2}
+.sub{font-size:.85rem;color:var(--muted);text-align:center;margin-bottom:28px;line-height:1.6}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.field label{font-size:.8rem;font-weight:600;color:var(--muted2);letter-spacing:.01em}
+.field .hint{font-size:.72rem;color:var(--muted);font-family:'Courier New',monospace;line-height:1.5}
+.input-wrap{position:relative}
+.s-input{background:var(--surface2);border:1px solid var(--border2);border-radius:11px;padding:12px 14px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+.s-input:focus{border-color:rgba(124,92,252,.55);box-shadow:0 0 0 3px rgba(124,92,252,.1)}
+.s-input::placeholder{color:var(--muted)}
+.s-input.mono{font-family:'Courier New',monospace;letter-spacing:.06em}
+.pw-input{padding-right:44px}
+.pw-toggle{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:28px;height:28px;background:none;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;transition:color .15s;border-radius:6px;padding:0;flex-shrink:0}
+.pw-toggle:hover{color:var(--muted2)}
+@keyframes shake{0%,100%{transform:translateX(0)}15%{transform:translateX(-6px)}30%{transform:translateX(6px)}45%{transform:translateX(-4px)}60%{transform:translateX(4px)}75%{transform:translateX(-2px)}90%{transform:translateX(2px)}}
+.field.shake .s-input{animation:shake .45s cubic-bezier(.36,.07,.19,.97) both;border-color:rgba(248,113,113,.5)!important;box-shadow:0 0 0 3px rgba(248,113,113,.08)!important}
+.btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,var(--accent),#9c7dff);border:none;border-radius:11px;color:white;font-family:'Plus Jakarta Sans',sans-serif;font-size:.92rem;font-weight:700;cursor:pointer;transition:opacity .2s,transform .15s,box-shadow .2s;margin-top:6px;position:relative;overflow:hidden;box-shadow:0 4px 20px rgba(124,92,252,.3)}
+.btn-primary:hover:not(:disabled){opacity:.92;transform:translateY(-1px);box-shadow:0 8px 28px rgba(124,92,252,.4)}
+.btn-primary:active:not(:disabled){transform:translateY(0) scale(.99)}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-primary::after{content:'';position:absolute;top:0;left:-80%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);animation:btnShimmer 3s ease-in-out infinite}
+@keyframes btnShimmer{0%{left:-80%}40%,100%{left:120%}}
+.btn-spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font-size:.8rem;padding:10px 13px;border-radius:9px;margin-top:12px;display:none;align-items:center;gap:8px;line-height:1.5}
+.msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:flex}
+.msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--success);display:flex}
+.divider{height:1px;background:var(--border);margin:20px 0}
+.footer-txt{font-size:.74rem;color:var(--muted);text-align:center;line-height:1.6}
+@media(max-width:480px){.card{padding:28px 22px;border-radius:20px;margin:8px}.heading{font-size:1.4rem}.logo{margin-bottom:20px}body{padding:12px}}
+@media(max-width:360px){.card{padding:22px 16px}.heading{font-size:1.25rem}}
+</style>
+</head>
+<body>
+<div class="bg-orbs">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+  <div class="bg-orb bg-orb-3"></div>
+</div>
+<div class="card">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    Axon AI
+  </div>
+  <div class="heading">Xin chào 👋</div>
+  <div class="sub">Đăng nhập để bắt đầu học tập cùng AI</div>
+  <form onsubmit="doLogin(event)" autocomplete="on">
+    <div class="field" id="field-cccd">
+      <label for="cccd">Số định danh cá nhân (CCCD)</label>
+      <div class="input-wrap">
+        <input class="s-input mono" type="text" id="cccd" name="username"
+          placeholder="000000000000" maxlength="12" inputmode="numeric"
+          required autocomplete="username">
+      </div>
+    </div>
+    <div class="field" id="field-pw">
+      <label for="pw">Mật khẩu</label>
+      <div class="input-wrap">
+        <input class="s-input pw-input" type="password" id="pw" name="password"
+          placeholder="••••••••" required autocomplete="current-password">
+        <button type="button" class="pw-toggle" id="pw-eye" onclick="togglePw()" title="Hiện/ẩn mật khẩu" aria-label="Hiện mật khẩu">
+          <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+      <span class="hint">Mặc định: ngày sinh DDMMYYYY &nbsp;(vd: <span style="color:var(--accent2)">02032014</span>)</span>
+    </div>
+    <div class="msg" id="msg"></div>
+    <button class="btn-primary" type="submit" id="btn">Đăng nhập</button>
+  </form>
+  <div class="divider"></div>
+  <div class="footer-txt">Hệ thống học tập AI · Dành cho học sinh trường</div>
+</div>
+<script>
+(async () => {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (r.ok) { const d = await r.json(); location.href = d.role === 'admin' ? '/admin.html' : '/chat.html'; }
+  } catch {}
+})();
+let _pwVisible = false;
+function togglePw() {
+  _pwVisible = !_pwVisible;
+  document.getElementById('pw').type = _pwVisible ? 'text' : 'password';
+  const NS = 'http://www.w3.org/2000/svg';
+  const svg = document.getElementById('eye-icon');
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  if (_pwVisible) {
+    const p = document.createElementNS(NS,'path'); p.setAttribute('d','M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24');
+    const l = document.createElementNS(NS,'line'); l.setAttribute('x1','1');l.setAttribute('y1','1');l.setAttribute('x2','23');l.setAttribute('y2','23');
+    svg.appendChild(p);svg.appendChild(l);
+  } else {
+    const p = document.createElementNS(NS,'path'); p.setAttribute('d','M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z');
+    const c = document.createElementNS(NS,'circle'); c.setAttribute('cx','12');c.setAttribute('cy','12');c.setAttribute('r','3');
+    svg.appendChild(p);svg.appendChild(c);
+  }
+}
+function shakeField(id) {
+  const f = document.getElementById(id); f.classList.remove('shake'); void f.offsetWidth; f.classList.add('shake');
+  setTimeout(() => f.classList.remove('shake'), 500);
+}
+async function doLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn'), msg = document.getElementById('msg');
+  const cccd = document.getElementById('cccd').value.trim(), pw = document.getElementById('pw').value;
+  msg.className = 'msg'; btn.disabled = true;
+  btn.innerHTML = '<span class="btn-spinner"></span>Đang xác thực…';
+  try {
+    const res = await fetch('/api/auth/login', { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body:JSON.stringify({cccd, password:pw}) });
+    const data = await res.json();
+    if (!res.ok) {
+      msg.textContent = '⚠ ' + (data.error || 'Đăng nhập thất bại'); msg.className = 'msg err';
+      shakeField('field-cccd'); shakeField('field-pw'); btn.disabled = false; btn.textContent = 'Đăng nhập'; return;
+    }
+    localStorage.setItem('hc_role', data.role); localStorage.setItem('hc_fullName', data.fullName);
+    localStorage.setItem('hc_className', data.className||''); localStorage.setItem('hc_gender', data.gender||'');
+    localStorage.setItem('hc_dob', data.dob||''); localStorage.setItem('hc_mustChangePw', data.mustChangePassword ? '1':'0');
+    btn.textContent = '✓ Thành công!';
+    setTimeout(() => { location.href = data.role === 'admin' ? '/admin.html' : '/chat.html'; }, 350);
+  } catch {
+    msg.textContent = '⚠ Lỗi kết nối server. Vui lòng thử lại.'; msg.className = 'msg err';
+    btn.disabled = false; btn.textContent = 'Đăng nhập';
+  }
+}
+</script>
+</body>
+</html>
