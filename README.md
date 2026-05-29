@@ -93,6 +93,7 @@ GROQ_API_KEY_2=
 GROQ_API_KEY_3=
 GROQ_API_KEY_4=
 GROQ_API_KEY_5=
+GROQ_API_KEY_6=
 
 # Groq moderation
 GROQ_MOD_KEY_1=gsk_xxx
