@@ -72,10 +72,30 @@ router.get('/me', async (req, res) => {
 });
 
 // ── GET /api/teacher/stats ────────────────────────────
-router.get('/stats', async (_req, res) => {
+// Fix: totalStudents/totalClasses must match teacher's assignedClasses
+router.get('/stats', async (req, res) => {
   try {
-    const students = await SchoolUserModel.find({ role: 'student' }).lean();
-    const classes = [...new Set(students.map(s => s.className).filter(Boolean))];
+    // Resolve assignedClasses like in /api/teacher/classes
+    let assignedClasses = [];
+
+    const emailTeacher = await EmailUserModel.findById(req.user.id);
+    if (emailTeacher) {
+      assignedClasses = emailTeacher.assignedClasses ?? [];
+    } else {
+      const schoolTeacher = await SchoolUserModel.findById(req.user.id);
+      assignedClasses = schoolTeacher?.assignedClasses ?? [];
+    }
+
+    // If not configured yet, fall back to all classes that exist
+    const allStudents = await SchoolUserModel.find({ role: 'student', className: { $ne: '' } }).lean();
+    const allClasses = [...new Set(allStudents.map(s => s.className).filter(Boolean))];
+
+    if (!assignedClasses.length) assignedClasses = allClasses;
+
+    const existing = new Set(allClasses);
+    const classes = assignedClasses.filter(c => existing.has(c)).sort(sortClasses);
+
+    const students = allStudents.filter(s => classes.includes(s.className));
 
     const chatDBs = await getAllChatModels();
     const [convCounts, msgCounts] = await Promise.all([
@@ -87,7 +107,7 @@ router.get('/stats', async (_req, res) => {
 
     res.json({
       totalStudents: students.length,
-      totalClasses:  classes.length,
+      totalClasses: classes.length,
       totalConvs,
       totalMsgs,
     });
