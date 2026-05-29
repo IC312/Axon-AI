@@ -2,8 +2,16 @@
 const router = require('express').Router();
 const { v4: uuidv4 } = require('uuid');
 const { authMiddleware, adminMiddleware } = require('../middleware/auth');
-const { getCollection, getUserModel, clearCollectionCache } = require('../db');
+const { getCollection, clearCollectionCache } = require('../db');
+const { SchoolUserModel, EmailUserModel } = require('../db-supabase');
 const { moderateText, keywordBlock, isTitleGibberish } = require('../middleware/moderation');
+
+// Helper function to find user from either table
+async function findUserById(userId) {
+  let user = await EmailUserModel.findById(userId);
+  if (!user) user = await SchoolUserModel.findById(userId);
+  return user;
+}
 
 const now = () => new Date().toISOString();
 
@@ -297,8 +305,7 @@ router.post('/comments/:id/vote', authMiddleware, async (req, res) => {
 // Warnings được lưu trong user.forumWarnings[] để tránh tạo collection mới
 router.get('/warnings', authMiddleware, async (req, res) => {
   try {
-    const UserModel = getUserModel();
-    const user = await UserModel.findById(String(req.user.id));
+    const user = await findUserById(String(req.user.id));
     if (!user) return res.json([]);
     const unread = (user.forumWarnings || []).filter(w => !w.read);
     if (unread.length > 0) {
@@ -313,7 +320,6 @@ router.get('/warnings', authMiddleware, async (req, res) => {
 async function runForumScan() {
   const pCol      = await postsCol();
   const cCol      = await cmtsCol();
-  const UserModel = getUserModel();
 
   // Incremental: chỉ lấy bài/comment chưa scan (dữ liệu cũ trước khi có moderation)
   const allPosts    = await pCol.find({}, { limit: 2000 }).toArray();
@@ -676,8 +682,7 @@ router.post('/admin/appeals/post/:id/approve', adminMiddleware, async (req, res)
       'appeal.status': 'approved', 'appeal.resolvedAt': now(), 'appeal.adminNote': adminNote,
     }});
     // Thông báo cho học sinh
-    const UserModel = getUserModel();
-    const u = await UserModel.findById(String(post.authorId));
+    const u = await findUserById(String(post.authorId));
     if (u) {
       u.forumWarnings = [...(u.forumWarnings || []), {
         _id: uuidv4(), type: 'appeal_approved',
@@ -700,8 +705,7 @@ router.post('/admin/appeals/post/:id/reject', adminMiddleware, async (req, res) 
     await col.updateOne({ _id: req.params.id }, { $set: {
       'appeal.status': 'rejected', 'appeal.resolvedAt': now(), 'appeal.adminNote': adminNote,
     }});
-    const UserModel = getUserModel();
-    const u = await UserModel.findById(String(post.authorId));
+    const u = await findUserById(String(post.authorId));
     if (u) {
       u.forumWarnings = [...(u.forumWarnings || []), {
         _id: uuidv4(), type: 'appeal_rejected',
@@ -724,8 +728,7 @@ router.post('/admin/appeals/comment/:id/approve', adminMiddleware, async (req, r
     await col.updateOne({ _id: req.params.id }, { $set: {
       'appeal.status': 'approved', 'appeal.resolvedAt': now(), 'appeal.adminNote': adminNote,
     }});
-    const UserModel = getUserModel();
-    const u = await UserModel.findById(String(cmt.authorId));
+    const u = await findUserById(String(cmt.authorId));
     if (u) {
       u.forumWarnings = [...(u.forumWarnings || []), {
         _id: uuidv4(), type: 'appeal_approved',
@@ -748,8 +751,7 @@ router.post('/admin/appeals/comment/:id/reject', adminMiddleware, async (req, re
     await col.updateOne({ _id: req.params.id }, { $set: {
       'appeal.status': 'rejected', 'appeal.resolvedAt': now(), 'appeal.adminNote': adminNote,
     }});
-    const UserModel = getUserModel();
-    const u = await UserModel.findById(String(cmt.authorId));
+    const u = await findUserById(String(cmt.authorId));
     if (u) {
       u.forumWarnings = [...(u.forumWarnings || []), {
         _id: uuidv4(), type: 'appeal_rejected',

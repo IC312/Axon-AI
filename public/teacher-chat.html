@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Axon AI</title>
+<title>Axon AI — Chat Giáo viên</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
@@ -11,10 +11,10 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#050508;--surface:#0d0d14;--surface2:#12121e;--surface3:#181826;
+  --bg:#040a09;--surface:#0a1412;--surface2:#101e1b;--surface3:#14231f;
   --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
-  --accent:#7c5cfc;--accent2:#00e5ff;--accent-soft:rgba(124,92,252,.15);
-  --text:#e8e8f0;--muted:#6b6b80;--muted2:#9090a8;
+  --accent:#0d9488;--accent2:#22d3ee;--accent-soft:rgba(13,148,136,.15);
+  --text:#e8f0ef;--muted:#6b7f7d;--muted2:#90a8a5;
   --success:#34d399;--danger:#f87171;--warning:#fbbf24;
   --bubble-font:'Plus Jakarta Sans',sans-serif;--bubble-size:.86rem
 }
@@ -34,8 +34,8 @@ body::before{
 }
 .bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
-.bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,#7c5cfc,transparent);opacity:.06;top:-100px;left:-100px;animation:orb1 20s ease-in-out infinite}
-.bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,#00e5ff,transparent);opacity:.05;bottom:-100px;right:-80px;animation:orb2 25s ease-in-out infinite}
+.bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,#0d9488,transparent);opacity:.07;top:-100px;left:-100px;animation:orb1 22s ease-in-out infinite}
+.bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,#22d3ee,transparent);opacity:.05;bottom:-80px;right:-80px;animation:orb2 28s ease-in-out infinite}
 @keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,80px)}}
 @keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-60px)}}
 
@@ -83,11 +83,11 @@ body::before{
 .logo-text{transition:opacity .2s}
 
 .user-card{
-  background:var(--accent-soft);border:1px solid rgba(124,92,252,.2);
+  background:var(--accent-soft);border:1px solid rgba(13,148,136,.2);
   border-radius:11px;padding:9px 11px;margin:10px 12px 0;cursor:pointer;
   transition:background .15s;position:relative;overflow:hidden
 }
-.user-card:hover{background:rgba(124,92,252,.2)}
+.user-card:hover{background:rgba(13,148,136,.2)}
 .uc-row{display:flex;align-items:center;gap:8px}
 .uc-av{
   width:28px;height:28px;background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -96,13 +96,13 @@ body::before{
   font-family:'Bricolage Grotesque',sans-serif;flex-shrink:0
 }
 .uc-name{font-size:.8rem;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.uc-meta{font-size:.67rem;color:#c4b5fd;margin-top:1px;font-family:'Courier New',monospace}
-.uc-hint{font-size:.65rem;color:rgba(196,181,253,.6);margin-top:4px}
+.uc-meta{font-size:.67rem;color:#5eead4;margin-top:1px;font-family:'Courier New',monospace}
+.uc-hint{font-size:.65rem;color:rgba(94,234,212,.6);margin-top:4px}
 
 .new-chat-btn{
   width:calc(100% - 24px);display:flex;align-items:center;gap:8px;
-  background:var(--accent-soft);border:1px solid rgba(124,92,252,.25);
-  border-radius:10px;padding:8px 12px;color:#c4b5fd;
+  background:var(--accent-soft);border:1px solid rgba(13,148,136,.25);
+  border-radius:10px;padding:8px 12px;color:#5eead4;
   font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.8rem;
   cursor:pointer;margin:9px 12px 0;transition:background .2s;
   position:relative;overflow:hidden
@@ -113,7 +113,7 @@ body::before{
   animation:btnSh 3s ease-in-out infinite
 }
 @keyframes btnSh{0%{left:-80%}40%,100%{left:120%}}
-.new-chat-btn:hover{background:rgba(124,92,252,.22)}
+.new-chat-btn:hover{background:rgba(13,148,136,.22)}
 
 .sidebar-nav{flex:1;min-height:0;overflow-y:auto;padding:5px 10px}
 .sidebar-nav::-webkit-scrollbar{width:3px}
@@ -126,7 +126,7 @@ body::before{
   transition:background .12s,color .12s;border:none;background:transparent;
   width:100%;text-align:left
 }
-.conv-item.active{background:rgba(124,92,252,.14);color:#c4b5fd}
+.conv-item.active{background:rgba(13,148,136,.14);color:#5eead4}
 .conv-item:hover:not(.active){background:rgba(255,255,255,.03);color:var(--text)}
 .conv-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
 .conv-time{font-size:.6rem;color:var(--muted);font-family:'Courier New',monospace;white-space:nowrap;flex-shrink:0}
@@ -224,7 +224,7 @@ body::before{
   flex-shrink:0;transition:all .15s
 }
 .menu-btn:hover{background:rgba(255,255,255,.05);color:var(--text)}
-.menu-btn.active{background:rgba(124,92,252,.1);border-color:rgba(124,92,252,.3);color:var(--accent)}
+.menu-btn.active{background:rgba(13,148,136,.1);border-color:rgba(13,148,136,.3);color:var(--accent)}
 .topbar-title{
   font-family:'Bricolage Grotesque',sans-serif;font-weight:700;
   font-size:.88rem;color:white;flex:1;
@@ -237,7 +237,7 @@ body::before{
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;transition:all .15s
 }
-.icon-btn:hover{background:rgba(124,92,252,.1);border-color:rgba(124,92,252,.3);color:var(--accent)}
+.icon-btn:hover{background:rgba(13,148,136,.1);border-color:rgba(13,148,136,.3);color:var(--accent)}
 .status-pill{
   display:flex;align-items:center;gap:5px;padding:4px 9px;
   background:rgba(0,229,255,.07);border:1px solid rgba(0,229,255,.15);
@@ -264,7 +264,7 @@ body::before{
   opacity:0;pointer-events:none;transform:translateY(8px)
 }
 .scroll-btn.show{opacity:1;pointer-events:all;transform:translateY(0)}
-.scroll-btn:hover{background:var(--surface2);border-color:rgba(124,92,252,.3);color:var(--accent)}
+.scroll-btn:hover{background:var(--surface2);border-color:rgba(13,148,136,.3);color:var(--accent)}
 
 /* Welcome screen */
 .welcome{
@@ -276,13 +276,13 @@ body::before{
   width:58px;height:58px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
   border-radius:16px;display:flex;align-items:center;justify-content:center;
-  margin-bottom:18px;box-shadow:0 0 40px rgba(124,92,252,.3);
+  margin-bottom:18px;box-shadow:0 0 40px rgba(13,148,136,.3);
   animation:iconFloat 4s ease-in-out infinite;color:white;padding:13px
 }
 .welcome-icon .ui-icon-svg,.welcome-icon svg{width:30px;height:30px;stroke-width:1.5;color:white}
 @keyframes iconFloat{
-  0%,100%{transform:translateY(0);box-shadow:0 0 40px rgba(124,92,252,.3)}
-  50%{transform:translateY(-8px);box-shadow:0 12px 50px rgba(124,92,252,.5)}
+  0%,100%{transform:translateY(0);box-shadow:0 0 40px rgba(13,148,136,.3)}
+  50%{transform:translateY(-8px);box-shadow:0 12px 50px rgba(13,148,136,.5)}
 }
 .welcome h2{
   font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
@@ -304,11 +304,11 @@ body::before{
 .sug-card:nth-child(1){animation-delay:.05s}.sug-card:nth-child(2){animation-delay:.12s}
 .sug-card:nth-child(3){animation-delay:.19s}.sug-card:nth-child(4){animation-delay:.26s}
 @keyframes cardIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.sug-card:hover{border-color:rgba(124,92,252,.38);background:var(--surface2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.sug-card:hover{border-color:rgba(13,148,136,.38);background:var(--surface2);transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .sug-card:active{transform:scale(.97)}
 .sug-card::after{
   content:'↗';position:absolute;right:10px;top:10px;
-  font-size:.65rem;color:rgba(124,92,252,.55);
+  font-size:.65rem;color:rgba(13,148,136,.55);
   opacity:0;transition:opacity .15s,transform .15s}
 .sug-card:hover::after{opacity:1;transform:translate(2px,-2px)}
 .sug-title{font-weight:700;font-size:.81rem;color:white;margin-bottom:3px;letter-spacing:-.01em}
@@ -328,9 +328,9 @@ body::before{
 }
 .avatar-ai{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
 .avatar-user{
-  background:linear-gradient(135deg,var(--accent),#9c7dff);color:white;
+  background:linear-gradient(135deg,var(--accent),#14b8a6);color:white;
   font-size:.72rem;font-family:'Bricolage Grotesque',sans-serif;
-  box-shadow:0 0 10px rgba(124,92,252,.35)
+  box-shadow:0 0 10px rgba(13,148,136,.35)
 }
 .msg-content{max-width:80%;display:flex;flex-direction:column;gap:3px}
 .msg-row.user .msg-content{align-items:flex-end}
@@ -342,15 +342,15 @@ body::before{
 }
 .bubble-ai{background:var(--surface);border:1px solid var(--border);color:var(--text);border-top-left-radius:4px}
 .bubble-user{
-  background:linear-gradient(135deg,rgba(124,92,252,.28),rgba(124,92,252,.14));
-  border:1px solid rgba(124,92,252,.22);color:var(--text);border-top-right-radius:4px;white-space:normal
+  background:linear-gradient(135deg,rgba(13,148,136,.28),rgba(13,148,136,.14));
+  border:1px solid rgba(13,148,136,.22);color:var(--text);border-top-right-radius:4px;white-space:normal
 }
 
 /* AI bubble content styles */
 .bubble-ai strong{color:white;font-weight:600}
-.bubble-ai em{color:#c4b5fd}
+.bubble-ai em{color:#5eead4}
 .bubble-ai code{
-  background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.2);
+  background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.2);
   border-radius:5px;padding:1px 5px;font-family:'Courier New',monospace;
   font-size:.81em;color:var(--accent2);word-break:break-all
 }
@@ -412,7 +412,7 @@ body::before{
   transition:border-color .2s,box-shadow .2s;overflow:hidden
 }
 .input-wrapper:focus-within{
-  border-color:rgba(124,92,252,.45);box-shadow:0 0 0 3px rgba(124,92,252,.08)
+  border-color:rgba(13,148,136,.45);box-shadow:0 0 0 3px rgba(13,148,136,.08)
 }
 .input-row{display:flex;align-items:flex-end;gap:9px;padding:8px 11px 10px}
 textarea{
@@ -429,7 +429,7 @@ textarea::placeholder{color:var(--muted)}
 }
 .send-btn:hover:not(:disabled){opacity:.85;transform:scale(1.05)}
 .send-btn:active:not(:disabled){transform:scale(.95)}
-.send-btn:disabled{background:rgba(124,92,252,.3);cursor:not-allowed;transform:none}
+.send-btn:disabled{background:rgba(13,148,136,.3);cursor:not-allowed;transform:none}
 .input-hint{max-width:760px;margin:6px auto 0;text-align:center;font-size:.68rem;color:var(--muted)}
 
 /* ══ MODALS ══ */
@@ -469,7 +469,7 @@ textarea::placeholder{color:var(--muted)}
   border-radius:13px;display:flex;align-items:center;justify-content:center;
   font-size:1.3rem;font-weight:800;color:white;
   font-family:'Bricolage Grotesque',sans-serif;
-  margin:0 auto 16px;box-shadow:0 0 28px rgba(124,92,252,.3)
+  margin:0 auto 16px;box-shadow:0 0 28px rgba(13,148,136,.3)
 }
 .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px}
 .info-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px}
@@ -487,7 +487,7 @@ textarea::placeholder{color:var(--muted)}
   padding:10px 13px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
   font-size:.86rem;outline:none;transition:border-color .2s,box-shadow .2s;width:100%
 }
-.s-input:focus{border-color:rgba(124,92,252,.5);box-shadow:0 0 0 3px rgba(124,92,252,.08)}
+.s-input:focus{border-color:rgba(13,148,136,.5);box-shadow:0 0 0 3px rgba(13,148,136,.08)}
 .s-input::placeholder{color:var(--muted)}
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
@@ -508,7 +508,7 @@ input:-webkit-autofill:active {
 
 .pw-save-btn{
   padding:10px;border-radius:10px;border:none;
-  background:linear-gradient(135deg,var(--accent),#9c7dff);color:white;
+  background:linear-gradient(135deg,var(--accent),#14b8a6);color:white;
   font-weight:700;font-size:.85rem;cursor:pointer;
   font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s;width:100%
 }
@@ -527,7 +527,7 @@ input:-webkit-autofill:active {
   text-align:center;font-family:inherit;outline:none;
   transition:border-color .2s,box-shadow .2s;caret-color:var(--accent)
 }
-.otp-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,252,.12)}
+.otp-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(13,148,136,.12)}
 
 /* ── Settings modal ── */
 .settings-btn{
@@ -536,7 +536,7 @@ input:-webkit-autofill:active {
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;transition:all .15s
 }
-.settings-btn:hover{background:rgba(124,92,252,.1);border-color:rgba(124,92,252,.3);color:var(--accent)}
+.settings-btn:hover{background:rgba(13,148,136,.1);border-color:rgba(13,148,136,.3);color:var(--accent)}
 .preset-grid{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
 .preset-card{
   background:var(--surface2);border:1px solid var(--border);border-radius:11px;
@@ -826,7 +826,60 @@ input:-webkit-autofill:active {
   padding:4px;border-radius:6px;transition:all .15s;line-height:1
 }
 .ann-panel-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
-.ann-feed{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.ann-post-form{padding:14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ann-target-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+.ann-target-select{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;padding:8px 10px;outline:none
+}
+.ann-target-search{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;padding:8px 10px;outline:none
+}
+.ann-target-search:focus{border-color:rgba(13,148,136,.4)}
+.ann-target-search::placeholder{color:var(--muted)}
+.ann-target-picker-wrap{display:none}
+.ann-target-pick-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0}
+.ann-target-pick-btn{
+  background:transparent;border:none;color:var(--accent2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.67rem;font-weight:600;cursor:pointer;padding:0
+}
+.ann-target-pick-btn:hover{text-decoration:underline}
+.ann-target-picker{
+  max-height:150px;overflow-y:auto;border:1px solid var(--border2);
+  border-radius:10px;background:var(--surface2);padding:4px
+}
+.ann-target-item{
+  display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:7px;
+  font-size:.78rem;cursor:pointer;line-height:1.4
+}
+.ann-target-item:hover{background:rgba(255,255,255,.04)}
+.ann-target-item input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.ann-target-pick-meta{font-size:.67rem;color:var(--muted);margin-top:4px}
+.ann-target-empty{padding:14px 8px;text-align:center;color:var(--muted);font-size:.78rem}
+.ann-target-help{font-size:.67rem;color:var(--muted);line-height:1.5}
+.ann-textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.83rem;padding:10px 12px;resize:vertical;min-height:80px;max-height:200px;
+  outline:none;transition:border-color .15s;box-sizing:border-box
+}
+.ann-textarea:focus{border-color:rgba(13,148,136,.4)}
+.ann-textarea::placeholder{color:var(--muted)}
+.ann-post-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.ann-char-count{font-size:.67rem;color:var(--muted)}
+.ann-char-count.over{color:var(--danger)}
+.ann-post-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:9px;
+  background:var(--accent);border:none;
+  color:white;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s
+}
+.ann-post-btn:hover{opacity:.85}
+.ann-feed{flex:1;min-height:0;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
 .ann-feed::-webkit-scrollbar{width:3px}
 .ann-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
 .ann-item{
@@ -910,7 +963,6 @@ input:-webkit-autofill:active {
       <div class="uc-av" id="sb-av">?</div>
       <div style="flex:1;min-width:0">
         <div class="uc-name" id="sb-name">Đang tải…</div>
-        <div class="uc-meta" id="sb-meta">—</div>
       </div>
     </div>
   </div>
@@ -974,10 +1026,10 @@ input:-webkit-autofill:active {
       <h2>Xin chào, <span id="welcome-name">bạn</span>!</h2>
       <p>Nhắn tin ngay bên dưới — Axon AI sẽ tự tạo hội thoại cho bạn.</p>
       <div class="sug-grid">
-        <div class="sug-card" onclick="useSug('Giải thích định lý Pythagore và cho ví dụ thực tế')"><div class="sug-title"><span data-icon="ruler" data-size="15" aria-hidden="true"></span><span>Giải thích định lý</span></div><div class="sug-desc">Toán học dễ hiểu hơn</div></div>
-        <div class="sug-card" onclick="useSug('Tóm tắt và phân tích bài thơ Đoàn thuyền đánh cá')"><div class="sug-title"><span data-icon="book-open" data-size="15" aria-hidden="true"></span><span>Phân tích văn học</span></div><div class="sug-desc">Văn, thơ, tác phẩm</div></div>
-        <div class="sug-card" onclick="useSug('Viết chương trình Python tính diện tích các hình')"><div class="sug-title"><span data-icon="laptop" data-size="15" aria-hidden="true"></span><span>Bài tập lập trình</span></div><div class="sug-desc">Python, thuật toán</div></div>
-        <div class="sug-card" onclick="useSug('Giải bài tập: Một vật chuyển động đều với vận tốc 36 km/h. Tính quãng đường đi được trong 2,5 giờ.')"><div class="sug-title"><span data-icon="zap" data-size="15" aria-hidden="true"></span><span>Bài tập Vật lý</span></div><div class="sug-desc">Giải từng bước rõ ràng</div></div>
+        <div class="sug-card" onclick="useSug('Tạo giáo án bài Định lý Pythagore cho lớp 8 với hoạt động nhóm')"><div class="sug-title"><span data-icon="file-text" data-size="15" aria-hidden="true"></span><span>Soạn giáo án</span></div><div class="sug-desc">Thiết kế bài giảng hiệu quả</div></div>
+        <div class="sug-card" onclick="useSug('Tạo 10 câu hỏi trắc nghiệm về Chiến tranh thế giới thứ 2 có đáp án')"><div class="sug-title"><span data-icon="clipboard-list" data-size="15" aria-hidden="true"></span><span>Tạo đề kiểm tra</span></div><div class="sug-desc">Câu hỏi, bài tập, đề thi</div></div>
+        <div class="sug-card" onclick="useSug('Gợi ý hoạt động ngoại khóa về môi trường cho học sinh THCS')"><div class="sug-title"><span data-icon="users" data-size="15" aria-hidden="true"></span><span>Hoạt động ngoại khóa</span></div><div class="sug-desc">Ý tưởng sáng tạo, hấp dẫn</div></div>
+        <div class="sug-card" onclick="useSug('Phân tích điểm mạnh và cách cải thiện cho học sinh yếu môn Toán')"><div class="sug-title"><span data-icon="trending-up" data-size="15" aria-hidden="true"></span><span>Phương pháp giảng dạy</span></div><div class="sug-desc">Nâng cao chất lượng học tập</div></div>
       </div>
     </div>
   </div>
@@ -1005,14 +1057,13 @@ input:-webkit-autofill:active {
 <div class="modal-overlay" id="profile-overlay" onclick="closeProfileBg(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title"><span class="ui-icon-inline" data-icon="user" aria-hidden="true"></span><span>Hồ sơ học sinh</span></div>
+      <div class="modal-title"><span class="ui-icon-inline" data-icon="user" aria-hidden="true"></span><span>Hồ sơ giáo viên</span></div>
       <button class="modal-close" onclick="closeProfile()">✕</button>
     </div>
     <div class="modal-body">
       <div class="profile-av" id="pc-av">?</div>
       <div class="info-grid">
         <div class="info-item full"><div class="info-lbl">Họ và tên</div><div class="info-val" id="pc-name">—</div></div>
-        <div class="info-item"><div class="info-lbl">Lớp</div><div class="info-val" id="pc-class">—</div></div>
         <div class="info-item"><div class="info-lbl">Giới tính</div><div class="info-val" id="pc-gender">—</div></div>
         <div class="info-item full"><div class="info-lbl">Ngày sinh</div><div class="info-val" id="pc-dob">—</div></div>
       </div>
@@ -1233,10 +1284,10 @@ function getWelcomeHtml() {
     <h2>Xin chào, <span>${name}</span>!</h2>
     <p>Nhắn tin ngay bên dưới — Axon AI sẽ tự tạo hội thoại cho bạn.</p>
     <div class="sug-grid">
-      <div class="sug-card" onclick="useSug('Giải thích định lý Pythagore và cho ví dụ thực tế')"><div class="sug-title"><span data-icon="ruler" data-size="15" aria-hidden="true"></span><span>Giải thích định lý</span></div><div class="sug-desc">Toán học dễ hiểu hơn</div></div>
-      <div class="sug-card" onclick="useSug('Tóm tắt và phân tích bài thơ Đoàn thuyền đánh cá')"><div class="sug-title"><span data-icon="book-open" data-size="15" aria-hidden="true"></span><span>Phân tích văn học</span></div><div class="sug-desc">Văn, thơ, tác phẩm</div></div>
-      <div class="sug-card" onclick="useSug('Viết chương trình Python tính diện tích các hình')"><div class="sug-title"><span data-icon="laptop" data-size="15" aria-hidden="true"></span><span>Bài tập lập trình</span></div><div class="sug-desc">Python, thuật toán</div></div>
-      <div class="sug-card" onclick="useSug('Giải bài tập: Một vật chuyển động đều với vận tốc 36 km/h. Tính quãng đường đi được trong 2,5 giờ.')"><div class="sug-title"><span data-icon="zap" data-size="15" aria-hidden="true"></span><span>Bài tập Vật lý</span></div><div class="sug-desc">Giải từng bước rõ ràng</div></div>
+      <div class="sug-card" onclick="useSug('Tạo giáo án bài Định lý Pythagore cho lớp 8 với hoạt động nhóm')"><div class="sug-title"><span data-icon="file-text" data-size="15" aria-hidden="true"></span><span>Soạn giáo án</span></div><div class="sug-desc">Thiết kế bài giảng hiệu quả</div></div>
+      <div class="sug-card" onclick="useSug('Tạo 10 câu hỏi trắc nghiệm về Chiến tranh thế giới thứ 2 có đáp án')"><div class="sug-title"><span data-icon="clipboard-list" data-size="15" aria-hidden="true"></span><span>Tạo đề kiểm tra</span></div><div class="sug-desc">Câu hỏi, bài tập, đề thi</div></div>
+      <div class="sug-card" onclick="useSug('Gợi ý hoạt động ngoại khóa về môi trường cho học sinh THCS')"><div class="sug-title"><span data-icon="users" data-size="15" aria-hidden="true"></span><span>Hoạt động ngoại khóa</span></div><div class="sug-desc">Ý tưởng sáng tạo, hấp dẫn</div></div>
+      <div class="sug-card" onclick="useSug('Phân tích điểm mạnh và cách cải thiện cho học sinh yếu môn Toán')"><div class="sug-title"><span data-icon="trending-up" data-size="15" aria-hidden="true"></span><span>Phương pháp giảng dạy</span></div><div class="sug-desc">Nâng cao chất lượng học tập</div></div>
     </div>
   </div>`;
 }
@@ -1246,28 +1297,32 @@ setFbSubmitBtn(axonIconLabel('mail-plus', 'Gửi góp ý', 16));
 
 const API_PROXY = '/api/chat/ai';
 const fullName = localStorage.getItem('hc_fullName') || '?';
-const className = localStorage.getItem('hc_className') || '';
 const gender = localStorage.getItem('hc_gender') || '';
 const dob = localStorage.getItem('hc_dob') || '';
 const mustChange = localStorage.getItem('hc_mustChangePw') === '1';
 const authType = localStorage.getItem('hc_authType') || 'school';
 document.title = 'Axon AI – ' + fullName.split(' ').pop();
-// Kiểm tra session qua cookie (không cần token trong JS)
+// Kiểm tra session + quyền giáo viên/admin
 (async () => {
   try {
     const r = await fetch('/api/auth/me', { credentials: 'include' });
-    if (!r.ok) location.href = '/portal';
-  } catch { location.href = '/portal'; }
+    if (!r.ok) { location.href = '/login-email-teacher.html'; return; }
+    const me = await r.json();
+    if (me.role !== 'teacher' && me.role !== 'admin') {
+      location.href = '/chat.html';
+      return;
+    }
+  } catch {
+    location.href = '/login-email-teacher.html';
+  }
 })();
 
 const initials = fullName.split(' ').pop().charAt(0).toUpperCase() || '?';
 document.getElementById('sb-av').textContent = initials;
 document.getElementById('sb-name').textContent = fullName;
-document.getElementById('sb-meta').textContent = 'Lớp ' + className + ' · ' + gender;
 document.getElementById('welcome-name').textContent = fullName.split(' ').pop();
 document.getElementById('pc-av').textContent = initials;
 document.getElementById('pc-name').textContent = fullName;
-document.getElementById('pc-class').textContent = className || '—';
 document.getElementById('pc-gender').textContent = gender || '—';
 document.getElementById('pc-dob').textContent = dob || '—';
 if (mustChange) document.getElementById('pw-banner').classList.add('show');
@@ -2083,6 +2138,32 @@ checkFbMineBadge();
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
+    <div class="ann-post-form" id="ann-post-form">
+      <div class="ann-target-grid">
+        <select class="ann-target-select" id="ann-target-scope" onchange="onAnnScopeChange()">
+          <option value="all" selected>Toàn trường (mặc định)</option>
+          <option value="students">Theo học sinh</option>
+        </select>
+        <div class="ann-target-picker-wrap" id="ann-target-picker-wrap">
+          <input type="search" class="ann-target-search" id="ann-target-search" placeholder="Tìm theo tên…" oninput="filterAnnTargetList()">
+          <div class="ann-target-pick-actions">
+            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(true)">Chọn các mục đang hiện</button>
+            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(false)">Bỏ chọn</button>
+          </div>
+          <div class="ann-target-picker" id="ann-target-picker"></div>
+          <div class="ann-target-pick-meta" id="ann-target-pick-meta">0 đã chọn</div>
+        </div>
+        <div class="ann-target-help" id="ann-target-help">Mặc định gửi toàn trường. Có thể thu hẹp theo học sinh nếu cần.</div>
+      </div>
+      <textarea class="ann-textarea" id="ann-textarea" placeholder="Nhập nội dung thông báo…" maxlength="1000" oninput="annCharCount()"></textarea>
+      <div class="ann-post-row">
+        <span class="ann-char-count" id="ann-char-count">0 / 1000</span>
+        <button class="ann-post-btn" onclick="postAnnouncement()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="overflow:visible"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14l11 -11"/><path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"/></svg>
+          Gửi
+        </button>
+      </div>
+    </div>
     <div class="ann-feed" id="ann-feed">
       <div class="ann-empty">Đang tải…</div>
     </div>
@@ -2090,11 +2171,16 @@ checkFbMineBadge();
 </div>
 
 <script>
-// ── Announcement panel (read-only for students) ─────────────
+// ── Announcement panel (giáo viên: gửi + xem) ─────────────
+const _ANN_SCOPES_TEACHER = ['all', 'students'];
+let _annTargets = { allowedScopes: _ANN_SCOPES_TEACHER, classes: [], teachers: [], students: [] };
+let _annTargetOptions = [];
+let _annTargetSelected = new Set();
 let _annList = [];
 
 async function openAnnPanel() {
   document.getElementById('ann-panel-overlay').classList.add('open');
+  await loadAnnouncementTargets();
   await loadAnnouncements();
   // Mark all as seen using the newest item's timestamp
   if (_annList.length) {
@@ -2119,6 +2205,167 @@ async function loadAnnouncements() {
     renderAnnFeed();
   } catch {
     document.getElementById('ann-feed').innerHTML = '<div class="ann-empty">Không thể tải thông báo</div>';
+  }
+}
+
+function annCharCount() {
+  const ta = document.getElementById('ann-textarea');
+  const cc = document.getElementById('ann-char-count');
+  if (!ta || !cc) return;
+  const n = (ta.value || '').length;
+  cc.textContent = n + ' / 1000';
+  cc.classList.toggle('over', n > 1000);
+}
+
+async function loadAnnouncementTargets() {
+  try {
+    const r = await fetch('/api/announcements/targets', { credentials: 'include' });
+    if (r.ok) {
+      const data = await r.json();
+      if (data && !data.error) _annTargets = data;
+    }
+    if (!Array.isArray(_annTargets.allowedScopes) || !_annTargets.allowedScopes.length) {
+      _annTargets.allowedScopes = _ANN_SCOPES_TEACHER;
+    }
+    _annTargets.allowedScopes = _annTargets.allowedScopes.filter(s => _ANN_SCOPES_TEACHER.includes(s));
+    renderAnnScopeOptions();
+    onAnnScopeChange();
+  } catch {
+    _annTargets.allowedScopes = _ANN_SCOPES_TEACHER;
+    renderAnnScopeOptions();
+    onAnnScopeChange();
+  }
+}
+
+function renderAnnScopeOptions() {
+  const scopeEl = document.getElementById('ann-target-scope');
+  if (!scopeEl) return;
+  const labels = { all: 'Toàn trường (mặc định)', students: 'Theo học sinh' };
+  const scopes = (Array.isArray(_annTargets.allowedScopes) && _annTargets.allowedScopes.length
+    ? _annTargets.allowedScopes
+    : _ANN_SCOPES_TEACHER
+  ).filter(s => _ANN_SCOPES_TEACHER.includes(s));
+  scopeEl.innerHTML = scopes.map(s => `<option value="${esc(s)}">${esc(labels[s] || s)}</option>`).join('');
+  if (!scopes.includes(scopeEl.value)) scopeEl.value = scopes.includes('all') ? 'all' : (scopes[0] || 'all');
+}
+
+function buildAnnTargetOptions(scope) {
+  return (_annTargets.students || []).map(s => {
+    const label = s.fullName || 'Học sinh';
+    return { id: String(s.id), label, searchText: label.toLowerCase() };
+  });
+}
+
+function onAnnScopeChange() {
+  const scopeEl = document.getElementById('ann-target-scope');
+  const wrapEl = document.getElementById('ann-target-picker-wrap');
+  const searchEl = document.getElementById('ann-target-search');
+  const helpEl = document.getElementById('ann-target-help');
+  if (!scopeEl || !wrapEl || !helpEl) return;
+
+  const scope = scopeEl.value;
+  _annTargetSelected.clear();
+  if (searchEl) searchEl.value = '';
+
+  if (scope === 'all') {
+    wrapEl.style.display = 'none';
+    _annTargetOptions = [];
+    helpEl.textContent = 'Thông báo sẽ gửi cho toàn trường.';
+    return;
+  }
+
+  _annTargetOptions = buildAnnTargetOptions(scope);
+  helpEl.textContent = 'Tìm và chọn học sinh nhận thông báo.';
+  wrapEl.style.display = '';
+  renderAnnTargetPicker();
+}
+
+function getAnnTargetFilterQuery() {
+  return (document.getElementById('ann-target-search')?.value || '').trim().toLowerCase();
+}
+
+function getFilteredAnnTargetOptions() {
+  const q = getAnnTargetFilterQuery();
+  if (!q) return _annTargetOptions;
+  return _annTargetOptions.filter(o => o.searchText.includes(q));
+}
+
+function renderAnnTargetPicker() {
+  const picker = document.getElementById('ann-target-picker');
+  const meta = document.getElementById('ann-target-pick-meta');
+  if (!picker) return;
+
+  const filtered = getFilteredAnnTargetOptions();
+  if (!_annTargetOptions.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Chưa có dữ liệu để chọn</div>';
+  } else if (!filtered.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Không tìm thấy kết quả</div>';
+  } else {
+    picker.innerHTML = filtered.map(o => {
+      const checked = _annTargetSelected.has(o.id) ? ' checked' : '';
+      return `<label class="ann-target-item"><input type="checkbox" value="${esc(o.id)}"${checked}><span>${esc(o.label)}</span></label>`;
+    }).join('');
+    picker.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) _annTargetSelected.add(cb.value);
+        else _annTargetSelected.delete(cb.value);
+        if (meta) meta.textContent = `${_annTargetSelected.size} đã chọn`;
+      });
+    });
+  }
+
+  if (meta) {
+    const extra = filtered.length < _annTargetOptions.length ? ` · hiện ${filtered.length}/${_annTargetOptions.length}` : '';
+    meta.textContent = `${_annTargetSelected.size} đã chọn${extra}`;
+  }
+}
+
+function filterAnnTargetList() { renderAnnTargetPicker(); }
+
+function annTargetSelectVisible(all) {
+  getFilteredAnnTargetOptions().forEach(o => {
+    if (all) _annTargetSelected.add(o.id);
+    else _annTargetSelected.delete(o.id);
+  });
+  renderAnnTargetPicker();
+}
+
+function getAnnouncementTargetPayload() {
+  const scope = document.getElementById('ann-target-scope')?.value || 'all';
+  const selected = [..._annTargetSelected];
+  if (scope === 'students') return { scope, userIds: selected };
+  return { scope: 'all' };
+}
+
+async function postAnnouncement() {
+  const ta = document.getElementById('ann-textarea');
+  const content = ta.value.trim();
+  const target = getAnnouncementTargetPayload();
+  if (!content) { toast('Vui lòng nhập nội dung thông báo', 'warning'); return; }
+  if (content.length > 1000) { toast('Nội dung quá dài (tối đa 1000 ký tự)', 'warning'); return; }
+  if (target.scope !== 'all' && !(target.userIds || []).length) {
+    toast('Vui lòng chọn đối tượng nhận thông báo', 'warning');
+    return;
+  }
+  try {
+    const r = await fetch('/api/announcements', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...authH() },
+      body: JSON.stringify({ content, target }),
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Đăng thất bại', 'error'); return; }
+    ta.value = '';
+    _annTargetSelected.clear();
+    const searchEl = document.getElementById('ann-target-search');
+    if (searchEl) searchEl.value = '';
+    renderAnnTargetPicker();
+    annCharCount();
+    _annList.unshift(d);
+    renderAnnFeed();
+    toast('Đã gửi thông báo', 'success');
+  } catch {
+    toast('Lỗi kết nối', 'error');
   }
 }
 

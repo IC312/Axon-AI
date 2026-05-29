@@ -189,6 +189,14 @@ body::before{
 }
 .search-input:focus{border-color:rgba(124,92,252,.4)}
 .search-input::placeholder{color:var(--muted)}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px var(--surface2) !important;
+}
 
 .student-item{
   display:flex;align-items:center;gap:9px;padding:10px 12px;
@@ -944,6 +952,42 @@ body::before{
 }
 .ann-panel-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
 .ann-post-form{padding:14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ann-target-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+.ann-target-select{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;padding:8px 10px;outline:none
+}
+.ann-target-select[multiple]{min-height:92px}
+.ann-target-search{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;padding:8px 10px;outline:none
+}
+.ann-target-search:focus{border-color:rgba(13,148,136,.4)}
+.ann-target-search::placeholder{color:var(--muted)}
+.ann-target-picker-wrap{display:none}
+.ann-target-pick-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0}
+.ann-target-pick-btn{
+  background:transparent;border:none;color:var(--accent2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.67rem;font-weight:600;cursor:pointer;padding:0
+}
+.ann-target-pick-btn:hover{text-decoration:underline}
+.ann-target-picker{
+  max-height:150px;overflow-y:auto;border:1px solid var(--border2);
+  border-radius:10px;background:var(--surface2);padding:4px
+}
+.ann-target-picker::-webkit-scrollbar{width:4px}
+.ann-target-picker::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.ann-target-item{
+  display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:7px;
+  font-size:.78rem;cursor:pointer;line-height:1.4
+}
+.ann-target-item:hover{background:rgba(255,255,255,.04)}
+.ann-target-item input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.ann-target-pick-meta{font-size:.67rem;color:var(--muted);margin-top:4px}
+.ann-target-empty{padding:14px 8px;text-align:center;color:var(--muted);font-size:.78rem}
+.ann-target-help{font-size:.67rem;color:var(--muted);line-height:1.5}
 .ann-textarea{
   width:100%;background:var(--surface2);border:1px solid var(--border2);
   border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
@@ -1261,6 +1305,7 @@ body::before{
     </div>
     <div class="modal-body">
       <div class="form-group"><label class="form-label">Tên đăng nhập mới</label><input class="form-input" type="text" id="as-username" placeholder="Để trống nếu không đổi" autocomplete="off"></div>
+      <div class="form-group"><label class="form-label">Email khôi phục</label><input class="form-input" type="email" id="as-email" placeholder="Email nhận mã OTP khi quên mật khẩu" autocomplete="email"></div>
       <div class="form-group"><label class="form-label">Mật khẩu hiện tại</label><input class="form-input" type="password" id="as-cur-pw" placeholder="Bắt buộc để xác nhận" autocomplete="current-password"></div>
       <div class="form-group"><label class="form-label">Mật khẩu mới</label><input class="form-input" type="password" id="as-new-pw" placeholder="Để trống nếu không đổi" autocomplete="new-password"></div>
       <div class="msg-box" id="as-msg"></div>
@@ -1953,19 +1998,36 @@ async function sendReply() {
 }
 
 // ── Admin settings ──
-function openAdminSettings() { document.getElementById('admin-settings-overlay').classList.add('open'); ['as-username','as-cur-pw','as-new-pw'].forEach(id=>{document.getElementById(id).value=''}); document.getElementById('as-msg').className='msg-box'; }
+async function openAdminSettings() {
+  document.getElementById('admin-settings-overlay').classList.add('open');
+  ['as-username','as-cur-pw','as-new-pw'].forEach(id=>{document.getElementById(id).value='';});
+  document.getElementById('as-msg').className='msg-box';
+  const emailEl = document.getElementById('as-email');
+  emailEl.value = '';
+  try {
+    const res = await fetch('/api/admin/settings', { credentials:'include', headers:authH() });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.recoveryEmail) emailEl.value = data.recoveryEmail;
+    }
+  } catch {}
+}
 function closeAdminSettings() { document.getElementById('admin-settings-overlay').classList.remove('open'); }
 function closeAdminSettingsBg(e) { if(e.target===document.getElementById('admin-settings-overlay')) closeAdminSettings(); }
 async function saveAdminSettings() {
   const newUsername = document.getElementById('as-username').value.trim();
+  const recoveryEmail = document.getElementById('as-email').value.trim();
   const currentPassword = document.getElementById('as-cur-pw').value;
   const newPassword = document.getElementById('as-new-pw').value;
   const msg = document.getElementById('as-msg'); const btn = document.getElementById('as-save-btn');
   msg.className='msg-box';
   if (!currentPassword){msg.textContent='Vui lòng nhập mật khẩu hiện tại';msg.className='msg-box err';return;}
+  if (recoveryEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recoveryEmail)) {
+    msg.textContent='Email không hợp lệ'; msg.className='msg-box err'; return;
+  }
   btn.disabled=true;btn.textContent='Đang lưu…';
   try {
-    const res = await fetch('/api/admin/settings', { method:'POST', credentials:'include', headers:authH(), body:JSON.stringify({newUsername,currentPassword,newPassword:newPassword||undefined}) });
+    const res = await fetch('/api/admin/settings', { method:'POST', credentials:'include', headers:authH(), body:JSON.stringify({newUsername,recoveryEmail:recoveryEmail||undefined,currentPassword,newPassword:newPassword||undefined}) });
     const data = await res.json();
     if(!res.ok){msg.textContent=data.error||'Lỗi';msg.className='msg-box err';return;}
     msg.textContent='✓ Lưu thành công!';msg.className='msg-box ok';
@@ -2490,6 +2552,24 @@ async function xlImport() {
       </button>
     </div>
     <div class="ann-post-form">
+      <div class="ann-target-grid">
+        <select class="ann-target-select" id="ann-target-scope" onchange="onAnnScopeChange()">
+          <option value="all" selected>Toàn trường (mặc định)</option>
+          <option value="class">Theo lớp</option>
+          <option value="teachers">Theo giáo viên</option>
+          <option value="students">Theo học sinh</option>
+        </select>
+        <div class="ann-target-picker-wrap" id="ann-target-picker-wrap">
+          <input type="search" class="ann-target-search" id="ann-target-search" placeholder="Tìm theo tên, lớp…" oninput="filterAnnTargetList()">
+          <div class="ann-target-pick-actions">
+            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(true)">Chọn các mục đang hiện</button>
+            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(false)">Bỏ chọn</button>
+          </div>
+          <div class="ann-target-picker" id="ann-target-picker"></div>
+          <div class="ann-target-pick-meta" id="ann-target-pick-meta">0 đã chọn</div>
+        </div>
+        <div class="ann-target-help" id="ann-target-help">Mặc định gửi toàn trường. Có thể thu hẹp theo lớp, giáo viên hoặc học sinh nếu cần.</div>
+      </div>
       <textarea class="ann-textarea" id="ann-textarea" placeholder="Nhập nội dung thông báo…" maxlength="1000" oninput="annCharCount()"></textarea>
       <div class="ann-post-row">
         <span class="ann-char-count" id="ann-char-count">0 / 1000</span>
@@ -2509,6 +2589,10 @@ async function xlImport() {
 // ── Announcement panel (admin) ──────────────────────────────
 let _annList = [];
 let _annMyId = null;
+const _ANN_SCOPES_ADMIN = ['all', 'class', 'teachers', 'students'];
+let _annTargets = { allowedScopes: _ANN_SCOPES_ADMIN, classes: [], teachers: [], students: [] };
+let _annTargetOptions = [];
+let _annTargetSelected = new Set();
 
 async function openAnnPanel() {
   document.getElementById('ann-panel-overlay').classList.add('open');
@@ -2518,6 +2602,7 @@ async function openAnnPanel() {
       if (r.ok) { const d = await r.json(); _annMyId = String(d._id || d.id || ''); }
     } catch {}
   }
+  await loadAnnouncementTargets();
   await loadAnnouncements();
 }
 
@@ -2552,6 +2637,7 @@ function renderAnnFeed() {
       <div class="ann-item-head">
         <span class="ann-author-name">${esc(a.authorName)}</span>
         <span class="ann-role-badge ${roleCls}">${roleLbl}</span>
+        <span class="pill muted">${esc(a.targetSummary || 'Toàn trường')}</span>
         <span class="ann-time">${t}</span>
         <button class="ann-del-btn" onclick="deleteAnn('${esc(a._id)}')" title="Xóa">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
@@ -2570,20 +2656,172 @@ function annCharCount() {
   cc.classList.toggle('over', n > 1000);
 }
 
+async function loadAnnouncementTargets() {
+  try {
+    const r = await fetch('/api/announcements/targets', { credentials: 'include' });
+    if (r.ok) {
+      const data = await r.json();
+      if (data && !data.error) _annTargets = data;
+    }
+    if (!Array.isArray(_annTargets.allowedScopes) || !_annTargets.allowedScopes.length) {
+      _annTargets.allowedScopes = _ANN_SCOPES_ADMIN;
+    }
+    renderAnnScopeOptions();
+    onAnnScopeChange();
+  } catch {
+    _annTargets.allowedScopes = _ANN_SCOPES_ADMIN;
+    renderAnnScopeOptions();
+    onAnnScopeChange();
+  }
+}
+
+function renderAnnScopeOptions() {
+  const scopeEl = document.getElementById('ann-target-scope');
+  if (!scopeEl) return;
+  const labels = {
+    all: 'Toàn trường',
+    class: 'Theo lớp',
+    teachers: 'Theo giáo viên',
+    students: 'Theo học sinh',
+  };
+  const scopes = (Array.isArray(_annTargets.allowedScopes) && _annTargets.allowedScopes.length
+    ? _annTargets.allowedScopes
+    : _ANN_SCOPES_ADMIN
+  ).filter(s => _ANN_SCOPES_ADMIN.includes(s));
+  scopeEl.innerHTML = scopes.map(s => `<option value="${esc(s)}">${esc(labels[s] || s)}</option>`).join('');
+  if (!scopes.includes(scopeEl.value)) scopeEl.value = scopes.includes('all') ? 'all' : (scopes[0] || 'all');
+}
+
+function buildAnnTargetOptions(scope) {
+  if (scope === 'class') {
+    return (_annTargets.classes || []).map(c => ({
+      id: String(c),
+      label: c,
+      searchText: String(c).toLowerCase(),
+    }));
+  }
+  if (scope === 'teachers') {
+    return (_annTargets.teachers || []).map(t => {
+      const label = `${t.fullName}${t.className ? ` (${t.className})` : ''}`;
+      return { id: String(t.id), label, searchText: label.toLowerCase() };
+    });
+  }
+  return (_annTargets.students || []).map(s => {
+    const label = `${s.fullName}${s.className ? ` (${s.className})` : ''}`;
+    return { id: String(s.id), label, searchText: label.toLowerCase() };
+  });
+}
+
+function onAnnScopeChange() {
+  const scopeEl = document.getElementById('ann-target-scope');
+  const wrapEl = document.getElementById('ann-target-picker-wrap');
+  const searchEl = document.getElementById('ann-target-search');
+  const helpEl = document.getElementById('ann-target-help');
+  if (!scopeEl || !wrapEl || !helpEl) return;
+
+  const scope = scopeEl.value;
+  _annTargetSelected.clear();
+  if (searchEl) searchEl.value = '';
+
+  if (scope === 'all') {
+    wrapEl.style.display = 'none';
+    _annTargetOptions = [];
+    helpEl.textContent = 'Thông báo sẽ gửi cho toàn trường.';
+    return;
+  }
+
+  _annTargetOptions = buildAnnTargetOptions(scope);
+  if (scope === 'class') helpEl.textContent = 'Tìm và chọn 1 hoặc nhiều lớp nhận thông báo.';
+  else if (scope === 'teachers') helpEl.textContent = 'Tìm và chọn giáo viên nhận thông báo.';
+  else helpEl.textContent = 'Tìm và chọn học sinh nhận thông báo.';
+
+  wrapEl.style.display = '';
+  renderAnnTargetPicker();
+}
+
+function getAnnTargetFilterQuery() {
+  return (document.getElementById('ann-target-search')?.value || '').trim().toLowerCase();
+}
+
+function getFilteredAnnTargetOptions() {
+  const q = getAnnTargetFilterQuery();
+  if (!q) return _annTargetOptions;
+  return _annTargetOptions.filter(o => o.searchText.includes(q));
+}
+
+function renderAnnTargetPicker() {
+  const picker = document.getElementById('ann-target-picker');
+  const meta = document.getElementById('ann-target-pick-meta');
+  if (!picker) return;
+
+  const filtered = getFilteredAnnTargetOptions();
+  if (!_annTargetOptions.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Chưa có dữ liệu để chọn</div>';
+  } else if (!filtered.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Không tìm thấy kết quả</div>';
+  } else {
+    picker.innerHTML = filtered.map(o => {
+      const checked = _annTargetSelected.has(o.id) ? ' checked' : '';
+      return `<label class="ann-target-item"><input type="checkbox" value="${esc(o.id)}"${checked}><span>${esc(o.label)}</span></label>`;
+    }).join('');
+    picker.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) _annTargetSelected.add(cb.value);
+        else _annTargetSelected.delete(cb.value);
+        if (meta) meta.textContent = `${_annTargetSelected.size} đã chọn`;
+      });
+    });
+  }
+
+  if (meta) {
+    const extra = filtered.length < _annTargetOptions.length ? ` · hiện ${filtered.length}/${_annTargetOptions.length}` : '';
+    meta.textContent = `${_annTargetSelected.size} đã chọn${extra}`;
+  }
+}
+
+function filterAnnTargetList() {
+  renderAnnTargetPicker();
+}
+
+function annTargetSelectVisible(all) {
+  getFilteredAnnTargetOptions().forEach(o => {
+    if (all) _annTargetSelected.add(o.id);
+    else _annTargetSelected.delete(o.id);
+  });
+  renderAnnTargetPicker();
+}
+
+function getAnnouncementTargetPayload() {
+  const scope = document.getElementById('ann-target-scope')?.value || 'all';
+  const selected = [..._annTargetSelected];
+  if (scope === 'class') return { scope, classNames: selected };
+  if (scope === 'teachers' || scope === 'students') return { scope, userIds: selected };
+  return { scope: 'all' };
+}
+
 async function postAnnouncement() {
   const ta = document.getElementById('ann-textarea');
   const content = ta.value.trim();
+  const target = getAnnouncementTargetPayload();
   if (!content) { toast('Vui lòng nhập nội dung thông báo', 'warning'); return; }
   if (content.length > 1000) { toast('Nội dung quá dài (tối đa 1000 ký tự)', 'warning'); return; }
+  if (target.scope !== 'all' && !(target.classNames || target.userIds || []).length) {
+    toast('Vui lòng chọn đối tượng nhận thông báo', 'warning');
+    return;
+  }
   try {
     const r = await fetch('/api/announcements', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ content, target }),
     });
     const d = await r.json();
     if (!r.ok) { toast(d.error || 'Đăng thất bại', 'error'); return; }
     ta.value = '';
+    _annTargetSelected.clear();
+    const searchEl = document.getElementById('ann-target-search');
+    if (searchEl) searchEl.value = '';
+    renderAnnTargetPicker();
     annCharCount();
     _annList.unshift(d);
     renderAnnFeed();

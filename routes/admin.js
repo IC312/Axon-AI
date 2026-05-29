@@ -148,10 +148,21 @@ router.get('/conversations/:id/messages', async (req, res) => {
 });
 
 // ── Admin settings ────────────────────────────────────
+router.get('/settings', async (req, res) => {
+  try {
+    const user = await SchoolUserModel.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'Không tìm thấy tài khoản' });
+    res.json({
+      username: user.username || '',
+      recoveryEmail: user.recoveryEmail || '',
+    });
+  } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
 router.post('/settings', async (req, res) => {
   try {
     const User = SchoolUserModel;
-    const { newUsername, currentPassword, newPassword } = req.body;
+    const { newUsername, currentPassword, newPassword, recoveryEmail } = req.body;
     if (!currentPassword) return res.status(400).json({ error: 'Vui lòng nhập mật khẩu hiện tại' });
 
     const user = await User.findById(req.user.id);
@@ -173,6 +184,13 @@ router.post('/settings', async (req, res) => {
       if (!/[a-z]/i.test(newPassword) || !/\d/.test(newPassword))
         return res.status(400).json({ error: 'Mật khẩu phải chứa chữ cái và số' });
       user.passwordHash = await bcrypt.hash(newPassword, 10);
+    }
+    if (recoveryEmail !== undefined) {
+      const email = String(recoveryEmail || '').trim().toLowerCase();
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+        return res.status(400).json({ error: 'Email không hợp lệ' });
+      user.recoveryEmail = email || null;
+      if (email) user.recoveryEmailVerified = false;
     }
     await user.save();
     res.json({ ok: true });

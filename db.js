@@ -280,6 +280,7 @@ const FeedbackModel = {
 const AnnouncementModel = {
   async create(data) {
     const col = await getFeedbackCollection();
+    const target = data.target && typeof data.target === 'object' ? data.target : { scope: 'all' };
     const doc = {
       _id: uuidv4(),
       type: 'announcement',
@@ -287,6 +288,11 @@ const AnnouncementModel = {
       authorName: String(data.authorName),
       authorRole: data.authorRole,
       content: String(data.content),
+      target: {
+        scope: target.scope || 'all',
+        classNames: Array.isArray(target.classNames) ? target.classNames : [],
+        userIds: Array.isArray(target.userIds) ? target.userIds : [],
+      },
       createdAt: now(),
     };
     await col.insertOne(doc);
@@ -317,6 +323,13 @@ async function getConnection(key) {
   return { grade: key, readyState: 1 };
 }
 
+// Backward compatibility cho scripts cũ (seed/create-admin)
+// Trước đây scripts gọi getUserModel(conn) từ db.js.
+function getUserModel() {
+  const { SchoolUserModel } = require('./db-supabase');
+  return SchoolUserModel;
+}
+
 // Xóa cache collection để buộc tái kết nối (dùng khi gặp "session has been destroyed")
 function clearCollectionCache(...names) {
   const targets = names.length ? names : Object.keys(_collections);
@@ -329,6 +342,7 @@ function clearCollectionCache(...names) {
 // routes/chat.js gọi getChatModels(conn) với conn = { grade }
 module.exports = {
   getConnection,
+  getUserModel,
   getChatModels: (conn) => getChatModels(conn.grade),
   FeedbackModel,
   AnnouncementModel,

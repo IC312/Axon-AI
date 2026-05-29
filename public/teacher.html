@@ -266,6 +266,42 @@ tbody td:last-child{text-align:right}
 }
 .ann-panel-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
 .ann-post-form{padding:14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ann-target-grid{display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:8px}
+.ann-target-select{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;padding:8px 10px;outline:none
+}
+.ann-target-select[multiple]{min-height:92px}
+.ann-target-search{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;padding:8px 10px;outline:none
+}
+.ann-target-search:focus{border-color:rgba(13,148,136,.4)}
+.ann-target-search::placeholder{color:var(--muted)}
+.ann-target-picker-wrap{display:none}
+.ann-target-pick-actions{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0}
+.ann-target-pick-btn{
+  background:transparent;border:none;color:var(--accent2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.67rem;font-weight:600;cursor:pointer;padding:0
+}
+.ann-target-pick-btn:hover{text-decoration:underline}
+.ann-target-picker{
+  max-height:150px;overflow-y:auto;border:1px solid var(--border2);
+  border-radius:10px;background:var(--surface2);padding:4px
+}
+.ann-target-picker::-webkit-scrollbar{width:4px}
+.ann-target-picker::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.ann-target-item{
+  display:flex;align-items:flex-start;gap:8px;padding:6px 8px;border-radius:7px;
+  font-size:.78rem;cursor:pointer;line-height:1.4
+}
+.ann-target-item:hover{background:rgba(255,255,255,.04)}
+.ann-target-item input{margin-top:2px;accent-color:var(--accent);flex-shrink:0}
+.ann-target-pick-meta{font-size:.67rem;color:var(--muted);margin-top:4px}
+.ann-target-empty{padding:14px 8px;text-align:center;color:var(--muted);font-size:.78rem}
+.ann-target-help{font-size:.67rem;color:var(--muted);line-height:1.5}
 .ann-textarea{
   width:100%;background:var(--surface2);border:1px solid var(--border2);
   border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
@@ -323,6 +359,125 @@ tbody td:last-child{text-align:right}
   100%{transform:translate(0,0);opacity:1}
 }
 .ann-post-btn:hover svg{animation:send-fly .5s ease-in-out}
+
+/* ══ NOTIFICATION TOAST ══ */
+.notification-container{
+  position:fixed;bottom:20px;right:20px;z-index:1000;
+  display:flex;flex-direction:column;gap:10px;max-width:400px
+}
+.notification{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:12px;padding:14px 16px;
+  display:flex;align-items:center;gap:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  animation:slideIn .3s ease;min-width:300px
+}
+@keyframes slideIn{from{transform:translateX(400px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOut{to{transform:translateX(400px);opacity:0}}
+.notification-success{border-color:rgba(52,211,153,.3);background:rgba(52,211,153,.08)}
+.notification-error{border-color:rgba(248,113,113,.3);background:rgba(248,113,113,.08)}
+.notification-warning{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.08)}
+.notification-info{border-color:rgba(34,211,238,.3);background:rgba(34,211,238,.08)}
+.notification-icon{flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.notification-success .notification-icon{color:var(--success)}
+.notification-error .notification-icon{color:var(--danger)}
+.notification-warning .notification-icon{color:var(--warning)}
+.notification-info .notification-icon{color:var(--accent2)}
+.notification-content{flex:1}
+.notification-message{font-size:.85rem;color:var(--text);line-height:1.5}
+.notification-close{
+  background:transparent;border:none;color:var(--muted);
+  cursor:pointer;padding:4px;border-radius:6px;
+  transition:all .15s;line-height:1;flex-shrink:0
+}
+.notification-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
+
+/* ══ SETTINGS MODAL ══ */
+.settings-modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  z-index:500;display:none;align-items:center;justify-content:center;padding:16px
+}
+.settings-modal-overlay.open{display:flex}
+.settings-modal{
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:20px;width:100%;max-width:500px;max-height:90vh;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 40px 80px rgba(0,0,0,.6)
+}
+.settings-modal-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px;border-bottom:1px solid var(--border);flex-shrink:0
+}
+.settings-modal-title{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1rem;color:white;letter-spacing:-.02em
+}
+.settings-modal-close{
+  width:30px;height:30px;border:1px solid var(--border);border-radius:8px;
+  background:transparent;color:var(--muted2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s
+}
+.settings-modal-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.settings-modal-body{
+  flex:1;overflow-y:auto;padding:20px;-webkit-overflow-scrolling:touch
+}
+.settings-modal-body::-webkit-scrollbar{width:4px}
+.settings-modal-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.settings-section{margin-bottom:24px}
+.settings-section:last-child{margin-bottom:0}
+.settings-section-title{
+  font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:12px
+}
+.settings-input-group{margin-bottom:12px}
+.settings-input-group:last-child{margin-bottom:0}
+.settings-label{
+  font-size:.8rem;color:var(--muted2);margin-bottom:6px;display:block
+}
+.settings-input{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;padding:10px 13px;color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.86rem;
+  outline:none;transition:border-color .2s,box-shadow .2s
+}
+.settings-input:focus{
+  border-color:rgba(13,148,136,.5);box-shadow:0 0 0 3px rgba(13,148,136,.08)
+}
+.settings-input::placeholder{color:var(--muted)}
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text) !important;
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px var(--surface2) !important;
+}
+.settings-btn{
+  width:100%;padding:10px;border-radius:10px;border:none;
+  background:linear-gradient(135deg,var(--accent),#14b8a6);color:white;
+  font-weight:700;font-size:.85rem;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;transition:opacity .15s
+}
+.settings-btn:hover:not(:disabled){opacity:.9}
+.settings-btn:disabled{opacity:.4;cursor:not-allowed}
+.settings-divider{height:1px;background:var(--border);margin:20px 0}
+.settings-info{
+  font-size:.75rem;color:var(--muted);line-height:1.6;
+  padding:10px 12px;background:rgba(13,148,136,.08);
+  border:1px solid rgba(13,148,136,.2);border-radius:8px;margin-top:8px
+}
+.settings-success{
+  font-size:.78rem;padding:9px 12px;border-radius:8px;
+  background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);
+  color:var(--success);margin-top:8px;display:none
+}
+.settings-success.show{display:block}
+.settings-error{
+  font-size:.78rem;padding:9px 12px;border-radius:8px;
+  background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);
+  color:#fca5a5;margin-top:8px;display:none
+}
+.settings-error.show{display:block}
 </style>
 </head>
 <body>
@@ -346,6 +501,19 @@ tbody td:last-child{text-align:right}
   <button class="hdr-btn ann-hdr-btn" onclick="openAnnPanel()">
     <svg class="ann-bell-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
     Thông báo
+  </button>
+  <button class="hdr-btn" onclick="openSettingsModal()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+    </svg>
+    Cài đặt
+  </button>
+  <button class="hdr-btn" onclick="window.open('/teacher-chat.html', '_blank')">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+    Chat AI
   </button>
   <button class="hdr-btn danger" onclick="doLogout()">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -638,25 +806,55 @@ function animateCount(id, target) {
 
 async function doLogout() {
   await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
-  location.href = '/login-email-teacher.html';
+  location.href = '/choose';
+}
+
+// ── Notification System ─────────────────────────────────
+function showNotification(message, type = 'info') {
+  let container = document.getElementById('notification-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'notification-container';
+    container.className = 'notification-container';
+    document.body.appendChild(container);
+  }
+  
+  const icons = {
+    success: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>',
+    error: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>',
+    warning: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+    info: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+  };
+  
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.innerHTML = `
+    <div class="notification-icon">${icons[type] || icons.info}</div>
+    <div class="notification-content">
+      <div class="notification-message">${message}</div>
+    </div>
+    <button class="notification-close" onclick="this.parentElement.remove()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  `;
+  
+  container.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 5000);
 }
 
 // ── Announcement panel ──────────────────────────────
 let _annList = [];
 let _annMyId = null;
-
-function toast(msg, type = 'info', duration = 3000) {
-  const el = document.createElement('div');
-  el.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-    padding:10px 18px;border-radius:10px;font-size:.82rem;font-weight:600;z-index:9999;
-    pointer-events:none;transition:opacity .3s;white-space:nowrap;
-    background:${type === 'success' ? 'rgba(52,211,153,.15)' : type === 'error' ? 'rgba(248,113,113,.15)' : 'rgba(255,255,255,.1)'};
-    border:1px solid ${type === 'success' ? 'rgba(52,211,153,.3)' : type === 'error' ? 'rgba(248,113,113,.3)' : 'rgba(255,255,255,.2)'};
-    color:${type === 'success' ? '#34d399' : type === 'error' ? '#f87171' : '#e8f0ef'}`;
-  el.textContent = msg;
-  document.body.appendChild(el);
-  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, duration);
-}
+const _ANN_SCOPES_TEACHER = ['all', 'students'];
+let _annTargets = { allowedScopes: _ANN_SCOPES_TEACHER, classes: [], teachers: [], students: [] };
+let _annTargetOptions = [];
+let _annTargetSelected = new Set();
 
 async function openAnnPanel() {
   document.getElementById('ann-panel-overlay').classList.add('open');
@@ -666,6 +864,7 @@ async function openAnnPanel() {
       if (r.ok) { const d = await r.json(); _annMyId = String(d._id || d.id || ''); }
     } catch {}
   }
+  await loadAnnouncementTargets();
   await loadAnnouncements();
 }
 
@@ -705,6 +904,7 @@ function renderAnnFeed() {
       <div class="ann-item-head">
         <span class="ann-author-name">${esc(a.authorName)}</span>
         <span class="ann-role-badge ${roleCls}">${roleLbl}</span>
+        <span class="pill muted">${esc(a.targetSummary || 'Toàn trường')}</span>
         <span class="ann-time">${t}</span>
         ${delBtn}
       </div>
@@ -721,26 +921,168 @@ function annCharCount() {
   cc.classList.toggle('over', n > 1000);
 }
 
+async function loadAnnouncementTargets() {
+  try {
+    const r = await fetch('/api/announcements/targets', { credentials: 'include' });
+    if (r.ok) {
+      const data = await r.json();
+      if (data && !data.error) _annTargets = data;
+    }
+    if (!_annTargets.classes?.length) {
+      const cr = await fetch('/api/teacher/classes', { credentials: 'include' });
+      if (cr.ok) {
+        const classes = await cr.json();
+        if (Array.isArray(classes) && classes.length) _annTargets.classes = classes;
+      }
+    }
+    if (!Array.isArray(_annTargets.allowedScopes) || !_annTargets.allowedScopes.length) {
+      _annTargets.allowedScopes = _ANN_SCOPES_TEACHER;
+    }
+    _annTargets.allowedScopes = _annTargets.allowedScopes.filter(s => _ANN_SCOPES_TEACHER.includes(s));
+    renderAnnScopeOptions();
+    onAnnScopeChange();
+  } catch {
+    _annTargets.allowedScopes = _ANN_SCOPES_TEACHER;
+    renderAnnScopeOptions();
+    onAnnScopeChange();
+  }
+}
+
+function renderAnnScopeOptions() {
+  const scopeEl = document.getElementById('ann-target-scope');
+  if (!scopeEl) return;
+  const labels = {
+    all: 'Toàn trường (mặc định)',
+    students: 'Theo học sinh',
+  };
+  const scopes = (Array.isArray(_annTargets.allowedScopes) && _annTargets.allowedScopes.length
+    ? _annTargets.allowedScopes
+    : _ANN_SCOPES_TEACHER
+  ).filter(s => _ANN_SCOPES_TEACHER.includes(s));
+  scopeEl.innerHTML = scopes.map(s => `<option value="${esc(s)}">${esc(labels[s] || s)}</option>`).join('');
+  if (!scopes.includes(scopeEl.value)) scopeEl.value = scopes.includes('all') ? 'all' : (scopes[0] || 'all');
+}
+
+function buildAnnTargetOptions(scope) {
+  return (_annTargets.students || []).map(s => {
+    const label = s.fullName || 'Học sinh';
+    return { id: String(s.id), label, searchText: label.toLowerCase() };
+  });
+}
+
+function onAnnScopeChange() {
+  const scopeEl = document.getElementById('ann-target-scope');
+  const wrapEl = document.getElementById('ann-target-picker-wrap');
+  const searchEl = document.getElementById('ann-target-search');
+  const helpEl = document.getElementById('ann-target-help');
+  if (!scopeEl || !wrapEl || !helpEl) return;
+
+  const scope = scopeEl.value;
+  _annTargetSelected.clear();
+  if (searchEl) searchEl.value = '';
+
+  if (scope === 'all') {
+    wrapEl.style.display = 'none';
+    _annTargetOptions = [];
+    helpEl.textContent = 'Thông báo sẽ gửi cho toàn trường.';
+    return;
+  }
+
+  _annTargetOptions = buildAnnTargetOptions(scope);
+  helpEl.textContent = 'Tìm và chọn học sinh nhận thông báo.';
+
+  wrapEl.style.display = '';
+  renderAnnTargetPicker();
+}
+
+function getAnnTargetFilterQuery() {
+  return (document.getElementById('ann-target-search')?.value || '').trim().toLowerCase();
+}
+
+function getFilteredAnnTargetOptions() {
+  const q = getAnnTargetFilterQuery();
+  if (!q) return _annTargetOptions;
+  return _annTargetOptions.filter(o => o.searchText.includes(q));
+}
+
+function renderAnnTargetPicker() {
+  const picker = document.getElementById('ann-target-picker');
+  const meta = document.getElementById('ann-target-pick-meta');
+  if (!picker) return;
+
+  const filtered = getFilteredAnnTargetOptions();
+  if (!_annTargetOptions.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Chưa có dữ liệu để chọn</div>';
+  } else if (!filtered.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Không tìm thấy kết quả</div>';
+  } else {
+    picker.innerHTML = filtered.map(o => {
+      const checked = _annTargetSelected.has(o.id) ? ' checked' : '';
+      return `<label class="ann-target-item"><input type="checkbox" value="${esc(o.id)}"${checked}><span>${esc(o.label)}</span></label>`;
+    }).join('');
+    picker.querySelectorAll('input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        if (cb.checked) _annTargetSelected.add(cb.value);
+        else _annTargetSelected.delete(cb.value);
+        if (meta) meta.textContent = `${_annTargetSelected.size} đã chọn`;
+      });
+    });
+  }
+
+  if (meta) {
+    const extra = filtered.length < _annTargetOptions.length ? ` · hiện ${filtered.length}/${_annTargetOptions.length}` : '';
+    meta.textContent = `${_annTargetSelected.size} đã chọn${extra}`;
+  }
+}
+
+function filterAnnTargetList() {
+  renderAnnTargetPicker();
+}
+
+function annTargetSelectVisible(all) {
+  getFilteredAnnTargetOptions().forEach(o => {
+    if (all) _annTargetSelected.add(o.id);
+    else _annTargetSelected.delete(o.id);
+  });
+  renderAnnTargetPicker();
+}
+
+function getAnnouncementTargetPayload() {
+  const scope = document.getElementById('ann-target-scope')?.value || 'all';
+  const selected = [..._annTargetSelected];
+  if (scope === 'students') return { scope, userIds: selected };
+  return { scope: 'all' };
+}
+
 async function postAnnouncement() {
   const ta = document.getElementById('ann-textarea');
   const content = ta.value.trim();
-  if (!content) { toast('Vui lòng nhập nội dung thông báo', 'error'); return; }
-  if (content.length > 1000) { toast('Nội dung quá dài (tối đa 1000 ký tự)', 'error'); return; }
+  const target = getAnnouncementTargetPayload();
+  if (!content) { showNotification('Vui lòng nhập nội dung thông báo', 'error'); return; }
+  if (content.length > 1000) { showNotification('Nội dung quá dài (tối đa 1000 ký tự)', 'error'); return; }
+  if (target.scope !== 'all' && !(target.classNames || target.userIds || []).length) {
+    showNotification('Vui lòng chọn đối tượng nhận thông báo', 'error');
+    return;
+  }
   try {
     const r = await fetch('/api/announcements', {
       method: 'POST', credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ content }),
+      body: JSON.stringify({ content, target }),
     });
     const d = await r.json();
-    if (!r.ok) { toast(d.error || 'Đăng thất bại', 'error'); return; }
+    if (!r.ok) { showNotification(d.error || 'Đăng thất bại', 'error'); return; }
     ta.value = '';
+    _annTargetSelected.clear();
+    const searchEl = document.getElementById('ann-target-search');
+    if (searchEl) searchEl.value = '';
+    renderAnnTargetPicker();
     annCharCount();
     _annList.unshift(d);
     renderAnnFeed();
-    toast('Đã đăng thông báo', 'success');
+    showNotification('Đã đăng thông báo', 'success');
   } catch {
-    toast('Lỗi kết nối', 'error');
+    showNotification('Lỗi kết nối', 'error');
   }
 }
 
@@ -751,14 +1093,210 @@ async function deleteAnn(id) {
       method: 'DELETE', credentials: 'include',
     });
     const d = await r.json();
-    if (!r.ok) { toast(d.error || 'Xóa thất bại', 'error'); return; }
+    if (!r.ok) { showNotification(d.error || 'Xóa thất bại', 'error'); return; }
     _annList = _annList.filter(a => a._id !== id);
     renderAnnFeed();
-    toast('Đã xóa thông báo', 'success');
+    showNotification('Đã xóa thông báo', 'success');
   } catch {
-    toast('Lỗi kết nối', 'error');
+    showNotification('Lỗi kết nối', 'error');
   }
 }
+
+// ── Settings Modal ──────────────────────────────────────
+function openSettingsModal() {
+  document.getElementById('settings-modal-overlay').classList.add('open');
+}
+
+function closeSettingsModal() {
+  document.getElementById('settings-modal-overlay').classList.remove('open');
+  // Clear inputs
+  document.getElementById('current-password').value = '';
+  document.getElementById('new-password').value = '';
+  document.getElementById('confirm-password').value = '';
+  document.getElementById('recovery-email').value = '';
+  // Hide messages
+  document.querySelectorAll('.settings-success, .settings-error').forEach(el => el.classList.remove('show'));
+}
+
+async function changePassword() {
+  const currentPassword = document.getElementById('current-password').value.trim();
+  const newPassword = document.getElementById('new-password').value.trim();
+  const confirmPassword = document.getElementById('confirm-password').value.trim();
+  
+  const errorEl = document.getElementById('password-error');
+  const successEl = document.getElementById('password-success');
+  
+  errorEl.classList.remove('show');
+  successEl.classList.remove('show');
+  
+  if (!currentPassword || !newPassword || !confirmPassword) {
+    errorEl.textContent = 'Vui lòng điền đầy đủ thông tin';
+    errorEl.classList.add('show');
+    return;
+  }
+  
+  if (newPassword !== confirmPassword) {
+    errorEl.textContent = 'Mật khẩu mới không khớp';
+    errorEl.classList.add('show');
+    return;
+  }
+  
+  if (newPassword.length < 8) {
+    errorEl.textContent = 'Mật khẩu mới phải có ít nhất 8 ký tự';
+    errorEl.classList.add('show');
+    return;
+  }
+  
+  try {
+    const r = await fetch('/api/auth/change-password', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ currentPassword, newPassword })
+    });
+    
+    const data = await r.json();
+    
+    if (!r.ok) {
+      errorEl.textContent = data.error || 'Đổi mật khẩu thất bại';
+      errorEl.classList.add('show');
+      return;
+    }
+    
+    successEl.textContent = 'Đổi mật khẩu thành công!';
+    successEl.classList.add('show');
+    showNotification('Đã đổi mật khẩu thành công', 'success');
+    
+    // Clear inputs
+    document.getElementById('current-password').value = '';
+    document.getElementById('new-password').value = '';
+    document.getElementById('confirm-password').value = '';
+    
+    setTimeout(() => successEl.classList.remove('show'), 5000);
+  } catch (err) {
+    errorEl.textContent = 'Lỗi kết nối. Vui lòng thử lại.';
+    errorEl.classList.add('show');
+  }
+}
+
+async function addRecoveryEmail() {
+  const email = document.getElementById('recovery-email').value.trim();
+  
+  const errorEl = document.getElementById('recovery-error');
+  const successEl = document.getElementById('recovery-success');
+  
+  errorEl.classList.remove('show');
+  successEl.classList.remove('show');
+  
+  if (!email) {
+    errorEl.textContent = 'Vui lòng nhập địa chỉ email';
+    errorEl.classList.add('show');
+    return;
+  }
+  
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Email không hợp lệ';
+    errorEl.classList.add('show');
+    return;
+  }
+  
+  try {
+    const r = await fetch('/api/auth/school/add-recovery-email', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ recoveryEmail: email })
+    });
+    
+    const data = await r.json();
+    
+    if (!r.ok) {
+      errorEl.textContent = data.error || 'Thêm email thất bại';
+      errorEl.classList.add('show');
+      return;
+    }
+    
+    successEl.textContent = 'Đã gửi mã OTP đến email. Vui lòng kiểm tra hộp thư.';
+    successEl.classList.add('show');
+    showNotification('Đã gửi mã OTP xác minh đến email', 'success');
+    
+    document.getElementById('recovery-email').value = '';
+    
+    setTimeout(() => successEl.classList.remove('show'), 8000);
+  } catch (err) {
+    errorEl.textContent = 'Lỗi kết nối. Vui lòng thử lại.';
+    errorEl.classList.add('show');
+  }
+}
+
+// ── Auto-check for new announcements ────────────────────
+let lastAnnouncementId = null;
+let announcementCheckInterval = null;
+
+async function checkNewAnnouncements() {
+  try {
+    const r = await fetch('/api/announcements', { credentials: 'include' });
+    if (!r.ok) return;
+    
+    const announcements = await r.json();
+    if (!announcements.length) return;
+    
+    const latestAnn = announcements[0];
+    
+    // First time loading
+    if (lastAnnouncementId === null) {
+      lastAnnouncementId = latestAnn._id;
+      return;
+    }
+    
+    // New announcement detected
+    if (latestAnn._id !== lastAnnouncementId) {
+      lastAnnouncementId = latestAnn._id;
+      
+      // Show notification
+      const authorName = latestAnn.authorName || 'Ẩn danh';
+      const roleLbl = latestAnn.authorRole === 'admin' ? 'Quản trị' : 'Giáo viên';
+      const preview = latestAnn.content.length > 50 
+        ? latestAnn.content.substring(0, 50) + '...' 
+        : latestAnn.content;
+      
+      showNotification(
+        `<strong>${esc(authorName)}</strong> (${roleLbl}): ${esc(preview)}`,
+        'info'
+      );
+      
+      // Reload announcement list if panel is open
+      if (document.getElementById('ann-panel-overlay').classList.contains('open')) {
+        loadAnnouncements();
+      }
+    }
+  } catch (err) {
+    console.error('[CheckAnnouncements]', err);
+  }
+}
+
+// Start checking every 30 seconds
+function startAnnouncementPolling() {
+  checkNewAnnouncements(); // Initial check
+  announcementCheckInterval = setInterval(checkNewAnnouncements, 30000);
+}
+
+// Stop polling when page is hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    if (announcementCheckInterval) {
+      clearInterval(announcementCheckInterval);
+      announcementCheckInterval = null;
+    }
+  } else {
+    if (!announcementCheckInterval) {
+      startAnnouncementPolling();
+    }
+  }
+});
+
+// Start polling on page load
+startAnnouncementPolling();
 
 init();
 </script>
@@ -774,6 +1312,22 @@ init();
       </button>
     </div>
     <div class="ann-post-form">
+      <div class="ann-target-grid">
+        <select class="ann-target-select" id="ann-target-scope" onchange="onAnnScopeChange()">
+          <option value="all" selected>Toàn trường (mặc định)</option>
+          <option value="students">Theo học sinh</option>
+        </select>
+        <div class="ann-target-picker-wrap" id="ann-target-picker-wrap">
+          <input type="search" class="ann-target-search" id="ann-target-search" placeholder="Tìm theo tên…" oninput="filterAnnTargetList()">
+          <div class="ann-target-pick-actions">
+            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(true)">Chọn các mục đang hiện</button>
+            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(false)">Bỏ chọn</button>
+          </div>
+          <div class="ann-target-picker" id="ann-target-picker"></div>
+          <div class="ann-target-pick-meta" id="ann-target-pick-meta">0 đã chọn</div>
+        </div>
+        <div class="ann-target-help" id="ann-target-help">Mặc định gửi toàn trường. Có thể thu hẹp theo học sinh nếu cần.</div>
+      </div>
       <textarea class="ann-textarea" id="ann-textarea" placeholder="Nhập nội dung thông báo…" maxlength="1000" oninput="annCharCount()"></textarea>
       <div class="ann-post-row">
         <span class="ann-char-count" id="ann-char-count">0 / 1000</span>
@@ -788,5 +1342,58 @@ init();
     </div>
   </div>
 </div>
+
+<!-- Settings Modal -->
+<div class="settings-modal-overlay" id="settings-modal-overlay" onclick="if(event.target===this) closeSettingsModal()">
+  <div class="settings-modal">
+    <div class="settings-modal-header">
+      <span class="settings-modal-title">Cài đặt tài khoản</span>
+      <button class="settings-modal-close" onclick="closeSettingsModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="settings-modal-body">
+      <!-- Đổi mật khẩu -->
+      <div class="settings-section">
+        <div class="settings-section-title">Đổi mật khẩu</div>
+        <div class="settings-input-group">
+          <label class="settings-label">Mật khẩu hiện tại</label>
+          <input type="password" class="settings-input" id="current-password" placeholder="Nhập mật khẩu hiện tại">
+        </div>
+        <div class="settings-input-group">
+          <label class="settings-label">Mật khẩu mới</label>
+          <input type="password" class="settings-input" id="new-password" placeholder="Tối thiểu 8 ký tự">
+        </div>
+        <div class="settings-input-group">
+          <label class="settings-label">Xác nhận mật khẩu mới</label>
+          <input type="password" class="settings-input" id="confirm-password" placeholder="Nhập lại mật khẩu mới">
+        </div>
+        <button class="settings-btn" onclick="changePassword()">Đổi mật khẩu</button>
+        <div class="settings-success" id="password-success"></div>
+        <div class="settings-error" id="password-error"></div>
+      </div>
+
+      <div class="settings-divider"></div>
+
+      <!-- Thêm email khôi phục -->
+      <div class="settings-section" id="recovery-email-section">
+        <div class="settings-section-title">Email khôi phục</div>
+        <div class="settings-info">
+          Thêm email để khôi phục tài khoản khi quên mật khẩu. Email này sẽ được xác minh bằng mã OTP.
+        </div>
+        <div class="settings-input-group" style="margin-top:12px">
+          <label class="settings-label">Địa chỉ email</label>
+          <input type="email" class="settings-input" id="recovery-email" placeholder="email@example.com">
+        </div>
+        <button class="settings-btn" onclick="addRecoveryEmail()">Thêm email khôi phục</button>
+        <div class="settings-success" id="recovery-success"></div>
+        <div class="settings-error" id="recovery-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
