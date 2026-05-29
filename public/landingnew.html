@@ -5,9 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Axon AI — Trợ lý học tập thông minh</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,700;1,800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
-<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -170,37 +167,6 @@ nav {
   margin-bottom: 30px;
   position: relative;
 }
-.hero-h1.title-drop {
-  opacity: 0;
-  transform: translateY(-18px);
-  filter: blur(6px);
-}
-.hero-h1.title-drop.in {
-  animation: titleDropIn 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.hero-h1 .h1-lastline {
-  display: inline-flex;
-  align-items: baseline;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-  gap: 0.35ch;
-  max-width: 100%;
-}
-.hero-h1 #rotatingWord {
-  display: inline-block;
-  will-change: filter, transform, opacity;
-  white-space: nowrap;
-  vertical-align: baseline;
-}
-.hero-h1 .rotating-scramble {
-  filter: blur(0.35px);
-  opacity: 0.95;
-}
-.hero-h1 .rotating-settle {
-  filter: blur(0);
-  opacity: 1;
-  transition: filter 220ms ease, opacity 220ms ease, color 220ms ease, text-shadow 220ms ease;
-}
 .h1-outline { color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,0.4); font-style: italic; }
 .h1-lime    { color: var(--accent2); text-shadow: 0 0 30px rgba(0, 229, 255, 0.2); }
 
@@ -254,7 +220,7 @@ nav {
   background: var(--card);
   padding: 16px; display: flex; flex-direction: column; gap: 12px;
 }
-.msg { padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; line-height: 2; max-width: 92%; }
+.msg { padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; line-height: 1.6; max-width: 92%; }
 .msg-u  { background: rgba(124,92,252,0.15); border: 1px solid rgba(124,92,252,0.2); align-self: flex-end; color: var(--text); }
 .msg-ai { background: var(--surface); border: 1px solid var(--border); align-self: flex-start; color: var(--text); }
 .msg-ai strong { color: var(--accent2); }
@@ -386,273 +352,6 @@ nav {
 .feat-bg    { position: absolute; bottom: -20px; right: -10px; font-size: 7rem; opacity: 0.03; pointer-events: none; line-height: 1; }
 .feat-bg svg { width: 1em; height: 1em; }
 
-/* LIVE DEMO + TESTIMONIALS + ROADMAP */
-.demo-sec, .testi-sec, .roadmap-sec{
-  position: relative; z-index: 1;
-  max-width: 1280px; margin: 0 auto;
-  padding: 90px 60px;
-}
-@media(max-width:640px){ .demo-sec, .testi-sec, .roadmap-sec { padding: 64px 24px; } }
-
-.demo-grid{
-  display: grid; grid-template-columns: 0.92fr 1.08fr;
-  gap: 28px; align-items: stretch;
-  margin-top: 44px;
-  height: clamp(520px, 62vh, 680px);
-  min-height: 520px;
-}
-@media(max-width:960px){
-  .demo-grid{ grid-template-columns: 1fr; height: auto; min-height: 0; }
-  .demo-copy, .demo-chat{ max-height: none; height: auto; }
-  .demo-chat{ min-height: 480px; max-height: min(72vh, 620px); }
-}
-.demo-copy{
-  background: rgba(10,10,18,0.55);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 28px 28px 22px;
-  backdrop-filter: blur(10px);
-  height: 100%;
-  max-height: 100%;
-  min-height: 0;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-.demo-copy .spotlight-content{
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-.demo-kpis{ display:flex; gap:10px; flex-wrap:wrap; margin-top:18px; }
-.demo-kpi{
-  display:inline-flex; gap:10px; align-items:center;
-  padding: 10px 14px; border-radius: 999px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  color: var(--muted2);
-  font-size: 0.82rem; font-weight: 600;
-}
-.demo-kpi strong{ color: var(--text); font-weight: 800; letter-spacing:-0.02em; }
-.demo-kpi .dot{ width:7px; height:7px; border-radius:50%; background: var(--accent2); box-shadow:0 0 12px rgba(0,229,255,.35); }
-.demo-feed{
-  margin-top: 18px;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px;
-  background: rgba(255,255,255,0.02);
-  flex: 1;
-  min-height: 200px;
-  overflow: hidden;
-  position: relative;
-}
-.demo-feed::before{
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(to bottom, rgba(10,10,18,0.95), transparent 24%, transparent 76%, rgba(10,10,18,0.95));
-  z-index: 2;
-}
-.demo-feed-list{
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-}
-.demo-feed-item{
-  padding: 9px 10px;
-  border-radius: 10px;
-  border: 1px solid rgba(0,229,255,0.16);
-  background: rgba(0,229,255,0.06);
-  color: var(--muted2);
-  font-size: 0.78rem;
-  line-height: 1.5;
-  animation: feedSlideUp .45s ease;
-}
-.demo-feed-item strong{ color: var(--accent2); }
-
-.demo-chat{
-  background: rgba(10,10,18,0.55);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 18px 18px 14px;
-  backdrop-filter: blur(10px);
-  display:flex; flex-direction:column;
-  height: 100%;
-  max-height: 100%;
-  min-height: 0;
-  overflow: hidden;
-}
-.demo-chat > .spotlight-content{
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-.demo-chat-head{
-  display:flex; align-items:center; justify-content:space-between;
-  padding: 10px 12px 14px;
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 12px;
-}
-.demo-chat-title{ font-weight: 800; letter-spacing:-0.02em; }
-.demo-chip{
-  display:inline-flex; align-items:center; gap:8px;
-  padding: 6px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(0,229,255,0.25);
-  background: rgba(0,229,255,0.08);
-  color: var(--accent2);
-  font-size: 0.72rem; font-weight: 700;
-}
-.demo-body{
-  flex: 1 1 auto;
-  min-height: 0;
-  max-height: 100%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(124, 92, 252, 0.5) rgba(255, 255, 255, 0.06);
-  padding: 8px 6px 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.demo-body::-webkit-scrollbar{ width: 8px; }
-.demo-body::-webkit-scrollbar-track{
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 99px;
-  margin: 4px 0;
-}
-.demo-body::-webkit-scrollbar-thumb{
-  background: rgba(124, 92, 252, 0.45);
-  border-radius: 99px;
-  border: 2px solid transparent;
-  background-clip: padding-box;
-}
-.demo-body::-webkit-scrollbar-thumb:hover{
-  background: rgba(124, 92, 252, 0.65);
-  background-clip: padding-box;
-}
-
-.demo-compose{
-  display:flex; gap:10px; align-items:center;
-  border-top: 1px solid var(--border);
-  padding: 12px 10px 4px;
-  flex-shrink: 0;
-  margin-top: auto;
-}
-.demo-input{
-  flex:1;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 12px 14px;
-  color: var(--text);
-  font-family: inherit;
-  outline: none;
-  transition: border-color .2s, box-shadow .2s;
-}
-.demo-input:focus{
-  border-color: rgba(0,229,255,0.35);
-  box-shadow: 0 0 0 3px rgba(0,229,255,0.10);
-}
-.demo-send{
-  padding: 12px 16px;
-  border-radius: 14px;
-  border: 1px solid rgba(124,92,252,0.35);
-  background: rgba(124,92,252,0.18);
-  color: var(--text);
-  font-weight: 800;
-  font-family: inherit;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: transform .15s, background .2s, border-color .2s, opacity .2s;
-}
-.demo-send:hover{ transform: translateY(-1px); background: rgba(124,92,252,0.24); border-color: rgba(124,92,252,0.55); }
-.demo-send:disabled{ opacity: 0.55; cursor:not-allowed; transform:none; }
-.demo-notice{
-  margin-top: 8px;
-  padding-bottom: 2px;
-  font-size: 0.78rem;
-  color: var(--muted);
-  flex-shrink: 0;
-  text-align: center;
-}
-.msg-ai strong{ color: var(--accent2); }
-.msg-ai h2, .msg-ai h3, .msg-ai h4{ font-weight: 800; margin: 8px 0 6px; line-height: 1.35; }
-.msg-ai h2{ font-size: 0.95rem; }
-.msg-ai h3{ font-size: 0.9rem; }
-.msg-ai p{ margin: 6px 0; }
-.msg-ai ul, .msg-ai ol{ margin: 6px 0 6px 18px; }
-.msg-ai li{ margin: 4px 0; }
-.msg-ai code{
-  background: rgba(255,255,255,0.06);
-  padding: 1px 5px;
-  border-radius: 4px;
-  font-size: 0.82em;
-}
-.msg-ai .katex{ font-size: 1.25em; margin: 0 0.18em; }
-.msg-u  .katex{ font-size: 1.25em; margin: 0 0.18em; }
-.msg-ai .katex-display{ margin: 0.55em 0; }
-.msg-u  .katex-display{ margin: 0.55em 0; }
-
-.testi-grid{
-  margin-top: 44px;
-  display:grid; grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-@media(max-width:960px){ .testi-grid{ grid-template-columns: 1fr; } }
-.testi-card{ padding: 28px; }
-.testi-quote{ color: var(--muted2); font-weight: 300; line-height: 1.85; font-size: 0.98rem; }
-.testi-meta{ display:flex; align-items:center; justify-content:space-between; gap: 12px; margin-top: 18px; }
-.testi-who{ display:flex; flex-direction:column; gap: 4px; }
-.testi-name{ font-weight: 800; letter-spacing:-0.02em; }
-.testi-badge{
-  display:inline-flex; align-items:center; gap:8px;
-  font-size: 0.72rem; font-weight: 800; letter-spacing:0.06em; text-transform:uppercase;
-  padding: 6px 10px; border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.03);
-  color: var(--muted2);
-  white-space: nowrap;
-}
-.testi-badge .tick{
-  width: 18px; height: 18px; border-radius: 6px;
-  display:flex; align-items:center; justify-content:center;
-  background: rgba(0,229,255,0.10);
-  border: 1px solid rgba(0,229,255,0.20);
-  color: var(--accent2);
-  font-weight: 900;
-}
-
-.roadmap-grid{
-  margin-top: 44px;
-  display:grid; grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
-@media(max-width:960px){ .roadmap-grid{ grid-template-columns: 1fr; } }
-.rm-card{ padding: 28px; }
-.rm-tag{
-  display:inline-flex; align-items:center; gap:10px;
-  padding: 8px 12px; border-radius: 999px;
-  border: 1px solid var(--border);
-  background: rgba(255,255,255,0.03);
-  color: var(--muted2);
-  font-size: 0.75rem; font-weight: 900; letter-spacing:0.08em; text-transform:uppercase;
-}
-.rm-tag .pill{ width:10px; height:10px; border-radius:50%; }
-.rm-title{ margin-top: 14px; font-weight: 900; font-size: 1.2rem; letter-spacing:-0.02em; }
-.rm-list{ margin-top: 12px; color: var(--muted2); font-weight: 300; line-height: 1.85; padding-left: 18px; }
-.rm-list li{ margin: 7px 0; }
-
 /* GITHUB SKILLS SECTION */
 .github-sec {
   position: relative; z-index: 1;
@@ -688,6 +387,7 @@ nav {
 }
 .contrib-graph {
   display: grid;
+  grid-template-flow: column;
   grid-auto-flow: column;
   grid-template-rows: repeat(7, 10px);
   gap: 3.5px;
@@ -721,10 +421,10 @@ nav {
 
 /* TOOLTIP */
 .graph-tooltip {
-  position: fixed; background: #030306; border: 1px solid var(--accent2);
+  position: absolute; background: #030306; border: 1px solid var(--accent2);
   color: var(--text); font-size: 0.72rem; padding: 6px 12px; border-radius: 6px;
   pointer-events: none; opacity: 0; transition: opacity 0.15s ease;
-  z-index: 9999; white-space: nowrap; box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+  z-index: 99; white-space: nowrap; box-shadow: 0 8px 20px rgba(0,0,0,0.5);
 }
 
 /* TERMINAL SIMULATOR */
@@ -865,17 +565,30 @@ nav {
 }
 
 .student-meta {
-  display: flex; gap: 24px; align-items: center; margin-bottom: 26px;
+  display: flex; flex-direction: column; gap: 16px; align-items: center; text-align: center; margin-bottom: 26px;
 }
 .student-avatar {
-  width: 76px; height: 76px; border-radius: 20px;
+  width: 80px; height: 80px; border-radius: 22px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   display: flex; align-items: center; justify-content: center;
   font-weight: 800; font-size: 1.8rem; color: #030306;
-  box-shadow: 0 0 20px rgba(0, 229, 255, 0.3);
+  box-shadow: 0 0 28px rgba(124, 92, 252, 0.45), 0 0 8px rgba(0,229,255,0.2);
 }
-.student-header-text { flex: 1; }
-.student-name { font-weight: 800; font-size: clamp(1.2rem, 4vw, 1.6rem); letter-spacing: -0.03em; color: var(--text); margin-bottom: 4px; }
+.student-header-text { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.student-creator-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 20px;
+  background: linear-gradient(90deg, rgba(124,92,252,0.18), rgba(0,229,255,0.12));
+  border: 1px solid rgba(124,92,252,0.3);
+  color: var(--accent2); margin-bottom: 2px;
+}
+.student-name {
+  font-weight: 800; font-size: clamp(1.4rem, 4vw, 1.85rem); letter-spacing: -0.03em;
+  background: linear-gradient(120deg, #fff 30%, var(--accent2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  margin-bottom: 2px;
+}
 .student-role { font-size: 0.82rem; font-weight: 700; color: var(--accent2); letter-spacing: 0.05em; text-transform: uppercase; }
 
 .student-bio {
@@ -925,7 +638,7 @@ nav {
 }
 .step:last-child { border-bottom: none; }
 @media(max-width:640px){ .step { grid-template-columns: 1fr; gap: 16px; padding: 30px 0; } }
-.step-num   { font-weight: 800; font-size: 4.5rem; color: rgba(255,255,255,0.04); line-height: 1; white-space: nowrap; }
+.step-num   { font-weight: 800; font-size: 4.5rem; color: rgba(255,255,255,0.04); line-height: 1; }
 .step-title { font-weight: 800; font-size: 1.4rem; margin-bottom: 12px; color: var(--text); }
 .step-desc  { color: var(--muted2); font-size: 1rem; line-height: 1.8; font-weight: 300; }
 
@@ -962,22 +675,12 @@ footer {
   position: relative; z-index: 1;
   background: #020204; border-top: 1px solid var(--border);
   padding: 35px 60px;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  gap: 16px;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center; gap: 16px;
   font-size: 0.85rem; color: var(--muted);
 }
 footer > :last-child { text-align: right; }
-@media(max-width:640px){
-  footer {
-    padding: 24px 24px;
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-  }
-  footer > :last-child { text-align: center; }
-}
+@media(max-width:640px){ footer { padding: 24px 24px; justify-content: center; text-align: center; } }
 .footer-logo { display: flex; align-items: center; gap: 9px; font-weight: 800; font-size: 1rem; color: var(--text); }
 .footer-creators { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .footer-creators-names { display: flex; align-items: center; gap: 10px; }
@@ -988,7 +691,7 @@ footer > :last-child { text-align: right; }
   letter-spacing: -0.01em;
 }
 .footer-creator-sep { color: var(--accent); font-weight: 700; font-size: 1rem; }
-.footer-creator-meta {
+.footer-creator-meta { 
   font-size: 0.82rem; font-weight: 600;
   background: linear-gradient(120deg, var(--accent) 0%, var(--accent2) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
@@ -1007,8 +710,6 @@ footer > :last-child { text-align: right; }
 @keyframes marquee   { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 @keyframes pulse     { 0%,100% { opacity:1; } 50% { opacity:0.35; } }
 @keyframes blink     { 0%,80%,100% { opacity:0.15; transform:scale(0.75); } 40% { opacity:1; transform:scale(1); } }
-@keyframes titleDropIn { 0% { opacity:0; transform:translateY(-18px); filter:blur(6px); } 60% { opacity:1; transform:translateY(0); filter:blur(0.6px); } 100% { opacity:1; transform:translateY(0); filter:blur(0); } }
-@keyframes feedSlideUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
 .sr { opacity:0; transform:translateY(30px); transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
 .sr.in { opacity:1; transform:translateY(0); }
@@ -1025,38 +726,19 @@ img, svg, video { max-width: 100%; height: auto; }
   nav { gap: 10px; min-width: 0; }
   .nav-logo { font-size: 1.12rem; min-width: 0; }
   .nav-cta { padding: 9px 18px; font-size: 0.85rem; flex-shrink: 0; }
-  .sec-h2, .cta-h2, .feat-title, .rm-title { overflow-wrap: anywhere; word-break: break-word; }
-  .testi-meta { flex-wrap: wrap; }
-  .testi-badge { white-space: normal; }
-  .fc-pill { white-space: normal; }
+  .sec-h2, .cta-h2, .feat-title { overflow-wrap: anywhere; word-break: break-word; }
   .demo-compose { flex-wrap: wrap; }
   .demo-input { min-width: 0; flex: 1 1 140px; }
-  .demo-send { flex-shrink: 0; }
-  .student-row { flex-wrap: wrap; gap: 6px; }
-  .panel-title { flex-wrap: wrap; }
-  .git-panel { padding: 22px 18px; }
 }
 @media (max-width: 480px) {
-  .hero { padding: 100px 16px 48px; gap: 28px; }
-  .hero-h1 { font-size: clamp(2rem, 9vw, 3rem); line-height: 1.22; }
-  .hero-desc { font-size: 0.95rem; margin-bottom: 28px; }
-  .hero-desc span[style*="nowrap"] { white-space: normal !important; }
+  .hero { padding: 100px 16px 48px; }
+  .hero-h1 { font-size: clamp(2rem, 9vw, 3rem); }
   .hero-btns { flex-direction: column; width: 100%; }
   .hero-btns .btn-lime, .hero-btns .btn-outline { width: 100%; justify-content: center; }
   nav { padding: 12px 16px; }
-  .logo-box { width: 32px; height: 32px; }
-  .spotlight-card { padding: 22px 18px; }
-  .btn-dark { width: 100%; justify-content: center; box-sizing: border-box; }
-  .demo-grid { margin-top: 28px; }
-  .demo-chat { min-height: 420px; max-height: min(78vh, 560px); }
-  .student-meta { flex-direction: column; align-items: flex-start; gap: 14px; }
-  .cta-h2 span[style*="nowrap"] { white-space: normal !important; }
-}
-@media (max-width: 360px) {
-  .nav-cta { padding: 8px 12px; font-size: 0.76rem; }
-  .hero-eyebrow { font-size: 0.72rem; padding: 6px 12px; letter-spacing: 0.05em; }
 }
 </style>
+<script src="https://unpkg.com/lucide@latest" defer></script>
 </head>
 <body>
 
@@ -1071,7 +753,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <nav>
   <a class="nav-logo" href="#">
     <div class="logo-box">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     </div>
     Axon AI
   </a>
@@ -1083,10 +765,10 @@ img, svg, video { max-width: 100%; height: auto; }
 <section class="hero">
   <div>
     <div class="hero-eyebrow"><span class="eyebrow-dot"></span>Trợ lý AI chuyên biệt cho học sinh</div>
-    <h1 class="hero-h1 title-drop" id="decryptTitle">Học thông<br><span class="h1-outline">minh hơn</span><br><span class="h1-lastline">với <span class="h1-lime rotating-settle" id="rotatingWord">AI</span></span></h1>
+    <h1 class="hero-h1 decrypt-title" id="decryptTitle">Học thông minh hơn với AI</h1>
     <p class="hero-desc">Axon AI đồng hành cùng học sinh THCS — giải toán chi tiết, diễn giải từng bước, giải đáp thắc mắc mọi môn học <span style="white-space:nowrap">tức thì 24/24.</span></p>
     <div class="hero-btns">
-      <a class="btn-lime magnetic-btn" href="/choose"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg> Đăng nhập ngay</a>
+      <a class="btn-lime magnetic-btn" href="/choose"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Đăng nhập ngay</a>
       <a class="btn-outline magnetic-btn" href="#about">Xem đội ngũ phát triển</a>
     </div>
   </div>
@@ -1112,7 +794,7 @@ img, svg, video { max-width: 100%; height: auto; }
       <div class="card-head"><span class="card-dot"></span>Hỏi đáp Văn Học</div>
       <div class="card-body">
         <div class="msg msg-u" style="font-size:0.8rem">"Lá rơi như mưa" dùng biện pháp gì?</div>
-        <div class="msg msg-ai" style="font-size:0.8rem">Đây là phép <strong>so sánh</strong> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+        <div class="msg msg-ai" style="font-size:0.8rem">Đây là phép <strong>so sánh</strong> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
       </div>
     </div>
 
@@ -1141,50 +823,6 @@ img, svg, video { max-width: 100%; height: auto; }
   </div>
 </div>
 
-<!-- LIVE DEMO -->
-<section class="demo-sec" id="demo">
-  <div class="sr">
-    <div class="eyebrow">Thử ngay</div>
-    <h2 class="sec-h2">Demo tương tác<br>như <em>gia sư thật</em></h2>
-    <p class="feat-right">Gõ một câu hỏi bất kỳ để xem Axon AI diễn giải từng bước bằng model thật. Bạn có tối đa 5 dòng demo, đến dòng 5 sẽ được mời đăng nhập/đăng ký để dùng đầy đủ.</p>
-  </div>
-
-  <div class="demo-grid">
-    <div class="demo-copy spotlight-card sr sr-d1">
-      <div class="spotlight-content">
-        <div class="feat-title" style="margin-bottom:10px">Tập trung vào “cách làm”</div>
-        <div class="feat-desc" style="font-size:1rem">Axon AI ưu tiên lập luận rõ ràng, gợi ý từng bước, và nhắc lại kiến thức nền để bạn tự giải được các bài sau.</div>
-        <div class="demo-kpis">
-          <span class="demo-kpi"><span class="dot"></span><strong>~2–3s</strong> phản hồi AI thật</span>
-          <span class="demo-kpi"><strong>Step-by-step</strong> giải thích</span>
-          <span class="demo-kpi"><strong>THCS</strong> tối ưu nội dung</span>
-        </div>
-        <div class="demo-feed" aria-live="polite">
-          <div class="demo-feed-list" id="demoFeedList"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="demo-chat spotlight-card sr sr-d2">
-      <div class="spotlight-content">
-        <div class="demo-chat-head">
-          <div class="demo-chat-title">Axon AI · Live Demo</div>
-          <span class="demo-chip" id="demoChip">Live · Qwen3-32b</span>
-        </div>
-        <div class="demo-body" id="demoChatBody" aria-live="polite">
-          <div class="msg msg-u" style="font-size:0.96rem">Tính nhanh: $\frac{3}{4} + \frac{2}{3} = ?$</div>
-          <div class="msg msg-ai" style="font-size:0.96rem">Quy đồng mẫu: $\frac{3}{4} = \frac{9}{12}$, $\frac{2}{3} = \frac{8}{12}$.<br>Vậy $\frac{3}{4} + \frac{2}{3} = \frac{17}{12}$ ✓</div>
-        </div>
-        <div class="demo-compose">
-          <input class="demo-input" id="demoInput" placeholder="Ví dụ: Giải phương trình 5x − 10 = 0" autocomplete="off">
-          <button class="demo-send magnetic-btn" id="demoSend">Thử ngay</button>
-        </div>
-        <div class="demo-notice" id="demoNotice">Bạn còn 4 lượt chat demo miễn phí.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
 <!-- FEATURES — Bento Grid (React Bits: Spotlight Cards) -->
 <section class="features" id="features">
   <div class="feat-header">
@@ -1207,37 +845,37 @@ img, svg, video { max-width: 100%; height: auto; }
     <div class="feat-card spotlight-card sr sr-d2">
       <div class="spotlight-content">
         <div class="feat-num">02</div>
-        <span class="feat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V7"/><path d="m16 12 2 2 4-4"/><path d="M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3"/></svg></span>
+        <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span>
         <div class="feat-title">Đa môn học học tập</div>
         <div class="feat-desc">Toán học, Vật lý, Hóa học, Ngữ văn, Lịch sử, Địa lý và Ngoại ngữ — hỗ trợ đắc lực cho toàn bộ học sinh THCS.</div>
-        <div class="feat-bg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V7"/><path d="m16 12 2 2 4-4"/><path d="M22 6V4a1 1 0 0 0-1-1h-5a4 4 0 0 0-4 4 4 4 0 0 0-4-4H3a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h6a3 3 0 0 1 3 3 3 3 0 0 1 3-3h6a1 1 0 0 0 1-1v-1.3"/></svg></div>
+        <div class="feat-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div>
       </div>
     </div>
     <div class="feat-card spotlight-card sr sr-d3">
       <div class="spotlight-content">
         <div class="feat-num">03</div>
-        <span class="feat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="m10 8-3 3 3 3"/><path d="m14 14 3-3-3-3"/></svg></span>
+        <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg></span>
         <div class="feat-title">Giao tiếp tự nhiên</div>
         <div class="feat-desc">Đàm thoại tự nhiên với AI như một gia sư thực thụ. Bạn có thể hỏi vặn lại hay yêu cầu lấy ví dụ thực tế khác.</div>
-        <div class="feat-bg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="m10 8-3 3 3 3"/><path d="m14 14 3-3-3-3"/></svg></div>
+        <div class="feat-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg></div>
       </div>
     </div>
     <div class="feat-card spotlight-card sr sr-d4">
       <div class="spotlight-content">
         <div class="feat-num">04</div>
-        <span class="feat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
         <div class="feat-title">Bảo mật học đường</div>
         <div class="feat-desc">Đăng nhập nhanh chóng và bảo mật qua mã số học sinh. Toàn bộ lịch sử trao đổi được mã hóa và bảo vệ tuyệt đối.</div>
-        <div class="feat-bg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
+        <div class="feat-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
       </div>
     </div>
     <div class="feat-card spotlight-card sr sr-d5">
       <div class="spotlight-content">
         <div class="feat-num">05</div>
-        <span class="feat-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a2 2 0 0 1 3.414-1.414l6 6a2 2 0 0 1 0 2.828l-6 6A2 2 0 0 1 12 18z"/><path d="M2 6a2 2 0 0 1 3.414-1.414l6 6a2 2 0 0 1 0 2.828l-6 6A2 2 0 0 1 2 18z"/></svg></span>
+        <span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></span>
         <div class="feat-title">Phản hồi thần tốc</div>
         <div class="feat-desc">Tận dụng hạ tầng đám mây tốc độ cao, AI xử lý dữ liệu lớn và đưa ra phản hồi chỉ trong 2-3 giây sau khi gửi yêu cầu.</div>
-        <div class="feat-bg"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6a2 2 0 0 1 3.414-1.414l6 6a2 2 0 0 1 0 2.828l-6 6A2 2 0 0 1 12 18z"/><path d="M2 6a2 2 0 0 1 3.414-1.414l6 6a2 2 0 0 1 0 2.828l-6 6A2 2 0 0 1 2 18z"/></svg></div>
+        <div class="feat-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
       </div>
     </div>
     <div class="feat-card fc-finale spotlight-card sr sr-d6">
@@ -1248,60 +886,12 @@ img, svg, video { max-width: 100%; height: auto; }
           <div class="feat-desc">Hoàn toàn không có quảng cáo gây xao nhãng. Thiết kế web thích ứng hoàn hảo giúp bạn học mọi lúc mọi nơi từ điện thoại thông minh, máy tính bảng đến máy tính để bàn một cách mượt mà nhất.</div>
         </div>
         <div class="fc-finale-pills">
-          <span class="fc-pill"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:text-bottom;flex-shrink:0"><rect width="10" height="14" x="3" y="8" rx="2"/><path d="M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4"/><path d="M8 18h.01"/></svg> Đa nền tảng</span>
-          <span class="fc-pill"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:text-bottom;flex-shrink:0"><path d="M10.5 3 8 9l4 13 4-13-2.5-6"/><path d="M17 3a2 2 0 0 1 1.6.8l3 4a2 2 0 0 1 .013 2.382l-7.99 10.986a2 2 0 0 1-3.247 0l-7.99-10.986A2 2 0 0 1 2.4 7.8l2.998-3.997A2 2 0 0 1 7 3z"/><path d="M2 9h20"/></svg> Hoàn toàn miễn phí</span>
+          <span class="fc-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:text-bottom;flex-shrink:0"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg> Đa nền tảng</span>
+          <span class="fc-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:text-bottom;flex-shrink:0"><path d="M12 7v14"/><path d="M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"/><path d="M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5"/><rect x="3" y="7" width="18" height="4" rx="1"/></svg> Hoàn toàn miễn phí</span>
           <span class="fc-pill"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;vertical-align:text-bottom;flex-shrink:0"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg> Độ chính xác cao</span>
         </div>
       </div>
       <div class="feat-bg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"/><path d="M20 2v4"/><path d="M22 4h-4"/><circle cx="4" cy="20" r="2"/></svg></div>
-    </div>
-  </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testi-sec" id="testimonials">
-  <div class="sr">
-    <div class="eyebrow">Phản hồi</div>
-    <h2 class="sec-h2">Nhẹ nhàng hơn cho bạn,<br><em>rõ ràng hơn</em> cho bài làm</h2>
-    <p class="feat-right">Một số phản hồi tiêu biểu về cách Axon AI hướng dẫn tư duy, không chỉ “cho đáp án”.</p>
-  </div>
-
-  <div class="testi-grid">
-    <div class="spotlight-card testi-card sr sr-d1">
-      <div class="spotlight-content">
-        <div class="testi-quote">“Em thích nhất là phần giải từng bước. Khi sai, Axon AI chỉ ra em sai ở đâu và gợi ý làm lại, nên em nhớ lâu hơn.”</div>
-        <div class="testi-meta">
-          <div class="testi-who">
-            <div class="testi-name">Học sinh THCS</div>
-            <div class="feat-desc" style="margin:0">Môn: Toán học</div>
-          </div>
-          <span class="testi-badge"><span class="tick">✓</span> Verified</span>
-        </div>
-      </div>
-    </div>
-    <div class="spotlight-card testi-card sr sr-d2">
-      <div class="spotlight-content">
-        <div class="testi-quote">“Cách giải thích rất ‘đúng bài’ và dễ hiểu. Em hỏi thêm ví dụ là có ngay, không bị lan man.”</div>
-        <div class="testi-meta">
-          <div class="testi-who">
-            <div class="testi-name">Học sinh THCS</div>
-            <div class="feat-desc" style="margin:0">Môn: Vật lý</div>
-          </div>
-          <span class="testi-badge"><span class="tick">✓</span> Verified</span>
-        </div>
-      </div>
-    </div>
-    <div class="spotlight-card testi-card sr sr-d3">
-      <div class="spotlight-content">
-        <div class="testi-quote">“Nhờ Axon AI, em viết dàn ý Văn rõ ràng hơn. Không làm hộ, mà hướng dẫn em tự viết.”</div>
-        <div class="testi-meta">
-          <div class="testi-who">
-            <div class="testi-name">Học sinh THCS</div>
-            <div class="feat-desc" style="margin:0">Môn: Ngữ văn</div>
-          </div>
-          <span class="testi-badge"><span class="tick">✓</span> Verified</span>
-        </div>
-      </div>
     </div>
   </div>
 </section>
@@ -1359,10 +949,10 @@ img, svg, video { max-width: 100%; height: auto; }
       <div>
         <div class="repo-meta">
           <span class="repo-badge">Public Repository</span>
-          <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"/></svg>
+          <svg height="24" width="24" viewBox="0 0 16 16" version="1.1" aria-hidden="true" fill="rgba(255,255,255,0.4)"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path></svg>
         </div>
         <div class="repo-name">axon-ai</div>
-        <p class="repo-desc">Hệ thống AI trò chuyện thông minh sử dụng AstraDB, cookie session, Groq SDK với Llama 3 — giải quyết bài toán và câu hỏi THCS.</p>
+        <p class="repo-desc">Hệ thống AI trò chuyện thông minh sử dụng AstraDB, MongoDB, Groq SDK với Llama 3, JWT auth — giải quyết bài toán và câu hỏi THCS.</p>
       </div>
 
       <div>
@@ -1377,16 +967,24 @@ img, svg, video { max-width: 100%; height: auto; }
           <span class="lang-label"><span class="lang-dot" style="background:#e34c26"></span>HTML (10%)</span>
         </div>
         
-
         <div class="git-skills-wrapper">
+          <span class="git-skills-label">Tech Stack</span>
+          <div class="git-skills-pills">
+            <span class="git-skill-pill">Node.js / Express</span>
+            <span class="git-skill-pill">AstraDB</span>
+            <span class="git-skill-pill">MongoDB / Mongoose</span>
+            <span class="git-skill-pill">Groq SDK / Llama 3</span>
+            <span class="git-skill-pill">JWT Auth</span>
+          </div>
+        </div>
+        <div class="git-skills-wrapper" style="margin-top:12px;">
           <span class="git-skills-label">Git / Workflows áp dụng</span>
           <div class="git-skills-pills">
             <span class="git-skill-pill">Branching Strategy</span>
             <span class="git-skill-pill">Pull Requests</span>
+            <span class="git-skill-pill">GitHub Actions CI</span>
             <span class="git-skill-pill">Git Merge Conflict Resolve</span>
             <span class="git-skill-pill">Vercel Auto-deploy</span>
-            <span class="git-skill-pill">AstraDB / Cassandra</span>
-            <span class="git-skill-pill">MongoDB</span>
           </div>
         </div>
       </div>
@@ -1412,9 +1010,10 @@ img, svg, video { max-width: 100%; height: auto; }
         <div class="spotlight-content">
           <div class="student-meta">
             <div class="student-avatar" style="background: linear-gradient(135deg, #7c5cfc, #a88beb); color: #fff;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11v6"/><path d="M20 13h2"/><path d="M3 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 2.072.578"/><circle cx="10" cy="7" r="4"/><circle cx="20" cy="19" r="2"/></svg>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
             </div>
             <div class="student-header-text">
+              <div class="student-creator-badge">⭐ Creator</div>
               <div class="student-name">Võ Minh Quân</div>
               <div class="student-role">Fullstack & AI Developer</div>
             </div>
@@ -1423,7 +1022,7 @@ img, svg, video { max-width: 100%; height: auto; }
           <div class="student-rows">
             <div class="student-row"><span class="row-label">Lớp</span><span class="row-val"><strong>8A11</strong></span></div>
             <div class="student-row"><span class="row-label">Trường</span><span class="row-val">THCS Nguyễn Bỉnh Khiêm</span></div>
-            <div class="student-row"><span class="row-label">Công nghệ</span><span class="row-val">Node.js · AstraDB · Mongoose</span></div>
+            <div class="student-row"><span class="row-label">Công nghệ</span><span class="row-val">Node.js · AstraDB · MongoDB</span></div>
           </div>
           <div class="student-skills-list">
             <span class="student-skill-badge">Backend Architecture</span>
@@ -1442,9 +1041,10 @@ img, svg, video { max-width: 100%; height: auto; }
         <div class="spotlight-content">
           <div class="student-meta">
             <div class="student-avatar" style="background: linear-gradient(135deg, #00e5ff, #80f0ff); color: #0e7490;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 15H7a4 4 0 0 0-4 4v2"/><path d="M21.378 16.626a1 1 0 0 0-3.004-3.004l-4.01 4.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"/><circle cx="10" cy="7" r="4"/></svg>
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
             </div>
             <div class="student-header-text">
+              <div class="student-creator-badge">⭐ Creator</div>
               <div class="student-name">Hồ Nguyễn Hải Triều</div>
               <div class="student-role">Lead UI/UX & Frontend Engineer</div>
             </div>
@@ -1462,51 +1062,6 @@ img, svg, video { max-width: 100%; height: auto; }
             <span class="student-skill-badge design">Interactive Components</span>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ROADMAP -->
-<section class="roadmap-sec" id="roadmap">
-  <div class="sr">
-    <div class="eyebrow">Lộ trình</div>
-    <h2 class="sec-h2">Đang phát triển đều đặn,<br>hướng tới <em>bản ổn định</em></h2>
-    <p class="feat-right">Một roadmap ngắn để bạn biết chúng mình đang làm gì tiếp theo cho trải nghiệm học tập.</p>
-  </div>
-
-  <div class="roadmap-grid">
-    <div class="spotlight-card rm-card sr sr-d1">
-      <div class="spotlight-content">
-        <div class="rm-tag"><span class="pill" style="background:#22d36d"></span> Đã ra mắt</div>
-        <div class="rm-title">Giải thích từng bước</div>
-        <ul class="rm-list">
-          <li>Hướng dẫn logic theo dạng bước</li>
-          <li>Hỏi đáp tự nhiên tiếng Việt</li>
-          <li>Giao diện tối ưu di động</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spotlight-card rm-card sr sr-d2">
-      <div class="spotlight-content">
-        <div class="rm-tag"><span class="pill" style="background:var(--accent2)"></span> Đang phát triển</div>
-        <div class="rm-title">Bài tập & tiến độ</div>
-        <ul class="rm-list">
-          <li>Gợi ý luyện tập theo điểm yếu</li>
-          <li>Lưu lịch sử & đánh dấu bài hay</li>
-          <li>Chế độ “giải ít gợi ý”</li>
-        </ul>
-      </div>
-    </div>
-    <div class="spotlight-card rm-card sr sr-d3">
-      <div class="spotlight-content">
-        <div class="rm-tag"><span class="pill" style="background:var(--accent)"></span> Sắp có</div>
-        <div class="rm-title">Trải nghiệm nâng cao</div>
-        <ul class="rm-list">
-          <li>Thư viện đề & mẫu lời giải</li>
-          <li>Không gian lớp học (pilot)</li>
-          <li>Xuất PDF lời giải gọn đẹp</li>
-        </ul>
       </div>
     </div>
   </div>
@@ -1556,7 +1111,7 @@ img, svg, video { max-width: 100%; height: auto; }
 <footer>
   <div class="footer-logo">
     <div class="footer-logo-box">
-      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
     </div>
     Axon AI
   </div>
@@ -1651,411 +1206,78 @@ document.querySelectorAll('.magnetic-btn').forEach(btn => {
   });
 });
 
-// Word transition (scramble) for rotating subject
-function scrambleTo(el, nextText, opts = {}) {
-  const duration = opts.duration ?? 520;
-  const scrambleChars = opts.scrambleChars ?? 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
-  const startText = el.textContent ?? '';
-  const maxLen = Math.max(startText.length, nextText.length);
-  const start = performance.now();
-
-  el.classList.remove('rotating-settle');
-  el.classList.add('rotating-scramble');
-
-  return new Promise(resolve => {
-    const tick = (now) => {
-      const t = Math.min((now - start) / duration, 1);
-      const reveal = Math.floor(t * maxLen);
-      let out = '';
-      for (let i = 0; i < maxLen; i++) {
-        if (i < reveal) {
-          out += nextText[i] ?? '';
-        } else {
-          out += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
-        }
-      }
-      el.textContent = out;
-      if (t < 1) requestAnimationFrame(tick);
-      else {
-        el.textContent = nextText;
-        el.classList.remove('rotating-scramble');
-        el.classList.add('rotating-settle');
-        resolve();
-      }
-    };
-    requestAnimationFrame(tick);
-  });
-}
-
-function applySubjectTone(wordEl, tone) {
-  wordEl.style.color = tone.color;
-  wordEl.style.textShadow = tone.shadow;
-}
-
-function setupDemoFeed() {
-  const feed = document.getElementById('demoFeedList');
-  if (!feed) return;
-
-  const names = ['Minh Anh', 'Gia Huy', 'Ngọc Hà', 'Tuấn Kiệt', 'Hải Đăng', 'Yến Nhi', 'Khánh Linh', 'Quốc Bảo', 'Phương Thảo', 'Đức An'];
-  const grades = ['lớp 6', 'lớp 7', 'lớp 8', 'lớp 9'];
-  const subjectTasks = {
-    'Toán': ['phương trình bậc hai', 'chia phân số', 'tính diện tích tam giác', 'định lý Pytago'],
-    'Ngữ văn': ['viết mở bài nghị luận', 'phân tích hình ảnh', 'nêu ý chính đoạn văn'],
-    'Vật lý': ['tính vận tốc', 'công suất điện', 'định luật Ohm'],
-    'Hóa học': ['cân bằng phương trình', 'tính mol', 'phản ứng axit-bazơ'],
-    'Sinh học': ['sơ đồ tế bào', 'di truyền học', 'quang hợp'],
-    'Tiếng Anh': ['thì hiện tại hoàn thành', 'viết đoạn văn ngắn', 'ngữ pháp so/such'],
-    'Lịch sử': ['phân tích sự kiện', 'lập dòng thời gian', 'so sánh triều đại'],
-    'Địa lý': ['đọc biểu đồ dân số', 'khí hậu vùng miền', 'bản đồ địa hình'],
-  };
-  const subjects = Object.keys(subjectTasks);
-
-  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-  const createFeedLine = () => {
-    const subject = pick(subjects);
-    const task = pick(subjectTasks[subject]);
-    const item = document.createElement('div');
-    item.className = 'demo-feed-item';
-    item.innerHTML = `Axon đã hỗ trợ học sinh <strong>${pick(names)}</strong> (${pick(grades)}) với bài tập <strong>${subject}</strong>: ${task}.`;
-    return item;
-  };
-
-  for (let i = 0; i < 5; i++) feed.appendChild(createFeedLine());
-
-  setInterval(() => {
-    feed.appendChild(createFeedLine());
-    while (feed.children.length > 6) {
-      feed.removeChild(feed.firstElementChild);
-    }
-  }, 1900);
-}
-
-function stripThink(s) {
-  let t = String(s || '');
-  t = t.replace(/<think>[\s\S]*?<\/redacted_thinking>/gi, '');
-  t = t.replace(/<think>[\s\S]*?<\/think>/gi, '');
-  const openIdx = t.search(/<think>/i);
-  if (openIdx !== -1) {
-    const tail = t.slice(openIdx);
-    if (!/<\/redacted_thinking>|<\/think>/i.test(tail)) t = t.slice(0, openIdx);
-    else t = t.replace(/<think>[\s\S]*$/gi, '');
-  }
-  return t.trim();
-}
-
-function renderDemoMd(raw) {
-  raw = stripThink(raw);
-  const protects = [];
-  const protect = (html) => { protects.push(html); return `%%P${protects.length - 1}%%`; };
-
-  let t = raw.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
-    protect(`<pre><code>${esc(code.trim())}</code></pre>`)
-  );
-
-  t = t.replace(/\\\[[\s\S]*?\\\]/g, m => protect(m));
-  t = t.replace(/\\\([\s\S]*?\\\)/g, m => protect(m));
-  t = t.replace(/\$\$[\s\S]*?\$\$/g, m => protect(m));
-  t = t.replace(/\$([^\$\n]+?)\$/g, m => protect(m));
-  // HTML-escape raw text AFTER protecting code/math so AI-injected HTML cannot render.
-  // Protected tokens (%%Pn%%) don't contain &/</>  so they survive the escape unchanged.
-  t = t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  t = t.replace(/^(\* .+)$/gm, (_, line) => `%%BULLET%%${line.slice(2)}`);
-  // Inline code: content already escaped above, no further esc() needed.
-  t = t.replace(/`([^`\n]+)`/g, (_, c) => protect(`<code>${c}</code>`));
-  t = t.replace(/^#### (.+)$/gm, (_, h) => `<h4>${h}</h4>`);
-  t = t.replace(/^### (.+)$/gm, (_, h) => `<h3>${h}</h3>`);
-  t = t.replace(/^## (.+)$/gm, (_, h) => `<h2>${h}</h2>`);
-  t = t.replace(/\*\*(.+?)\*\*/gs, (_, b) => `<strong>${b}</strong>`);
-  t = t.replace(/\*(.+?)\*/gs, (_, e) => `<em>${e}</em>`);
-
-  const lines = t.split('\n');
-  const out = [];
-  let inUl = false, inOl = false, paraLines = [];
-  const flushPara = () => {
-    if (paraLines.length) { out.push(`<p>${paraLines.join('<br>')}</p>`); paraLines = []; }
-  };
-  for (const line of lines) {
-    const isBullet = line.startsWith('%%BULLET%%');
-    const ulMatch = !isBullet && line.match(/^[-•]\s+(.+)/);
-    const olMatch = line.match(/^\d+\.\s+(.+)/);
-    if (/^---+$/.test(line)) {
-      flushPara();
-      if (inUl) { out.push('</ul>'); inUl = false; }
-      if (inOl) { out.push('</ol>'); inOl = false; }
-      out.push('<hr>');
-      continue;
-    }
-    if (isBullet || ulMatch) {
-      flushPara();
-      if (inOl) { out.push('</ol>'); inOl = false; }
-      if (!inUl) { out.push('<ul>'); inUl = true; }
-      out.push(`<li>${isBullet ? line.slice(10) : ulMatch[1]}</li>`);
-    } else if (olMatch) {
-      flushPara();
-      if (inUl) { out.push('</ul>'); inUl = false; }
-      if (!inOl) { out.push('<ol>'); inOl = true; }
-      out.push(`<li>${olMatch[1]}</li>`);
-    } else {
-      if (inUl) { out.push('</ul>'); inUl = false; }
-      if (inOl) { out.push('</ol>'); inOl = false; }
-      if (line.trim() === '' || /^<h[1-4]|^%%P/.test(line)) {
-        flushPara();
-        out.push(line);
+// Text Decrypt Reveal (React Bits: Decrypt Text)
+function decryptText(el, targetText, duration = 1200) {
+  const chars = 'XYZAB12890!@#$<>?/[]{}';
+  let start = null;
+  
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const revealIndex = Math.floor(progress * targetText.length);
+    let output = '';
+    
+    let inTag = false;
+    for (let i = 0; i < targetText.length; i++) {
+      if (targetText[i] === '<') inTag = true;
+      if (i < revealIndex) {
+        output += targetText[i];
+      } else if (targetText[i] === ' ' || targetText[i] === '\n' || inTag) {
+        output += targetText[i];
       } else {
-        paraLines.push(line);
+        output += chars[Math.floor(Math.random() * chars.length)];
       }
+      if (targetText[i] === '>') inTag = false;
     }
-  }
-  flushPara();
-  if (inUl) out.push('</ul>');
-  if (inOl) out.push('</ol>');
-
-  let result = out.join('');
-  protects.forEach((p, i) => { result = result.replaceAll(`%%P${i}%%`, p); });
-  return result;
+    
+    el.innerHTML = output;
+    
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    }
+  };
+  
+  requestAnimationFrame(step);
 }
 
-function esc(s) {
-  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function renderDemoMath(el) {
-  if (!el) return;
-  const run = () => {
-    if (typeof renderMathInElement !== 'function') return false;
-    renderMathInElement(el, {
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '\\[', right: '\\]', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\(', right: '\\)', display: false },
-      ],
-      throwOnError: false,
-    });
-    return true;
-  };
-  if (run()) return;
-  const retry = () => { run(); };
-  if (document.readyState === 'complete') setTimeout(retry, 50);
-  else window.addEventListener('load', retry, { once: true });
-}
-
-// Live demo chat (real API + limited lines)
-function setupLiveDemo() {
-  const body = document.getElementById('demoChatBody');
-  const input = document.getElementById('demoInput');
-  const send = document.getElementById('demoSend');
-  const chip = document.getElementById('demoChip');
-  const notice = document.getElementById('demoNotice');
-  if (!body || !input || !send || !notice) return;
-
-  const scrollToBottom = () => {
-    body.scrollTop = body.scrollHeight;
-  };
-  const addMsg = (cls, html) => {
-    const el = document.createElement('div');
-    el.className = `msg ${cls}`;
-    el.innerHTML = html;
-    body.appendChild(el);
-    scrollToBottom();
-    return el;
-  };
-
-  const addTyping = () => {
-    const row = document.createElement('div');
-    row.className = 'typing-row';
-    row.innerHTML = '<span></span><span></span><span></span>';
-    body.appendChild(row);
-    scrollToBottom();
-    return row;
-  };
-
-  const demoHistory = [
-    { role: 'user', content: 'Tính nhanh: 3/4 + 2/3 = ?' },
-    { role: 'assistant', content: 'Quy đồng mẫu: 3/4 = 9/12, 2/3 = 8/12. Vậy 3/4 + 2/3 = 17/12 = 1 5/12.' },
-  ];
-  let userTurns = 1;
-  const maxDemoTurns = 5;
-
-  const updateNotice = () => {
-    const left = Math.max(0, maxDemoTurns - userTurns);
-    if (left === 0) {
-      notice.innerHTML = 'Đã hết 5 dòng demo. <a href="/choose" style="color:var(--accent2);font-weight:700">Đăng nhập/Đăng ký</a> để dùng đầy đủ.';
-    } else {
-      notice.textContent = `Bạn còn ${left} lượt chat demo miễn phí.`;
-    }
-  };
-  updateNotice();
-
-  let busy = false;
-  const run = async () => {
-    if (busy) return;
-    const q = input.value.trim();
-    if (!q) return;
-
-    if (userTurns >= maxDemoTurns) {
-      addMsg('msg-ai', 'Bạn đã dùng hết 5 dòng demo. Vui lòng <a href="/choose" style="color:var(--accent2);font-weight:700">đăng nhập hoặc đăng ký</a> để tiếp tục trải nghiệm Axon AI đầy đủ.');
-      send.disabled = true;
-      input.disabled = true;
-      input.placeholder = 'Đăng nhập/đăng ký để tiếp tục trò chuyện';
-      if (chip) chip.textContent = 'Demo giới hạn';
-      updateNotice();
-      return;
-    }
-
-    busy = true;
-    send.disabled = true;
-    addMsg('msg-u', esc(q));
-    input.value = '';
-
-    const typing = addTyping();
-    const callDemo = () =>
-      fetch('/api/public-demo/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: q,
-          history: demoHistory
-            .filter(
-              (m) =>
-                m.content &&
-                !/demo ai (chưa trả lời|tạm thời|không phản hồi)/i.test(m.content)
-            )
-            .slice(-6),
-        }),
-      });
-
-    try {
-      let response = await callDemo();
-      let data = await response.json().catch(() => ({}));
-      if (!response.ok && response.status >= 500) {
-        await new Promise((r) => setTimeout(r, 800));
-        response = await callDemo();
-        data = await response.json().catch(() => ({}));
-      }
-      typing.remove();
-
-      const rawReply = typeof data.reply === 'string' ? data.reply : '';
-      const cleanReply = stripThink(rawReply);
-
-      if (!response.ok || !cleanReply) {
-        addMsg(
-          'msg-ai',
-          esc(
-            data.error ||
-              (response.status === 429
-                ? 'Demo đang quá tải, bạn thử lại sau 1 phút.'
-                : 'Demo AI tạm thời không phản hồi. Bạn thử lại sau vài giây.')
-          )
-        );
-      } else {
-        userTurns += 1;
-        updateNotice();
-        const bubble = addMsg('msg-ai', renderDemoMd(cleanReply));
-        renderDemoMath(bubble);
-        requestAnimationFrame(() => renderDemoMath(bubble));
-        demoHistory.push({ role: 'user', content: q }, { role: 'assistant', content: cleanReply });
-      }
-    } catch (_err) {
-      typing.remove();
-      addMsg('msg-ai', 'Không thể kết nối demo AI lúc này. Bạn thử lại sau nhé.');
-    }
-
-    busy = false;
-    if (userTurns >= maxDemoTurns) {
-      addMsg('msg-ai', 'Bạn đã đến dòng demo thứ 5. Vui lòng <a href="/choose" style="color:var(--accent2);font-weight:700">đăng nhập/đăng ký</a> để dùng full tính năng.');
-      send.disabled = true;
-      input.disabled = true;
-      input.placeholder = 'Đăng nhập/đăng ký để sử dụng không giới hạn';
-      if (chip) chip.textContent = 'Demo giới hạn';
-      updateNotice();
-      return;
-    }
-
-    send.disabled = false;
-    input.focus();
-  };
-
-  send.addEventListener('click', run);
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') run();
-  });
-}
-
-// Trigger title reveal + rotating word on load
+// Trigger text decrypt on load
 window.addEventListener('DOMContentLoaded', () => {
   const titleEl = document.getElementById('decryptTitle');
-  const wordEl = document.getElementById('rotatingWord');
-
-  // Title appears (no scramble)
-  requestAnimationFrame(() => titleEl.classList.add('in'));
-
-  if (!wordEl) return;
-
-  const tones = [
-    { word: 'Toán học',  color: 'var(--accent2)', shadow: '0 0 30px rgba(0, 229, 255, 0.22)' },
-    { word: 'Vật lý',    color: 'var(--accent)',  shadow: '0 0 30px rgba(124, 92, 252, 0.22)' },
-    { word: 'Hóa học',   color: '#a3ff12',        shadow: '0 0 30px rgba(163, 255, 18, 0.20)' },
-    { word: 'Ngữ văn',   color: '#ff5cf4',        shadow: '0 0 30px rgba(255, 92, 244, 0.18)' },
-    { word: 'Lịch sử',   color: '#ffbd2e',        shadow: '0 0 30px rgba(255, 189, 46, 0.20)' },
-    { word: 'Địa lý',    color: '#34d399',        shadow: '0 0 30px rgba(52, 211, 153, 0.18)' },
-    { word: 'Tiếng Anh', color: '#60a5fa',        shadow: '0 0 30px rgba(96, 165, 250, 0.18)' },
-    { word: 'Sinh học',  color: '#22c55e',        shadow: '0 0 30px rgba(34, 197, 94, 0.18)' },
-    { word: 'AI',        color: 'var(--accent2)', shadow: '0 0 30px rgba(0, 229, 255, 0.20)' },
-  ];
-  const order = tones.map(t => t.word);
-  let idx = order.indexOf('AI');
-  if (idx < 0) idx = 0;
-
-  // Lock rotating word width to prevent line-wrap/layout shift during scramble
-  const setRotatingMinWidth = () => {
-    const probe = document.createElement('span');
-    probe.style.position = 'absolute';
-    probe.style.visibility = 'hidden';
-    probe.style.whiteSpace = 'nowrap';
-    probe.style.pointerEvents = 'none';
-    probe.style.font = getComputedStyle(wordEl).font;
-    document.body.appendChild(probe);
-
-    let maxW = 0;
-    for (const t of tones) {
-      probe.textContent = t.word;
-      maxW = Math.max(maxW, probe.getBoundingClientRect().width);
-    }
-    probe.remove();
-
-    const titleW = titleEl.getBoundingClientRect().width || 0;
-    const cap = titleW ? (titleW * 0.92) : maxW;
-
-    // A bit of padding for scramble glyphs, but cap for narrow layouts
-    wordEl.style.minWidth = `${Math.ceil(Math.min(maxW + 12, cap))}px`;
-    wordEl.style.textAlign = 'left';
-    wordEl.style.whiteSpace = 'nowrap';
-  };
-  setRotatingMinWidth();
-  window.addEventListener('resize', setRotatingMinWidth);
-
-  // Ensure initial tone matches AI
-  applySubjectTone(wordEl, tones[idx]);
-
-  const tick = async () => {
-    idx = (idx + 1) % order.length;
-    const nextTone = tones[idx];
-    applySubjectTone(wordEl, nextTone);
-    await scrambleTo(wordEl, nextTone.word, { duration: 560 });
-  };
-
-  // Start rotating after title drop-in
+  // Formatted HTML target
+  const targetHTML = 'Học thông<br><span class="h1-outline">minh hơn</span><br>với <span class="h1-lime" id="rotatingWord" style="display:inline-block; transition: all 0.18s ease-out;">AI</span>';
+  
+  // Scramble plain text first, then fill inside original HTML markers
+  decryptText(titleEl, 'Học thông<br>minh hơn<br>với AI', 1400);
   setTimeout(() => {
-    tick();
-    setInterval(tick, 1900);
-  }, 850);
-
-  setupDemoFeed();
-  setupLiveDemo();
-  // Render KaTeX in hardcoded demo messages
-  renderDemoMath(document.getElementById('demoChatBody'));
-});  
+    titleEl.innerHTML = targetHTML;
+    
+    // Setup rotating word
+    const subjects = ['Toán học', 'Vật lý', 'Hóa học', 'Ngữ văn', 'Lịch sử', 'Địa lý', 'Tiếng Anh', 'Sinh học', 'AI'];
+    const wordEl = document.getElementById('rotatingWord');
+    let wordIndex = subjects.length - 1;
+    setInterval(() => {
+      wordIndex = (wordIndex + 1) % subjects.length;
+      wordEl.style.opacity = '0';
+      wordEl.style.transform = 'translateY(8px)';
+      setTimeout(() => {
+        const word = subjects[wordIndex];
+        wordEl.textContent = word;
+        if (word === 'AI') {
+          wordEl.style.color = 'var(--accent2)';
+          wordEl.style.textShadow = '0 0 30px rgba(0, 229, 255, 0.2)';
+        } else {
+          wordEl.style.color = '#ffbd2e';
+          wordEl.style.textShadow = '0 0 30px rgba(255, 189, 46, 0.2)';
+        }
+        wordEl.style.opacity = '1';
+        wordEl.style.transform = 'translateY(0)';
+      }, 180);
+    }, 1900);
+  }, 1450);
+  
+  // Initialize Lucide icons
+  // lucide icons replaced with inline SVGs
+});
 
 // Scroll Reveal
 const io = new IntersectionObserver(entries => {

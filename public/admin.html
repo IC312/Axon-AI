@@ -804,6 +804,204 @@ body::before{
   .acct-panel{border-radius:0;max-height:100vh;border:none;height:100%}
   .acct-overlay{padding:0;align-items:flex-end}
 }
+
+/* ══ TEACHER ASSIGNMENT PANEL ══ */
+.ta-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;justify-content:flex-end
+}
+.ta-panel-overlay.open{display:flex}
+.ta-panel{
+  width:420px;max-width:100%;background:var(--surface);
+  border-left:1px solid var(--border2);display:flex;flex-direction:column;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
+}
+.ta-panel-overlay.open .ta-panel{transform:translateX(0)}
+.ta-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0
+}
+.ta-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white}
+.ta-panel-body{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.ta-panel-body::-webkit-scrollbar{width:3px}
+.ta-panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.ta-panel-footer{padding:10px 14px;border-top:1px solid var(--border);flex-shrink:0;display:flex;gap:8px}
+.ta-teacher-row{
+  background:var(--surface2);border:1px solid var(--border);border-radius:11px;
+  padding:11px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;
+  animation:fadeUp .18s ease both;cursor:pointer;transition:border-color .15s
+}
+.ta-teacher-row:hover{border-color:rgba(124,92,252,.4)}
+.ta-teacher-avatar{
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(124,92,252,.15);border:1px solid rgba(124,92,252,.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.85rem;font-weight:700;color:#c4b5fd;flex-shrink:0
+}
+.ta-teacher-info{flex:1;min-width:0}
+.ta-teacher-name{font-size:.84rem;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ta-teacher-sub{font-size:.71rem;color:var(--muted);margin-top:2px}
+.ta-class-badge{
+  padding:3px 9px;border-radius:20px;font-size:.66rem;font-weight:700;
+  background:rgba(124,92,252,.1);border:1px solid rgba(124,92,252,.25);color:#c4b5fd;
+  white-space:nowrap;flex-shrink:0
+}
+.ta-class-badge.none{background:rgba(255,255,255,.04);border-color:var(--border);color:var(--muted)}
+/* Assignment modal */
+.ta-assign-overlay{z-index:600}
+.ta-class-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:4px}
+.ta-class-chk{display:none}
+.ta-class-lbl{
+  display:flex;align-items:center;justify-content:center;
+  padding:6px 4px;border-radius:8px;font-size:.75rem;font-weight:600;
+  border:1px solid var(--border2);background:var(--surface2);color:var(--muted2);
+  cursor:pointer;transition:all .14s;user-select:none;text-align:center
+}
+.ta-class-chk:checked + .ta-class-lbl{
+  background:rgba(124,92,252,.15);border-color:rgba(124,92,252,.5);color:#c4b5fd
+}
+.ta-class-lbl:hover{background:var(--surface3);color:var(--text)}
+.ta-grade-title{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin:12px 0 6px;grid-column:1/-1}
+@media(max-width:768px){.ta-panel{width:100%}}
+
+/* ══ EXCEL PANEL ══ */
+.xl-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;align-items:center;justify-content:center;padding:20px
+}
+.xl-panel-overlay.open{display:flex}
+.xl-panel{
+  width:100%;max-width:560px;max-height:90vh;background:var(--surface);
+  border:1px solid var(--border2);border-radius:20px;display:flex;flex-direction:column;
+  overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.7);
+  transform:translateY(16px) scale(.97);transition:transform .25s
+}
+.xl-panel-overlay.open .xl-panel{transform:translateY(0) scale(1)}
+.xl-panel-header{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.xl-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1rem;color:white}
+.xl-panel-body{flex:1;overflow-y:auto;padding:18px 20px;-webkit-overflow-scrolling:touch}
+.xl-panel-body::-webkit-scrollbar{width:3px}
+.xl-panel-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.xl-type-tabs{display:flex;gap:8px;margin-bottom:18px}
+.xl-type-tab{
+  flex:1;padding:10px;border-radius:12px;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--muted2);cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:700;
+  transition:all .15s;text-align:center
+}
+.xl-type-tab.active{background:rgba(124,92,252,.15);border-color:rgba(124,92,252,.45);color:#c4b5fd}
+.xl-type-tab:hover:not(.active){background:var(--surface3);color:var(--text)}
+.xl-section{margin-bottom:18px}
+.xl-section-title{font-size:.68rem;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px}
+.xl-action-row{display:flex;gap:8px}
+.xl-action-btn{
+  flex:1;padding:11px 14px;border-radius:11px;border:1px solid var(--border2);
+  background:var(--surface2);color:var(--text);cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.8rem;font-weight:600;
+  transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px
+}
+.xl-action-btn:hover:not(:disabled){background:var(--surface3);border-color:rgba(124,92,252,.35)}
+.xl-action-btn.primary{background:rgba(124,92,252,.12);border-color:rgba(124,92,252,.35);color:#c4b5fd}
+.xl-action-btn.primary:hover{background:rgba(124,92,252,.22)}
+.xl-action-btn:disabled{opacity:.4;cursor:not-allowed}
+.xl-drop-zone{
+  border:2px dashed var(--border2);border-radius:12px;padding:28px 20px;
+  text-align:center;cursor:pointer;transition:all .2s;position:relative
+}
+.xl-drop-zone.drag-over{border-color:rgba(124,92,252,.6);background:rgba(124,92,252,.06)}
+.xl-drop-zone:hover{border-color:rgba(124,92,252,.4);background:rgba(124,92,252,.04)}
+.xl-drop-icon{font-size:2rem;margin-bottom:8px}
+.xl-drop-text{font-size:.82rem;color:var(--muted2);line-height:1.5}
+.xl-drop-text strong{color:var(--text)}
+.xl-result{margin-top:14px;border-radius:10px;padding:12px 14px;font-size:.8rem;line-height:1.7;display:none}
+.xl-result.ok{background:rgba(52,211,153,.08);border:1px solid rgba(52,211,153,.2);color:var(--success)}
+.xl-result.err{background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.2);color:#fca5a5}
+.xl-result.show{display:block}
+@media(max-width:768px){.xl-panel{border-radius:0;max-height:100vh;max-width:100%}}
+
+/* ── Announcement panel ── */
+.ann-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;justify-content:flex-end
+}
+.ann-panel-overlay.open{display:flex}
+.ann-panel{
+  width:420px;max-width:100%;background:var(--surface);
+  border-left:1px solid var(--border2);display:flex;flex-direction:column;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
+}
+.ann-panel-overlay.open .ann-panel{transform:translateX(0)}
+.ann-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0
+}
+.ann-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white;flex:1}
+.ann-panel-close{
+  background:transparent;border:none;color:var(--muted);cursor:pointer;
+  padding:4px;border-radius:6px;transition:all .15s;line-height:1
+}
+.ann-panel-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.ann-post-form{padding:14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ann-textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.83rem;padding:10px 12px;resize:vertical;min-height:80px;max-height:200px;
+  outline:none;transition:border-color .15s;box-sizing:border-box
+}
+.ann-textarea:focus{border-color:rgba(13,148,136,.4)}
+.ann-textarea::placeholder{color:var(--muted)}
+.ann-post-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.ann-char-count{font-size:.67rem;color:var(--muted)}
+.ann-char-count.over{color:var(--danger)}
+.ann-post-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:9px;
+  background:var(--accent);border:none;
+  color:white;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s
+}
+.ann-post-btn:hover{opacity:.85}
+.ann-feed{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.ann-feed::-webkit-scrollbar{width:3px}
+.ann-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.ann-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:10px;padding:12px 14px;
+  animation:fadeUp .2s ease both
+}
+.ann-item-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ann-author-name{font-size:.8rem;font-weight:600;color:var(--text);flex:1}
+.ann-role-badge{
+  font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px
+}
+.ann-role-badge.admin-role{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:#f87171}
+.ann-role-badge.teacher-role{background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.25);color:#5eead4}
+.ann-time{font-size:.65rem;color:var(--muted);font-family:'Courier New',monospace}
+.ann-content{font-size:.83rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.ann-del-btn{
+  background:transparent;border:none;color:var(--muted);cursor:pointer;
+  padding:3px;border-radius:5px;transition:all .14s;line-height:1;flex-shrink:0
+}
+.ann-del-btn:hover{color:var(--danger)}
+.ann-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.82rem}
+@keyframes bell-shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-1.5px)}
+  40%{transform:translateX(1.5px)}
+  60%{transform:translateX(-1.5px)}
+  80%{transform:translateX(1.5px)}
+}
+.ann-hdr-btn:hover svg.ann-bell-svg{animation:bell-shake .4s ease-in-out}
+@keyframes send-fly{
+  0%{transform:translate(0,0);opacity:1}
+  40%{transform:translate(6px,-6px);opacity:0}
+  41%{transform:translate(-6px,6px);opacity:0}
+  100%{transform:translate(0,0);opacity:1}
+}
+.ann-post-btn:hover svg{animation:send-fly .5s ease-in-out}
 </style>
 </head>
 <body>
@@ -822,6 +1020,14 @@ body::before{
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       <span>Tài khoản</span>
     </button>
+    <button class="hdr-btn" onclick="openTeacherAssignPanel()" id="ta-hdr-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+      <span>Phân công</span>
+    </button>
+    <button class="hdr-btn" onclick="openExcelPanel()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      <span>Excel</span>
+    </button>
     <button class="hdr-btn" onclick="location.href='/forum'">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <span>Diễn đàn</span>
@@ -835,6 +1041,10 @@ body::before{
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       <span>Phản hồi</span>
       <span class="fb-badge" id="fb-badge" style="display:none"></span>
+    </button>
+    <button class="hdr-btn ann-hdr-btn" onclick="openAnnPanel()" id="ann-hdr-btn" style="position:relative">
+      <svg class="ann-bell-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span>Thông báo</span>
     </button>
     <button class="hdr-btn" onclick="openAdminSettings()">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -1080,17 +1290,6 @@ body::before{
           <div class="acct-card-sub">Đăng ký qua Email<br>Thầy cô & học sinh tự đăng ký</div>
         </div>
       </div>
-      <div class="acct-type-card inside" onclick="selectAcctType('inside')" id="card-inside">
-        <div class="acct-card-icon">
-          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
-            <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/>
-          </svg>
-        </div>
-        <div>
-          <div class="acct-card-label">Tài khoản Trong</div>
-          <div class="acct-card-sub">Đăng ký qua CCCD / trường<br>Học sinh có lớp học cụ thể</div>
-        </div>
-      </div>
     </div>
     <button class="acct-pick-close" onclick="closeAccountPanel()">✕</button>
   </div>
@@ -1102,7 +1301,6 @@ body::before{
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div class="acct-panel-title" id="acct-panel-title">Tài khoản</div>
-      <button class="acct-switch-btn" id="acct-switch-btn" onclick="acctSwitchType()"></button>
     </div>
 
     <div class="acct-tabs">
@@ -1837,6 +2035,706 @@ document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeDetail();
 
 // ── Init ──
 loadStats(); loadClasses(); checkFeedbackBadge(); checkAppealsBadge();
+</script>
+
+<!-- ═══ TEACHER ASSIGNMENT PANEL ═══ -->
+<div class="ta-panel-overlay" id="ta-panel-overlay" onclick="taPanelOverlayClick(event)">
+  <div class="ta-panel">
+    <div class="ta-panel-header">
+      <div class="ta-panel-title">Phân công Lớp — Giáo viên</div>
+      <button class="modal-close" onclick="closeTeacherAssignPanel()" title="Đóng">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ta-panel-body" id="ta-panel-body">
+      <div style="text-align:center;color:var(--muted);padding:40px 0;font-size:.84rem">Đang tải…</div>
+    </div>
+    <div class="ta-panel-footer">
+      <button class="btn btn-ghost" style="font-size:.72rem;padding:5px 12px" onclick="loadTeacherAssignList()">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Tải lại
+      </button>
+      <span class="acct-footer-info" id="ta-footer-info" style="flex:1;font-size:.71rem;color:var(--muted);text-align:right"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CLASS ASSIGNMENT MODAL ═══ -->
+<div class="modal-overlay ta-assign-overlay" id="ta-assign-overlay" onclick="closeTaAssignModal(event)">
+  <div class="modal" style="max-width:520px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="ta-assign-title">Phân công lớp</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:2px" id="ta-assign-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeTaAssignModal(true)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:.76rem;color:var(--muted);margin-bottom:12px">
+        Chọn các lớp giáo viên này được phép xem. Bỏ chọn tất cả = hiển thị mọi lớp.
+      </div>
+      <div id="ta-assign-grid"></div>
+      <div class="msg-box" id="ta-assign-msg"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="taSelectAllClasses(false)">Bỏ chọn tất cả</button>
+      <button class="btn btn-ghost" onclick="taSelectAllClasses(true)">Chọn tất cả</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-ghost" onclick="closeTaAssignModal(true)">Hủy</button>
+      <button class="btn btn-primary" id="ta-assign-save-btn" onclick="saveTaAssign()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ TEACHER ASSIGNMENT ══════════════════════════════════════════════
+
+let _taTeachers = [];
+let _taAllClasses = [];
+let _taCurrentTeacherId = null;
+
+function openTeacherAssignPanel() {
+  document.getElementById('ta-panel-overlay').classList.add('open');
+  loadTeacherAssignList();
+}
+
+function closeTeacherAssignPanel() {
+  document.getElementById('ta-panel-overlay').classList.remove('open');
+}
+
+function taPanelOverlayClick(e) {
+  if (e.target === document.getElementById('ta-panel-overlay')) closeTeacherAssignPanel();
+}
+
+async function loadTeacherAssignList() {
+  const body = document.getElementById('ta-panel-body');
+  const info = document.getElementById('ta-footer-info');
+  body.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 0;font-size:.84rem">Đang tải…</div>';
+  try {
+    const [tRes] = await Promise.all([
+      fetch('/api/admin/teachers'),
+    ]);
+
+    if (!tRes.ok) throw new Error('Không tải được danh sách giáo viên');
+    const { teachers } = await tRes.json();
+    _taTeachers = teachers;
+
+    // Read classes already rendered in the admin class panel
+    const classEls = document.querySelectorAll('#cls-list .cls-item .cls-name');
+    _taAllClasses = classEls.length
+      ? [...classEls].map(el => el.textContent.trim()).filter(Boolean)
+      : [];
+
+    // If admin panel hasn't loaded classes yet, fetch them now
+    if (!_taAllClasses.length) {
+      const r = await fetch('/api/admin/classes');
+      if (r.ok) _taAllClasses = await r.json();
+    }
+
+    renderTeacherAssignList(teachers);
+    info.textContent = `${teachers.length} giáo viên`;
+  } catch (err) {
+    body.innerHTML = `<div style="text-align:center;color:var(--danger);padding:40px 0;font-size:.82rem">${err.message}</div>`;
+    info.textContent = '';
+  }
+}
+
+function getInitials(name) {
+  return (name || '?').split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function renderTeacherAssignList(teachers) {
+  const body = document.getElementById('ta-panel-body');
+  if (!teachers.length) {
+    body.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 0;font-size:.82rem">Chưa có giáo viên nào được import. Chạy <code>node scripts/seed-teachers.js</code> để import.</div>';
+    return;
+  }
+
+  // Sắp xếp theo họ tên (theo tên cuối — thứ tự tiếng Việt)
+  const sorted = [...teachers].sort((a, b) =>
+    (a.fullName || '').localeCompare(b.fullName || '', 'vi', { sensitivity: 'base' })
+  );
+
+  body.innerHTML = sorted.map((t, idx) => {
+    const cnt = (t.assignedClasses || []).length;
+    const badge = cnt
+      ? `<span class="ta-class-badge">${cnt} lớp</span>`
+      : `<span class="ta-class-badge none">Tất cả lớp</span>`;
+    const sub = t.cccd ? `CCCD: ${esc(t.cccd)}` : esc(t.fullName);
+    return `<div class="ta-teacher-row" onclick="openTaAssignModal('${t._id}')">
+      <div style="min-width:22px;text-align:right;font-size:.72rem;color:var(--muted2);padding-right:6px;flex-shrink:0">${idx + 1}</div>
+      <div class="ta-teacher-avatar">${getInitials(t.fullName)}</div>
+      <div class="ta-teacher-info">
+        <div class="ta-teacher-name">${esc(t.fullName)}</div>
+        <div class="ta-teacher-sub">${sub}</div>
+      </div>
+      ${badge}
+    </div>`;
+  }).join('');
+}
+
+function sortClassNames(a, b) {
+  const parse = s => { const m = s.match(/^(\d+)[A-Za-z]+(\d+)$/); return m ? [+m[1], +m[2]] : [0, 0]; };
+  const [ag, an] = parse(a);
+  const [bg, bn] = parse(b);
+  return ag !== bg ? ag - bg : an - bn;
+}
+
+function openTaAssignModal(teacherId) {
+  const teacher = _taTeachers.find(t => t._id === teacherId);
+  if (!teacher) return;
+  _taCurrentTeacherId = teacherId;
+
+  document.getElementById('ta-assign-title').textContent = `Phân công lớp — ${teacher.fullName}`;
+  document.getElementById('ta-assign-sub').textContent = teacher.cccd ? `CCCD: ${teacher.cccd}` : '';
+
+  // Build class list from DOM (admin panel's class list) or fallback
+  let allClasses = _taAllClasses.length ? [..._taAllClasses] : [];
+  if (!allClasses.length) {
+    // Build a standard list from school data if nothing loaded yet
+    allClasses = [];
+    [[6,10],[7,10],[8,14],[9,10]].forEach(([g,n]) => {
+      for (let i = 1; i <= n; i++) allClasses.push(`${g}A${i}`);
+    });
+  }
+  allClasses.sort(sortClassNames);
+
+  const assigned = new Set(teacher.assignedClasses || []);
+  const msg = document.getElementById('ta-assign-msg');
+  msg.className = 'msg-box';
+  msg.textContent = '';
+
+  // Group by grade
+  const byGrade = {};
+  allClasses.forEach(c => {
+    const g = c.match(/^(\d)/)?.[1] || '?';
+    (byGrade[g] = byGrade[g] || []).push(c);
+  });
+
+  const grid = document.getElementById('ta-assign-grid');
+  grid.innerHTML = Object.keys(byGrade).sort().map(g => {
+    const items = byGrade[g].map(c => {
+      const chk = assigned.has(c) ? 'checked' : '';
+      return `<label style="display:contents"><input type="checkbox" class="ta-class-chk" value="${c}" ${chk}><span class="ta-class-lbl">${c}</span></label>`;
+    }).join('');
+    return `<div class="ta-class-grid"><div class="ta-grade-title">Khối ${g}</div>${items}</div>`;
+  }).join('');
+
+  document.getElementById('ta-assign-overlay').classList.add('open');
+  document.getElementById('ta-assign-save-btn').disabled = false;
+}
+
+function closeTaAssignModal(force) {
+  if (force === true || (force && force.target === document.getElementById('ta-assign-overlay'))) {
+    document.getElementById('ta-assign-overlay').classList.remove('open');
+  }
+}
+
+function taSelectAllClasses(checked) {
+  document.querySelectorAll('#ta-assign-grid .ta-class-chk').forEach(chk => { chk.checked = checked; });
+}
+
+async function saveTaAssign() {
+  if (!_taCurrentTeacherId) return;
+  const btn = document.getElementById('ta-assign-save-btn');
+  const msg = document.getElementById('ta-assign-msg');
+  btn.disabled = true;
+  msg.className = 'msg-box';
+  msg.textContent = '';
+
+  const classes = [...document.querySelectorAll('#ta-assign-grid .ta-class-chk:checked')].map(c => c.value);
+
+  try {
+    const res = await fetch(`/api/admin/teachers/${_taCurrentTeacherId}/classes`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ classes }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Lỗi');
+
+    // Update local cache
+    const idx = _taTeachers.findIndex(t => t._id === _taCurrentTeacherId);
+    if (idx !== -1) _taTeachers[idx].assignedClasses = data.teacher.assignedClasses;
+    renderTeacherAssignList(_taTeachers);
+
+    msg.className = 'msg-box ok';
+    msg.textContent = classes.length
+      ? `Đã phân công ${classes.length} lớp thành công.`
+      : 'Đã xóa phân công (giáo viên sẽ thấy tất cả lớp).';
+    toast(classes.length ? `Đã lưu ${classes.length} lớp` : 'Đã bỏ phân công', 'success');
+    setTimeout(() => closeTaAssignModal(true), 1200);
+  } catch (err) {
+    msg.className = 'msg-box err';
+    msg.textContent = err.message;
+    btn.disabled = false;
+  }
+}
+
+function escHtml(str) { return esc(str); }
+</script>
+
+<!-- ═══ EXCEL IMPORT / EXPORT PANEL ═══ -->
+<div class="xl-panel-overlay" id="xl-panel-overlay" onclick="xlOverlayClick(event)">
+  <div class="xl-panel">
+    <div class="xl-panel-header">
+      <div class="xl-panel-title">📊 Quản lý Excel</div>
+      <button class="modal-close" onclick="closeExcelPanel()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="xl-panel-body">
+
+      <!-- Tabs: học sinh / giáo viên -->
+      <div class="xl-type-tabs">
+        <button class="xl-type-tab active" id="xl-tab-students" onclick="xlSelectTab('students')">🎓 Học sinh</button>
+        <button class="xl-type-tab" id="xl-tab-teachers" onclick="xlSelectTab('teachers')">👨‍🏫 Giáo viên</button>
+      </div>
+
+      <!-- Download template -->
+      <div class="xl-section">
+        <div class="xl-section-title">File mẫu</div>
+        <div class="xl-action-row">
+          <button class="xl-action-btn primary" onclick="xlDownloadTemplate()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Tải file mẫu (.xlsx)
+          </button>
+        </div>
+      </div>
+
+      <!-- Export current data -->
+      <div class="xl-section">
+        <div class="xl-section-title">Xuất dữ liệu hiện tại</div>
+        <div class="xl-action-row">
+          <button class="xl-action-btn" onclick="xlExport()" id="xl-export-btn">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Xuất ra Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- Import -->
+      <div class="xl-section">
+        <div class="xl-section-title">Nhập từ Excel</div>
+        <div class="xl-drop-zone" id="xl-drop-zone" onclick="document.getElementById('xl-file-input').click()">
+          <div class="xl-drop-icon">📂</div>
+          <div class="xl-drop-text">
+            <strong>Kéo thả file vào đây</strong> hoặc bấm để chọn<br>
+            <span style="font-size:.72rem;color:var(--muted)">Chỉ nhận file .xlsx theo đúng file mẫu</span>
+          </div>
+        </div>
+        <input type="file" id="xl-file-input" accept=".xlsx,.xls" style="display:none" onchange="xlFileSelected(this)">
+        <div id="xl-selected-file" style="margin-top:8px;font-size:.75rem;color:var(--muted);display:none"></div>
+        <div style="margin-top:10px">
+          <button class="xl-action-btn primary" id="xl-import-btn" onclick="xlImport()" disabled style="width:100%">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="17 8 21 12 17 16"/><line x1="3" y1="12" x2="21" y2="12"/></svg>
+            <span id="xl-import-btn-text">Chọn file trước</span>
+          </button>
+        </div>
+        <div class="xl-result" id="xl-result"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ EXCEL PANEL ══════════════════════════════════════════════════════════════
+
+let _xlType = 'students';
+let _xlFile = null;
+
+function openExcelPanel() {
+  document.getElementById('xl-panel-overlay').classList.add('open');
+  xlResetImport();
+}
+
+function closeExcelPanel() {
+  document.getElementById('xl-panel-overlay').classList.remove('open');
+}
+
+function xlOverlayClick(e) {
+  if (e.target === document.getElementById('xl-panel-overlay')) closeExcelPanel();
+}
+
+function xlSelectTab(type) {
+  _xlType = type;
+  document.querySelectorAll('.xl-type-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`xl-tab-${type}`).classList.add('active');
+  xlResetImport();
+}
+
+function xlResetImport() {
+  _xlFile = null;
+  const input = document.getElementById('xl-file-input');
+  if (input) input.value = '';
+  const sel = document.getElementById('xl-selected-file');
+  sel.style.display = 'none';
+  sel.textContent = '';
+  const btn = document.getElementById('xl-import-btn');
+  btn.disabled = true;
+  document.getElementById('xl-import-btn-text').textContent = 'Chọn file trước';
+  const res = document.getElementById('xl-result');
+  res.className = 'xl-result';
+  res.textContent = '';
+}
+
+function xlFileSelected(input) {
+  const file = input.files[0];
+  if (!file) { xlResetImport(); return; }
+  _xlFile = file;
+  const sel = document.getElementById('xl-selected-file');
+  sel.textContent = `📄 ${file.name}  (${(file.size / 1024).toFixed(1)} KB)`;
+  sel.style.display = 'block';
+  const btn = document.getElementById('xl-import-btn');
+  btn.disabled = false;
+  document.getElementById('xl-import-btn-text').textContent = `Nhập dữ liệu ${_xlType === 'students' ? 'học sinh' : 'giáo viên'}`;
+  document.getElementById('xl-result').className = 'xl-result';
+}
+
+function _xlTriggerDownload(url) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function xlDownloadTemplate() {
+  const label = _xlType === 'students' ? 'học sinh' : 'giáo viên';
+  toast(`Đang tải file mẫu ${label}…`, 'info');
+  _xlTriggerDownload(`/api/admin/excel/template/${_xlType}`);
+}
+
+function xlExport() {
+  const btn = document.getElementById('xl-export-btn');
+  btn.disabled = true;
+  const label = _xlType === 'students' ? 'học sinh' : 'giáo viên';
+  toast(`Đang xuất danh sách ${label}…`, 'info');
+  _xlTriggerDownload(`/api/admin/excel/export/${_xlType}`);
+  setTimeout(() => { btn.disabled = false; }, 3000);
+}
+
+async function xlImport() {
+  if (!_xlFile) return;
+  const btn = document.getElementById('xl-import-btn');
+  const txt = document.getElementById('xl-import-btn-text');
+  const res = document.getElementById('xl-result');
+
+  btn.disabled = true;
+  txt.textContent = 'Đang xử lý…';
+  res.className = 'xl-result';
+
+  const fd = new FormData();
+  fd.append('file', _xlFile);
+
+  try {
+    const r = await fetch(`/api/admin/excel/import/${_xlType}`, { method: 'POST', body: fd });
+    const data = await r.json();
+
+    if (!r.ok) throw new Error(data.error || 'Lỗi không xác định');
+
+    res.className = 'xl-result ok show';
+    const label = _xlType === 'students' ? 'học sinh' : 'giáo viên';
+    res.innerHTML =
+      `✅ Nhập hoàn tất <strong>${label}</strong><br>` +
+      `• Tạo mới: <strong>${data.created}</strong><br>` +
+      `• Bỏ qua (CCCD đã có): <strong>${data.skipped}</strong><br>` +
+      `• Lỗi: <strong>${data.errors}</strong>` +
+      (data.errList?.length ? `<br><br>Chi tiết lỗi:<br>${data.errList.map(e => `• ${esc(e)}`).join('<br>')}` : '');
+    toast(`Nhập xong: +${data.created} mới, ${data.skipped} bỏ qua`, data.errors ? 'warning' : 'success');
+    xlResetImport();
+  } catch (err) {
+    res.className = 'xl-result err show';
+    res.textContent = '❌ ' + err.message;
+    btn.disabled = false;
+    txt.textContent = 'Thử lại';
+  }
+}
+
+// Drag-and-drop support
+(function () {
+  const zone = document.getElementById('xl-drop-zone');
+  if (!zone) return;
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      const input = document.getElementById('xl-file-input');
+      // Create DataTransfer to assign to input
+      try {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+      } catch (_) {}
+      xlFileSelected({ files: [file] });
+    }
+  });
+})();
+</script>
+
+<!-- ═══ ANNOUNCEMENT PANEL ═══ -->
+<div class="ann-panel-overlay" id="ann-panel-overlay" onclick="annOverlayClick(event)">
+  <div class="ann-panel">
+    <div class="ann-panel-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span class="ann-panel-title">Thông báo trường</span>
+      <button class="ann-panel-close" onclick="closeAnnPanel()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ann-post-form">
+      <textarea class="ann-textarea" id="ann-textarea" placeholder="Nhập nội dung thông báo…" maxlength="1000" oninput="annCharCount()"></textarea>
+      <div class="ann-post-row">
+        <span class="ann-char-count" id="ann-char-count">0 / 1000</span>
+        <button class="ann-post-btn" onclick="postAnnouncement()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="overflow:visible"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14l11 -11"/><path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"/></svg>
+          Gửi
+        </button>
+      </div>
+    </div>
+    <div class="ann-feed" id="ann-feed">
+      <div class="ann-empty">Đang tải…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Announcement panel (admin) ──────────────────────────────
+let _annList = [];
+let _annMyId = null;
+
+async function openAnnPanel() {
+  document.getElementById('ann-panel-overlay').classList.add('open');
+  if (!_annMyId) {
+    try {
+      const r = await fetch('/api/auth/me', { credentials: 'include' });
+      if (r.ok) { const d = await r.json(); _annMyId = String(d._id || d.id || ''); }
+    } catch {}
+  }
+  await loadAnnouncements();
+}
+
+function closeAnnPanel() {
+  document.getElementById('ann-panel-overlay').classList.remove('open');
+}
+
+function annOverlayClick(e) {
+  if (e.target === document.getElementById('ann-panel-overlay')) closeAnnPanel();
+}
+
+async function loadAnnouncements() {
+  try {
+    const r = await fetch('/api/announcements', { credentials: 'include' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    _annList = await r.json();
+    renderAnnFeed();
+  } catch {
+    document.getElementById('ann-feed').innerHTML = '<div class="ann-empty">Không thể tải thông báo</div>';
+  }
+}
+
+function renderAnnFeed() {
+  const el = document.getElementById('ann-feed');
+  if (!_annList.length) { el.innerHTML = '<div class="ann-empty">Chưa có thông báo nào</div>'; return; }
+  el.innerHTML = _annList.map(a => {
+    const d = new Date(a.createdAt);
+    const t = d.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const roleLbl = a.authorRole === 'admin' ? 'Quản trị' : 'Giáo viên';
+    const roleCls = a.authorRole === 'admin' ? 'admin-role' : 'teacher-role';
+    return `<div class="ann-item" id="ann-${esc(a._id)}">
+      <div class="ann-item-head">
+        <span class="ann-author-name">${esc(a.authorName)}</span>
+        <span class="ann-role-badge ${roleCls}">${roleLbl}</span>
+        <span class="ann-time">${t}</span>
+        <button class="ann-del-btn" onclick="deleteAnn('${esc(a._id)}')" title="Xóa">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
+      </div>
+      <div class="ann-content">${esc(a.content)}</div>
+    </div>`;
+  }).join('');
+}
+
+function annCharCount() {
+  const ta = document.getElementById('ann-textarea');
+  const cc = document.getElementById('ann-char-count');
+  const n = (ta.value || '').length;
+  cc.textContent = n + ' / 1000';
+  cc.classList.toggle('over', n > 1000);
+}
+
+async function postAnnouncement() {
+  const ta = document.getElementById('ann-textarea');
+  const content = ta.value.trim();
+  if (!content) { toast('Vui lòng nhập nội dung thông báo', 'warning'); return; }
+  if (content.length > 1000) { toast('Nội dung quá dài (tối đa 1000 ký tự)', 'warning'); return; }
+  try {
+    const r = await fetch('/api/announcements', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Đăng thất bại', 'error'); return; }
+    ta.value = '';
+    annCharCount();
+    _annList.unshift(d);
+    renderAnnFeed();
+    toast('Đã đăng thông báo', 'success');
+  } catch {
+    toast('Lỗi kết nối', 'error');
+  }
+}
+
+async function deleteAnn(id) {
+  if (!confirm('Xóa thông báo này?')) return;
+  try {
+    const r = await fetch('/api/announcements/' + encodeURIComponent(id), {
+      method: 'DELETE', credentials: 'include',
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Xóa thất bại', 'error'); return; }
+    _annList = _annList.filter(a => a._id !== id);
+    renderAnnFeed();
+    toast('Đã xóa thông báo', 'success');
+  } catch {
+    toast('Lỗi kết nối', 'error');
+  }
+}
+</script>
+
+<script>
+// ══ ACCOUNT PANEL ═══════════════════════════════════════════════════════════
+
+let _acctType = null;      // 'outside' | 'inside'
+let _acctTab  = 'teacher'; // 'teacher' | 'student'
+let _acctData = { teachers: [], students: [] };
+
+function openAccountPanel() {
+  selectAcctType('outside');
+  document.getElementById('acct-overlay').classList.add('open');
+}
+
+function closeAccountPanel() {
+  document.getElementById('acct-overlay').classList.remove('open');
+}
+
+function acctOverlayClick(e) {
+  if (e.target === document.getElementById('acct-overlay')) closeAccountPanel();
+}
+
+function acctBackToPick() {
+  document.getElementById('acct-pick').style.display = '';
+  document.getElementById('acct-panel').style.display = 'none';
+}
+
+async function selectAcctType(type) {
+  _acctType = type;
+  document.getElementById('acct-pick').style.display = 'none';
+  document.getElementById('acct-panel').style.display = '';
+
+  const titleEl = document.getElementById('acct-panel-title');
+  const switchBtn = document.getElementById('acct-switch-btn');
+  if (type === 'outside') {
+    titleEl.textContent = 'Tài khoản Ngoài';
+    switchBtn.textContent = '→ Xem Trong';
+  } else {
+    titleEl.textContent = 'Tài khoản Trong';
+    switchBtn.textContent = '→ Xem Ngoài';
+  }
+
+  await acctLoad();
+}
+
+function acctSwitchType() {
+  selectAcctType(_acctType === 'outside' ? 'inside' : 'outside');
+}
+
+async function acctLoad() {
+  const body = document.getElementById('acct-list-body');
+  const footer = document.getElementById('acct-footer-info');
+  body.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 0;font-size:.84rem">Đang tải…</div>';
+  footer.textContent = 'Đang tải…';
+  try {
+    const res = await fetch(`/api/admin/accounts/${_acctType}`, { credentials: 'include', headers: authH() });
+    if (!res.ok) throw new Error((await res.json()).error || 'Lỗi máy chủ');
+    _acctData = await res.json();
+    acctSelectTab(_acctTab);
+  } catch (err) {
+    body.innerHTML = `<div style="text-align:center;color:#f87171;padding:40px 0;font-size:.84rem">Lỗi: ${esc(err.message)}</div>`;
+    footer.textContent = '';
+  }
+}
+
+function acctSelectTab(tab) {
+  _acctTab = tab;
+  document.querySelectorAll('.acct-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(`acct-tab-${tab}`).classList.add('active');
+
+  const teachers = _acctData.teachers || [];
+  const students = _acctData.students || [];
+  document.getElementById('acct-cnt-teacher').textContent = teachers.length;
+  document.getElementById('acct-cnt-student').textContent = students.length;
+
+  const list = tab === 'teacher' ? teachers : students;
+  acctRender(list);
+}
+
+function acctFilter(q) {
+  const lower = q.toLowerCase();
+  const list = (_acctTab === 'teacher' ? _acctData.teachers : _acctData.students) || [];
+  const filtered = list.filter(u =>
+    (u.fullName || '').toLowerCase().includes(lower) ||
+    (u.email    || '').toLowerCase().includes(lower) ||
+    (u.cccd     || '').includes(lower)
+  );
+  acctRender(filtered);
+}
+
+function acctRender(list) {
+  const body   = document.getElementById('acct-list-body');
+  const footer = document.getElementById('acct-footer-info');
+  footer.textContent = `${list.length} tài khoản`;
+
+  if (!list.length) {
+    body.innerHTML = '<div style="text-align:center;color:var(--muted);padding:40px 0;font-size:.84rem">Không có tài khoản nào</div>';
+    return;
+  }
+
+  body.innerHTML = list.map(u => {
+    const initials = (u.fullName || '?').split(' ').pop().charAt(0).toUpperCase();
+    const sub = u.email
+      ? `<span style="color:var(--muted2);font-size:.75rem">${esc(u.email)}</span>`
+      : `<span style="color:var(--muted2);font-size:.75rem">CCCD: ${esc(u.cccd || '—')} · ${esc(u.className || '—')}</span>`;
+    const badge = u.isVerified === false
+      ? `<span style="font-size:.68rem;padding:2px 7px;background:#451a03;color:#fb923c;border-radius:4px;margin-left:6px">Chưa xác minh</span>`
+      : '';
+    return `
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid #27272a;cursor:default">
+        <div style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);
+                    display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:#fff;flex-shrink:0">
+          ${initials}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:.85rem;font-weight:600;color:#e4e4e7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">
+            ${esc(u.fullName || '—')}${badge}
+          </div>
+          ${sub}
+        </div>
+        <div style="font-size:.72rem;color:var(--muted2)">${fmt(u.createdAt)}</div>
+      </div>`;
+  }).join('');
+}
+
+function acctReload() { if (_acctType) acctLoad(); }
+
 </script>
 </body>
 </html>

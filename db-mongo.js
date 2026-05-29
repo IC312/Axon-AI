@@ -24,16 +24,17 @@ async function connectMongo() {
 
 // ── Teacher Schema ─────────────────────────────────────
 const teacherSchema = new mongoose.Schema({
-  fullName:     { type: String, required: true, trim: true },
-  email:        { type: String, required: true, unique: true, lowercase: true, trim: true },
-  subject:      { type: String, default: '' },        // Môn dạy
-  school:       { type: String, default: '' },        // Trường công tác
-  passwordHash: { type: String, required: true },
-  role:         { type: String, default: 'teacher' },
-  authType:     { type: String, default: 'email' },
-  isVerified:   { type: Boolean, default: false },
-  createdAt:    { type: Date, default: Date.now },
-  updatedAt:    { type: Date, default: Date.now },
+  fullName:        { type: String, required: true, trim: true },
+  email:           { type: String, required: true, unique: true, lowercase: true, trim: true },
+  subject:         { type: String, default: '' },        // Môn dạy
+  school:          { type: String, default: '' },        // Trường công tác
+  passwordHash:    { type: String, required: true },
+  role:            { type: String, default: 'teacher' },
+  authType:        { type: String, default: 'email' },
+  isVerified:      { type: Boolean, default: false },
+  assignedClasses: { type: [String], default: [] },      // Lớp được phân công
+  createdAt:       { type: Date, default: Date.now },
+  updatedAt:       { type: Date, default: Date.now },
 });
 
 teacherSchema.pre('save', function (next) {
@@ -57,6 +58,10 @@ const studentSchema = new mongoose.Schema({
   dob:                { type: String, default: '' },
   grade:              { type: Number, default: 9 },
   mustChangePassword: { type: Boolean, default: false },
+  // ── Email verification ────────────────────────────
+  emailVerified:      { type: Boolean, default: false },
+  verificationOtp:    { type: String,  default: null },
+  otpExpiresAt:       { type: Date,    default: null },
   createdAt:          { type: Date, default: Date.now },
   updatedAt:          { type: Date, default: Date.now },
 });

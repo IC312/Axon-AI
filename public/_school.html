@@ -124,7 +124,7 @@ body::before{
   </form>
   <div class="divider"></div>
   <div class="footer-txt">
-    <a href="/choose">← Chọn lại loại tài khoản</a>
+    <a href="/forgot-password-school.html">Quên mật khẩu?</a> &nbsp;·&nbsp; <a href="/choose">← Chọn lại loại tài khoản</a>
   </div>
 </div>
 <script>
@@ -171,6 +171,7 @@ async function doLogin(e) {
     localStorage.setItem('hc_role', data.role); localStorage.setItem('hc_fullName', data.fullName);
     localStorage.setItem('hc_className', data.className||''); localStorage.setItem('hc_gender', data.gender||'');
     localStorage.setItem('hc_dob', data.dob||''); localStorage.setItem('hc_mustChangePw', data.mustChangePassword ? '1':'0');
+    localStorage.setItem('hc_authType', 'school');
     btn.textContent = '✓ Thành công!';
     setTimeout(() => { location.href = data.role === 'admin' ? '/admin.html' : '/chat.html'; }, 350);
   } catch {

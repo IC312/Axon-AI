@@ -1,13 +1,13 @@
 const router   = require('express').Router();
 const bcrypt   = require('bcryptjs');
 const { adminMiddleware } = require('../middleware/auth');
-const { getConnection, getUserModel, getChatModels } = require('../db');
+const { getConnection, getChatModels } = require('../db');
+const { SchoolUserModel, EmailUserModel } = require('../db-supabase');
 
 router.use(adminMiddleware);
 
-// Helper: lấy models từ đúng DB
-async function getStudentDB()           { const c = await getConnection('students'); return getUserModel(c); }
-async function getChatDB(grade)         { const c = await getConnection(grade);     return getChatModels(c); }
+// Helper: lấy chat models từ đúng DB theo grade
+async function getChatDB(grade)         { const c = await getConnection(grade); return getChatModels(c); }
 
 // Lấy chat models từ tất cả 4 khối
 async function getAllChatModels() {
@@ -37,7 +37,7 @@ function gradeFromClass(className) {
 // ── Stats ─────────────────────────────────────────────
 router.get('/stats', async (_req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const students = await User.find({ role: 'student' });
     const classes  = [...new Set(students.map(s => s.className).filter(Boolean))];
 
@@ -57,7 +57,7 @@ router.get('/stats', async (_req, res) => {
 // ── Danh sách lớp ─────────────────────────────────────
 router.get('/classes', async (_req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const students = await User.find({ role: 'student', className: { $ne: '' } });
     const classes  = [...new Set(students.map(s => s.className))].sort(sortClasses);
     res.json(classes);
@@ -67,7 +67,7 @@ router.get('/classes', async (_req, res) => {
 // ── Học sinh trong lớp ────────────────────────────────
 router.get('/classes/:className/students', async (req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const students = await User.find({ role: 'student', className: req.params.className });
     students.sort(sortByGivenName);
 
@@ -85,7 +85,7 @@ router.get('/classes/:className/students', async (req, res) => {
 // ── Chi tiết 1 học sinh ───────────────────────────────
 router.get('/users/:userId', async (req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const s = await User.findById(req.params.userId);
     if (!s) return res.status(404).json({ error: 'Không tìm thấy' });
     const defaultPw = s.mustChangePassword
@@ -98,7 +98,7 @@ router.get('/users/:userId', async (req, res) => {
 // ── Reset mật khẩu ────────────────────────────────────
 router.post('/users/:userId/reset-password', async (req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).json({ error: 'Không tìm thấy' });
     if (user.role === 'admin') return res.status(403).json({ error: 'Không thể reset admin' });
@@ -116,7 +116,7 @@ router.post('/users/:userId/reset-password', async (req, res) => {
 // ── Conversations của học sinh ────────────────────────
 router.get('/users/:userId/conversations', async (req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const student = await User.findById(req.params.userId);
     if (!student) return res.status(404).json({ error: 'Không tìm thấy' });
 
@@ -150,7 +150,7 @@ router.get('/conversations/:id/messages', async (req, res) => {
 // ── Admin settings ────────────────────────────────────
 router.post('/settings', async (req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const { newUsername, currentPassword, newPassword } = req.body;
     if (!currentPassword) return res.status(400).json({ error: 'Vui lòng nhập mật khẩu hiện tại' });
 
@@ -160,10 +160,13 @@ router.post('/settings', async (req, res) => {
       return res.status(401).json({ error: 'Mật khẩu hiện tại không đúng' });
 
     if (newUsername && newUsername.trim()) {
-      const exists = await User.findOne({ username: newUsername.trim(), _id: { $ne: user._id } });
-      if (exists) return res.status(409).json({ error: 'Tên đăng nhập này đã được sử dụng' });
-      user.username = newUsername.trim();
-      user.fullName = newUsername.trim();
+      const candidate = newUsername.trim();
+      const exists = await SchoolUserModel.findOne({ username: candidate });
+      // Allow if it's the same user's current username
+      if (exists && String(exists.id) !== String(user.id))
+        return res.status(409).json({ error: 'Tên đăng nhập này đã được sử dụng' });
+      user.username = candidate;
+      user.fullName = candidate;
     }
     if (newPassword) {
       if (newPassword.length < 8) return res.status(400).json({ error: 'Mật khẩu mới tối thiểu 8 ký tự' });
@@ -276,7 +279,7 @@ async function createAdminGroqStreamWithFailover(params) {
 // Backend lấy toàn bộ tin nhắn → tóm tắt song song → trả về mảng tóm tắt.
 router.get('/prepare-analysis/:userId', async (req, res) => {
   try {
-    const User = await getStudentDB();
+    const User = SchoolUserModel;
     const student = await User.findById(req.params.userId);
     if (!student) return res.status(404).json({ error: 'Không tìm thấy học sinh' });
 
@@ -406,26 +409,22 @@ router.post('/ai-analyze', async (req, res) => {
 
 // ── Quản lý tài khoản ─────────────────────────────────
 
-// Tài khoản NGOÀI: Teacher + Student từ MongoDB (đăng ký email)
+// Tài khoản NGOÀI: Teacher + Student từ Supabase (đăng ký email)
 router.get('/accounts/outside', async (_req, res) => {
   try {
-    const { connectMongo, Teacher, Student } = require('../db-mongo');
-    await connectMongo();
-
-    const [teachers, students] = await Promise.all([
-      Teacher.find().select('-passwordHash').sort({ createdAt: -1 }).lean(),
-      Student.find({ authType: 'email' }).select('-passwordHash').sort({ createdAt: -1 }).lean(),
-    ]);
+    const allEmail = await EmailUserModel.find({});
+    const teachers = allEmail.filter(u => u.role === 'teacher');
+    const students = allEmail.filter(u => u.role === 'student');
 
     res.json({
       teachers: teachers.map(t => ({
-        _id: t._id, fullName: t.fullName, email: t.email,
+        _id: t.id, fullName: t.fullName, email: t.email,
         subject: t.subject || '', school: t.school || '',
         isVerified: t.isVerified || false,
         createdAt: t.createdAt, role: 'teacher',
       })),
       students: students.map(s => ({
-        _id: s._id, fullName: s.fullName, email: s.email,
+        _id: s.id, fullName: s.fullName, email: s.email,
         gender: s.gender || '', dob: s.dob || '',
         createdAt: s.createdAt, role: 'student',
       })),
@@ -433,36 +432,9 @@ router.get('/accounts/outside', async (_req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// Tài khoản TRONG: Học sinh trường từ AstraDB (đăng ký bằng CCCD, có className)
+// Tài khoản TRONG: disabled — trả về mảng rỗng để không hiển thị trong UI
 router.get('/accounts/inside', async (_req, res) => {
-  try {
-    const User = await getStudentDB();
-    const all = await User.find({ role: 'student', className: { $nin: ['', null], $exists: true } })
-      .select('-passwordHash').lean();
-
-    all.sort(sortByGivenName);
-
-    // Group thầy cô nội bộ (role teacher trong AstraDB nếu có)
-    const UserAll = await getStudentDB();
-    const internalTeachers = await UserAll.find({ role: 'teacher' })
-      .select('-passwordHash').lean();
-
-    res.json({
-      teachers: internalTeachers.map(t => ({
-        _id: t._id, fullName: t.fullName,
-        cccd: t.cccd || '', className: t.className || '',
-        gender: t.gender || '', dob: t.dob || '',
-        createdAt: t.createdAt, role: 'teacher',
-      })),
-      students: all.map(s => ({
-        _id: s._id, fullName: s.fullName,
-        cccd: s.cccd || '', className: s.className || '',
-        gender: s.gender || '', dob: s.dob || '',
-        mustChangePassword: s.mustChangePassword || false,
-        createdAt: s.createdAt, role: 'student',
-      })),
-    });
-  } catch (err) { res.status(500).json({ error: err.message }); }
+  res.json({ teachers: [], students: [] });
 });
 
 // ── Góp ý (admin) ─────────────────────────────────────
@@ -498,6 +470,62 @@ router.delete('/feedback/:id', async (req, res) => {
     await FeedbackModel.deleteById(req.params.id);
     res.json({ ok: true });
   } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ── Teacher class assignment ───────────────────────────────────────────────
+
+// GET /api/admin/teachers — list all school (CCCD-based) teachers
+router.get('/teachers', async (req, res) => {
+  try {
+    const docs = await SchoolUserModel.find({ role: 'teacher' }).lean();
+    const teachers = docs.map(t => ({
+      _id:             String(t.id || t._id),
+      fullName:        t.fullName || '',
+      cccd:            t.cccd    || '',
+      className:       t.className || '',
+      assignedClasses: t.assignedClasses || [],
+    }));
+    res.json({ teachers });
+  } catch (err) {
+    console.error('[admin/teachers GET]', err.message);
+    res.status(500).json({ error: 'Không thể tải danh sách giáo viên' });
+  }
+});
+
+// PATCH /api/admin/teachers/:id/classes — update assignedClasses for school teacher
+router.patch('/teachers/:id/classes', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { classes } = req.body;
+
+    if (!Array.isArray(classes)) {
+      return res.status(400).json({ error: 'classes phải là mảng' });
+    }
+
+    const CLASS_RE = /^\d+[A-Za-z]+\d+$/;
+    const invalid = classes.find(c => typeof c !== 'string' || !CLASS_RE.test(c));
+    if (invalid !== undefined) {
+      return res.status(400).json({ error: `Tên lớp không hợp lệ: "${invalid}"` });
+    }
+
+    const teacher = await SchoolUserModel.findById(id);
+    if (!teacher) return res.status(404).json({ error: 'Không tìm thấy giáo viên' });
+
+    teacher.assignedClasses = [...new Set(classes)];
+    await teacher.save();
+
+    res.json({
+      ok: true,
+      teacher: {
+        _id:             String(teacher.id || teacher._id),
+        fullName:        teacher.fullName,
+        assignedClasses: teacher.assignedClasses,
+      },
+    });
+  } catch (err) {
+    console.error('[admin/teachers PATCH]', err.message);
+    res.status(500).json({ error: 'Không thể cập nhật phân công lớp' });
+  }
 });
 
 module.exports = router;

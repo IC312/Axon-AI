@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Axon AI — Bảng giáo viên</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040a09;--surface:#0a1412;--surface2:#101e1b;--surface3:#14231f;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);
+  --accent:#0d9488;--accent2:#22d3ee;--accent-soft:rgba(13,148,136,.15);
+  --text:#e8f0ef;--muted:#6b7f7d;--muted2:#90a8a5;
+  --success:#34d399;--danger:#f87171;--warning:#fbbf24;
+}
+html,body{height:100%;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-feature-settings:'calt','kern','liga';
+  overflow:hidden;display:flex;flex-direction:column
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:.4
+}
+.bg-orbs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(80px)}
+.bg-orb-1{width:500px;height:500px;background:radial-gradient(circle,#0d9488,transparent);opacity:.07;top:-100px;left:-100px;animation:orb1 22s ease-in-out infinite}
+.bg-orb-2{width:400px;height:400px;background:radial-gradient(circle,#22d3ee,transparent);opacity:.05;bottom:-80px;right:-80px;animation:orb2 28s ease-in-out infinite}
+@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(60px,80px)}}
+@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(-60px,-60px)}}
+
+/* ══ HEADER ══ */
+.app-header{
+  display:flex;align-items:center;gap:12px;padding:11px 18px;
+  border-bottom:1px solid var(--border);
+  background:rgba(4,10,9,.9);backdrop-filter:blur(20px);
+  flex-shrink:0;z-index:100;position:relative
+}
+.logo{
+  display:flex;align-items:center;gap:8px;
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:1rem;letter-spacing:-.02em;color:white
+}
+.logo-icon{
+  width:28px;height:28px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;overflow:hidden
+}
+.logo-icon::after{
+  content:'';position:absolute;top:0;left:-70%;width:50%;height:100%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.3),transparent);
+  animation:shimmer 4s ease-in-out infinite
+}
+@keyframes shimmer{0%{left:-70%}40%,100%{left:120%}}
+.teacher-badge{
+  padding:3px 10px;
+  background:rgba(13,148,136,.12);
+  border:1px solid rgba(13,148,136,.3);border-radius:20px;
+  font-size:.65rem;font-weight:700;color:#5eead4;letter-spacing:.06em;text-transform:uppercase
+}
+.spacer{flex:1}
+.header-info{
+  display:flex;align-items:center;gap:8px;
+  font-size:.8rem;color:var(--muted2)
+}
+.header-name{font-weight:600;color:var(--text)}
+.hdr-btn{
+  display:flex;align-items:center;gap:6px;
+  border:1px solid var(--border);border-radius:9px;
+  background:transparent;padding:7px 10px;color:var(--muted2);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:.75rem;font-weight:500;
+  cursor:pointer;transition:all .15s;white-space:nowrap
+}
+.hdr-btn:hover{background:rgba(255,255,255,.04);color:var(--text)}
+.hdr-btn.danger:hover{background:rgba(248,113,113,.08);border-color:rgba(248,113,113,.3);color:var(--danger)}
+.hdr-btn svg{flex-shrink:0}
+
+/* ══ LAYOUT ══ */
+.app-body{
+  display:flex;flex:1;overflow:hidden;position:relative;z-index:1
+}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  width:220px;flex-shrink:0;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+  background:rgba(10,20,18,.5)
+}
+.sidebar-title{
+  font-size:.65rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted);padding:16px 14px 8px
+}
+.class-list{flex:1;overflow-y:auto;padding:0 8px 12px}
+.class-list::-webkit-scrollbar{width:4px}
+.class-list::-webkit-scrollbar-track{background:transparent}
+.class-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:2px}
+.class-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;border-radius:9px;cursor:pointer;
+  font-size:.82rem;font-weight:500;color:var(--muted2);
+  transition:all .15s;margin-bottom:2px;gap:8px
+}
+.class-item:hover{background:rgba(13,148,136,.08);color:var(--text)}
+.class-item.active{
+  background:rgba(13,148,136,.15);color:var(--accent2);font-weight:600;
+  border:1px solid rgba(13,148,136,.2)
+}
+.grade-group-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);padding:12px 10px 4px
+}
+.grade-group-label:first-child{padding-top:4px}
+
+/* ══ MAIN ══ */
+.main{flex:1;overflow-y:auto;padding:24px 28px;display:flex;flex-direction:column;gap:20px}
+.main::-webkit-scrollbar{width:6px}
+.main::-webkit-scrollbar-track{background:transparent}
+.main::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:3px}
+
+/* ══ STATS ROW ══ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:18px 20px;
+  display:flex;flex-direction:column;gap:8px;
+  transition:border-color .2s
+}
+.stat-card:hover{border-color:rgba(13,148,136,.25)}
+.stat-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0
+}
+.stat-icon.teal{background:rgba(13,148,136,.15)}
+.stat-icon.cyan{background:rgba(34,211,238,.12)}
+.stat-icon.green{background:rgba(52,211,153,.12)}
+.stat-icon.amber{background:rgba(251,191,36,.1)}
+.stat-label{font-size:.72rem;color:var(--muted);font-weight:500;letter-spacing:.01em}
+.stat-value{font-size:1.6rem;font-weight:800;font-family:'Bricolage Grotesque',sans-serif;letter-spacing:-.03em;color:white;line-height:1}
+.stat-sub{font-size:.7rem;color:var(--muted);margin-top:2px}
+
+/* ══ SECTION HEADER ══ */
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;gap:12px
+}
+.section-title{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:700;
+  font-size:1rem;color:white;letter-spacing:-.02em
+}
+.section-sub{font-size:.75rem;color:var(--muted);margin-top:2px}
+.class-badge{
+  padding:4px 12px;background:rgba(13,148,136,.12);
+  border:1px solid rgba(13,148,136,.25);border-radius:20px;
+  font-size:.7rem;font-weight:700;color:#5eead4;letter-spacing:.04em
+}
+
+/* ══ TABLE ══ */
+.table-wrap{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden
+}
+table{width:100%;border-collapse:collapse}
+thead th{
+  background:var(--surface2);
+  font-size:.68rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);padding:10px 16px;text-align:left;
+  border-bottom:1px solid var(--border)
+}
+thead th:last-child{text-align:right}
+tbody tr{border-bottom:1px solid var(--border);transition:background .12s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.025)}
+tbody td{padding:11px 16px;font-size:.82rem;color:var(--text)}
+tbody td:last-child{text-align:right}
+.rank{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:22px;height:22px;border-radius:6px;
+  font-size:.7rem;font-weight:700;color:var(--muted);
+  background:rgba(255,255,255,.05)
+}
+.rank.gold{background:rgba(251,191,36,.15);color:#fbbf24}
+.rank.silver{background:rgba(156,163,175,.12);color:#d1d5db}
+.rank.bronze{background:rgba(180,83,9,.15);color:#fb923c}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 9px;border-radius:20px;font-size:.7rem;font-weight:600
+}
+.pill.cyan{background:rgba(34,211,238,.1);color:#67e8f9;border:1px solid rgba(34,211,238,.2)}
+.pill.teal{background:rgba(13,148,136,.12);color:#5eead4;border:1px solid rgba(13,148,136,.2)}
+.pill.muted{background:rgba(255,255,255,.05);color:var(--muted2);border:1px solid var(--border)}
+.bar-wrap{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.bar-bg{height:6px;background:rgba(255,255,255,.06);border-radius:3px;flex:1;min-width:60px;max-width:100px;overflow:hidden}
+.bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s cubic-bezier(.22,1,.36,1)}
+.bar-num{font-size:.75rem;font-weight:600;color:var(--muted2);min-width:28px;text-align:right}
+
+/* ══ EMPTY / LOADING ══ */
+.empty-state{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:12px;padding:60px 20px;color:var(--muted);text-align:center
+}
+.empty-state svg{opacity:.3}
+.empty-state p{font-size:.85rem;line-height:1.6}
+.skeleton{
+  background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.07) 50%,rgba(255,255,255,.04) 75%);
+  background-size:200% 100%;animation:skel 1.4s ease-in-out infinite;
+  border-radius:6px
+}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ══ WELCOME CARD ══ */
+.welcome-card{
+  background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(34,211,238,.07));
+  border:1px solid rgba(13,148,136,.2);border-radius:14px;padding:20px 24px;
+  display:flex;align-items:center;gap:16px
+}
+.welcome-avatar{
+  width:48px;height:48px;border-radius:14px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.2rem;font-weight:800;color:white;font-family:'Bricolage Grotesque',sans-serif
+}
+.welcome-name{font-size:1.05rem;font-weight:700;color:white;font-family:'Bricolage Grotesque',sans-serif}
+.welcome-meta{font-size:.78rem;color:var(--muted2);margin-top:3px;display:flex;flex-wrap:wrap;gap:10px}
+.welcome-meta span{display:flex;align-items:center;gap:5px}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:900px){
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .sidebar{width:180px}
+}
+@media(max-width:680px){
+  .app-body{flex-direction:column}
+  .sidebar{width:100%;height:auto;border-right:none;border-bottom:1px solid var(--border);flex-direction:row}
+  .class-list{display:flex;flex-wrap:wrap;gap:4px;padding:8px}
+  .sidebar-title,.grade-group-label{display:none}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .main{padding:16px}
+}
+
+/* ══ ANNOUNCEMENT PANEL ══ */
+.ann-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;justify-content:flex-end
+}
+.ann-panel-overlay.open{display:flex}
+.ann-panel{
+  width:420px;max-width:100%;background:var(--surface);
+  border-left:1px solid var(--border2);display:flex;flex-direction:column;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
+}
+.ann-panel-overlay.open .ann-panel{transform:translateX(0)}
+.ann-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0
+}
+.ann-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white;flex:1}
+.ann-panel-close{
+  background:transparent;border:none;color:var(--muted);cursor:pointer;
+  padding:4px;border-radius:6px;transition:all .15s;line-height:1
+}
+.ann-panel-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.ann-post-form{padding:14px;border-bottom:1px solid var(--border);flex-shrink:0}
+.ann-textarea{
+  width:100%;background:var(--surface2);border:1px solid var(--border2);
+  border-radius:10px;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.83rem;padding:10px 12px;resize:vertical;min-height:80px;max-height:200px;
+  outline:none;transition:border-color .15s;box-sizing:border-box
+}
+.ann-textarea:focus{border-color:rgba(13,148,136,.4)}
+.ann-textarea::placeholder{color:var(--muted)}
+.ann-post-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.ann-char-count{font-size:.67rem;color:var(--muted)}
+.ann-char-count.over{color:var(--danger)}
+.ann-post-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:9px;
+  background:var(--accent);border:none;
+  color:white;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:.78rem;font-weight:600;cursor:pointer;transition:opacity .15s
+}
+.ann-post-btn:hover{opacity:.85}
+.ann-feed{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.ann-feed::-webkit-scrollbar{width:3px}
+.ann-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.ann-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:10px;padding:12px 14px
+}
+.ann-item-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ann-author-name{font-size:.8rem;font-weight:600;color:var(--text);flex:1}
+.ann-role-badge{
+  font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px
+}
+.ann-role-badge.admin-role{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:#f87171}
+.ann-role-badge.teacher-role{background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.25);color:#5eead4}
+.ann-time{font-size:.65rem;color:var(--muted);font-family:'Courier New',monospace}
+.ann-content{font-size:.83rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.ann-del-btn{
+  background:transparent;border:none;color:var(--muted);cursor:pointer;
+  padding:3px;border-radius:5px;transition:all .14s;line-height:1;flex-shrink:0
+}
+.ann-del-btn:hover{color:var(--danger)}
+.ann-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.82rem}
+@keyframes bell-shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-1.5px)}
+  40%{transform:translateX(1.5px)}
+  60%{transform:translateX(-1.5px)}
+  80%{transform:translateX(1.5px)}
+}
+.ann-hdr-btn:hover svg.ann-bell-svg{animation:bell-shake .4s ease-in-out}
+@keyframes send-fly{
+  0%{transform:translate(0,0);opacity:1}
+  40%{transform:translate(6px,-6px);opacity:0}
+  41%{transform:translate(-6px,6px);opacity:0}
+  100%{transform:translate(0,0);opacity:1}
+}
+.ann-post-btn:hover svg{animation:send-fly .5s ease-in-out}
+</style>
+</head>
+<body>
+<div class="bg-orbs">
+  <div class="bg-orb bg-orb-1"></div>
+  <div class="bg-orb bg-orb-2"></div>
+</div>
+
+<header class="app-header">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    Axon AI
+  </div>
+  <div class="teacher-badge">Giáo viên</div>
+  <div class="spacer"></div>
+  <div class="header-info">
+    <span id="hdr-name" class="header-name">…</span>
+  </div>
+  <button class="hdr-btn ann-hdr-btn" onclick="openAnnPanel()">
+    <svg class="ann-bell-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+    Thông báo
+  </button>
+  <button class="hdr-btn danger" onclick="doLogout()">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Đăng xuất
+  </button>
+</header>
+
+<div class="app-body">
+  <!-- Sidebar: class list -->
+  <nav class="sidebar">
+    <div class="sidebar-title">Danh sách lớp</div>
+    <div class="class-list" id="class-list">
+      <div style="padding:8px 10px">
+        <div class="skeleton" style="height:28px;margin-bottom:6px"></div>
+        <div class="skeleton" style="height:28px;margin-bottom:6px"></div>
+        <div class="skeleton" style="height:28px"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <main class="main" id="main-content">
+    <!-- Welcome card -->
+    <div class="welcome-card" id="welcome-card">
+      <div class="welcome-avatar" id="welcome-avatar">?</div>
+      <div>
+        <div class="welcome-name" id="welcome-name">Đang tải…</div>
+        <div class="welcome-meta" id="welcome-meta"></div>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-icon teal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="stat-label">Tổng học sinh</div>
+        <div class="stat-value" id="s-students">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon cyan">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#67e8f9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="stat-label">Tổng lớp học</div>
+        <div class="stat-value" id="s-classes">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6ee7b7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="stat-label">Hội thoại AI</div>
+        <div class="stat-value" id="s-convs">—</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fde68a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="stat-label">Tin nhắn gửi AI</div>
+        <div class="stat-value" id="s-msgs">—</div>
+      </div>
+    </div>
+
+    <!-- Class student table -->
+    <div id="class-section" style="display:none">
+      <div class="section-header" style="margin-bottom:14px">
+        <div>
+          <div class="section-title" id="class-title">Lớp …</div>
+          <div class="section-sub" id="class-sub"></div>
+        </div>
+        <div class="class-badge" id="class-count-badge"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:40px">#</th>
+              <th>Họ và tên</th>
+              <th>Hội thoại</th>
+              <th>Tin nhắn AI</th>
+              <th style="width:160px">Mức độ sử dụng</th>
+            </tr>
+          </thead>
+          <tbody id="student-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Default hint when no class selected -->
+    <div id="no-class-hint" class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      <p>Chọn một lớp ở bên trái<br>để xem danh sách và thống kê học sinh</p>
+    </div>
+  </main>
+</div>
+
+<script>
+// ── Auth guard ──────────────────────────────────────────
+(async () => {
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!r.ok) { location.href = '/login-email-teacher.html'; return; }
+    const d = await r.json();
+    if (d.role !== 'teacher' && d.role !== 'admin') { location.href = '/chat.html'; return; }
+  } catch { location.href = '/login-email-teacher.html'; }
+})();
+
+// ── Init ────────────────────────────────────────────────
+let _classes = [];
+let _activeClass = null;
+
+async function init() {
+  await Promise.all([loadTeacherInfo(), loadStats(), loadClasses()]);
+}
+
+async function loadTeacherInfo() {
+  try {
+    const r = await fetch('/api/teacher/me', { credentials: 'include' });
+    if (!r.ok) return;
+    const t = await r.json();
+
+    document.getElementById('hdr-name').textContent = t.fullName || 'Giáo viên';
+    document.getElementById('welcome-name').textContent = 'Chào mừng, ' + (t.fullName || 'Thầy/Cô');
+    document.getElementById('welcome-avatar').textContent = (t.fullName || 'G').charAt(0).toUpperCase();
+
+    const metaEl = document.getElementById('welcome-meta');
+    const parts = [];
+    if (t.subject) parts.push(`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>${esc(t.subject)}</span>`);
+    if (t.school) parts.push(`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>${esc(t.school)}</span>`);
+    if (t.email) parts.push(`<span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>${esc(t.email)}</span>`);
+    metaEl.innerHTML = parts.join('');
+  } catch (err) {
+    console.error('[TeacherInfo]', err);
+  }
+}
+
+async function loadStats() {
+  try {
+    const r = await fetch('/api/teacher/stats', { credentials: 'include' });
+    if (!r.ok) return;
+    const d = await r.json();
+    animateCount('s-students', d.totalStudents);
+    animateCount('s-classes',  d.totalClasses);
+    animateCount('s-convs',    d.totalConvs);
+    animateCount('s-msgs',     d.totalMsgs);
+  } catch (err) {
+    console.error('[Stats]', err);
+  }
+}
+
+async function loadClasses() {
+  try {
+    const r = await fetch('/api/teacher/classes', { credentials: 'include' });
+    if (!r.ok) return;
+    _classes = await r.json();
+    renderClassList(_classes);
+  } catch (err) {
+    console.error('[Classes]', err);
+  }
+}
+
+function renderClassList(classes) {
+  const el = document.getElementById('class-list');
+  if (!classes.length) {
+    el.innerHTML = '<div style="padding:12px 10px;font-size:.78rem;color:var(--muted)">Chưa có lớp nào</div>';
+    return;
+  }
+
+  // Group by grade
+  const groups = {};
+  for (const c of classes) {
+    const g = (c.match(/^(\d+)/) || ['', '?'])[1];
+    (groups[g] = groups[g] || []).push(c);
+  }
+
+  let html = '';
+  for (const grade of Object.keys(groups).sort((a,b) => +a - +b)) {
+    html += `<div class="grade-group-label">Khối ${grade}</div>`;
+    for (const cls of groups[grade]) {
+      html += `<div class="class-item" id="cls-${esc(cls)}" onclick="selectClass('${esc(cls)}')">`
+             + `<span>${esc(cls)}</span>`
+             + `</div>`;
+    }
+  }
+  el.innerHTML = html;
+}
+
+async function selectClass(className) {
+  if (_activeClass === className) return;
+  _activeClass = className;
+
+  // Update active state
+  document.querySelectorAll('.class-item').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('cls-' + className);
+  if (el) el.classList.add('active');
+
+  document.getElementById('no-class-hint').style.display = 'none';
+  document.getElementById('class-section').style.display = 'block';
+  document.getElementById('class-title').textContent = 'Lớp ' + className;
+  document.getElementById('class-sub').textContent = 'Đang tải…';
+  document.getElementById('class-count-badge').textContent = '';
+  document.getElementById('student-tbody').innerHTML = `
+    <tr><td colspan="5"><div style="padding:20px 0;display:flex;gap:10px;flex-direction:column">
+      ${[1,2,3,4,5].map(() => `<div class="skeleton" style="height:18px;margin:0 6px"></div>`).join('')}
+    </div></td></tr>`;
+
+  try {
+    const r = await fetch(`/api/teacher/classes/${encodeURIComponent(className)}/students`, { credentials: 'include' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const students = await r.json();
+    renderStudentTable(className, students);
+  } catch (err) {
+    document.getElementById('student-tbody').innerHTML =
+      `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--danger);font-size:.82rem">Lỗi tải dữ liệu: ${esc(err.message)}</td></tr>`;
+  }
+}
+
+function renderStudentTable(className, students) {
+  document.getElementById('class-title').textContent = 'Lớp ' + className;
+  document.getElementById('class-count-badge').textContent = students.length + ' học sinh';
+
+  if (!students.length) {
+    document.getElementById('class-sub').textContent = 'Không có học sinh';
+    document.getElementById('student-tbody').innerHTML =
+      `<tr><td colspan="5"><div class="empty-state" style="padding:40px 20px">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity:.3"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        <p>Chưa có học sinh trong lớp này</p>
+      </div></td></tr>`;
+    return;
+  }
+
+  // Sort by msgCount desc for activity ranking
+  const sorted = [...students].sort((a, b) => b.msgCount - a.msgCount);
+  const maxMsgs = sorted[0]?.msgCount || 1;
+
+  document.getElementById('class-sub').textContent =
+    `${students.filter(s => s.convCount > 0).length} / ${students.length} học sinh đã dùng AI`;
+
+  let html = '';
+  // Render in original name-sorted order but compute rank by activity
+  const rankMap = {};
+  sorted.forEach((s, i) => { rankMap[String(s._id)] = i + 1; });
+
+  students.forEach((s, i) => {
+    const rank = rankMap[String(s._id)];
+    let rankCls = '', rankTxt = rank;
+    if (rank === 1) { rankCls = ' gold'; rankTxt = '🥇'; }
+    else if (rank === 2) { rankCls = ' silver'; rankTxt = '🥈'; }
+    else if (rank === 3) { rankCls = ' bronze'; rankTxt = '🥉'; }
+
+    const pct = maxMsgs > 0 ? Math.round((s.msgCount / maxMsgs) * 100) : 0;
+    const convPill = s.convCount > 0
+      ? `<span class="pill teal">${s.convCount}</span>`
+      : `<span class="pill muted">0</span>`;
+
+    html += `<tr>
+      <td><span class="rank${rankCls}">${rankTxt}</span></td>
+      <td style="font-weight:500">${esc(s.fullName)}</td>
+      <td>${convPill}</td>
+      <td style="font-weight:600;color:${s.msgCount > 0 ? 'var(--accent2)' : 'var(--muted)'}">${s.msgCount}</td>
+      <td>
+        <div class="bar-wrap">
+          <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+          <span class="bar-num">${pct}%</span>
+        </div>
+      </td>
+    </tr>`;
+  });
+
+  document.getElementById('student-tbody').innerHTML = html;
+}
+
+// ── Helpers ─────────────────────────────────────────────
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function animateCount(id, target) {
+  const el = document.getElementById(id);
+  if (!el || !target) { el && (el.textContent = target || '0'); return; }
+  const dur = 600, start = Date.now();
+  const tick = () => {
+    const t = Math.min((Date.now() - start) / dur, 1);
+    const ease = t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+    el.textContent = Math.round(ease * target).toLocaleString('vi-VN');
+    if (t < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+async function doLogout() {
+  await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+  location.href = '/login-email-teacher.html';
+}
+
+// ── Announcement panel ──────────────────────────────
+let _annList = [];
+let _annMyId = null;
+
+function toast(msg, type = 'info', duration = 3000) {
+  const el = document.createElement('div');
+  el.style.cssText = `position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    padding:10px 18px;border-radius:10px;font-size:.82rem;font-weight:600;z-index:9999;
+    pointer-events:none;transition:opacity .3s;white-space:nowrap;
+    background:${type === 'success' ? 'rgba(52,211,153,.15)' : type === 'error' ? 'rgba(248,113,113,.15)' : 'rgba(255,255,255,.1)'};
+    border:1px solid ${type === 'success' ? 'rgba(52,211,153,.3)' : type === 'error' ? 'rgba(248,113,113,.3)' : 'rgba(255,255,255,.2)'};
+    color:${type === 'success' ? '#34d399' : type === 'error' ? '#f87171' : '#e8f0ef'}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 300); }, duration);
+}
+
+async function openAnnPanel() {
+  document.getElementById('ann-panel-overlay').classList.add('open');
+  if (!_annMyId) {
+    try {
+      const r = await fetch('/api/auth/me', { credentials: 'include' });
+      if (r.ok) { const d = await r.json(); _annMyId = String(d._id || d.id || ''); }
+    } catch {}
+  }
+  await loadAnnouncements();
+}
+
+function closeAnnPanel() {
+  document.getElementById('ann-panel-overlay').classList.remove('open');
+}
+
+function annOverlayClick(e) {
+  if (e.target === document.getElementById('ann-panel-overlay')) closeAnnPanel();
+}
+
+async function loadAnnouncements() {
+  try {
+    const r = await fetch('/api/announcements', { credentials: 'include' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    _annList = await r.json();
+    renderAnnFeed();
+  } catch {
+    document.getElementById('ann-feed').innerHTML = '<div class="ann-empty">Không thể tải thông báo</div>';
+  }
+}
+
+function renderAnnFeed() {
+  const el = document.getElementById('ann-feed');
+  if (!_annList.length) { el.innerHTML = '<div class="ann-empty">Chưa có thông báo nào</div>'; return; }
+  el.innerHTML = _annList.map(a => {
+    const d = new Date(a.createdAt);
+    const t = d.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const roleLbl = a.authorRole === 'admin' ? 'Quản trị' : 'Giáo viên';
+    const roleCls = a.authorRole === 'admin' ? 'admin-role' : 'teacher-role';
+    const isOwn = _annMyId && String(a.authorId) === _annMyId;
+    const delBtn = isOwn
+      ? `<button class="ann-del-btn" onclick="deleteAnn('${esc(a._id)}')" title="Xóa">
+           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+         </button>` : '';
+    return `<div class="ann-item" id="ann-${esc(a._id)}">
+      <div class="ann-item-head">
+        <span class="ann-author-name">${esc(a.authorName)}</span>
+        <span class="ann-role-badge ${roleCls}">${roleLbl}</span>
+        <span class="ann-time">${t}</span>
+        ${delBtn}
+      </div>
+      <div class="ann-content">${esc(a.content)}</div>
+    </div>`;
+  }).join('');
+}
+
+function annCharCount() {
+  const ta = document.getElementById('ann-textarea');
+  const cc = document.getElementById('ann-char-count');
+  const n = (ta.value || '').length;
+  cc.textContent = n + ' / 1000';
+  cc.classList.toggle('over', n > 1000);
+}
+
+async function postAnnouncement() {
+  const ta = document.getElementById('ann-textarea');
+  const content = ta.value.trim();
+  if (!content) { toast('Vui lòng nhập nội dung thông báo', 'error'); return; }
+  if (content.length > 1000) { toast('Nội dung quá dài (tối đa 1000 ký tự)', 'error'); return; }
+  try {
+    const r = await fetch('/api/announcements', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content }),
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Đăng thất bại', 'error'); return; }
+    ta.value = '';
+    annCharCount();
+    _annList.unshift(d);
+    renderAnnFeed();
+    toast('Đã đăng thông báo', 'success');
+  } catch {
+    toast('Lỗi kết nối', 'error');
+  }
+}
+
+async function deleteAnn(id) {
+  if (!confirm('Xóa thông báo này?')) return;
+  try {
+    const r = await fetch('/api/announcements/' + encodeURIComponent(id), {
+      method: 'DELETE', credentials: 'include',
+    });
+    const d = await r.json();
+    if (!r.ok) { toast(d.error || 'Xóa thất bại', 'error'); return; }
+    _annList = _annList.filter(a => a._id !== id);
+    renderAnnFeed();
+    toast('Đã xóa thông báo', 'success');
+  } catch {
+    toast('Lỗi kết nối', 'error');
+  }
+}
+
+init();
+</script>
+
+<!-- ═══ ANNOUNCEMENT PANEL ═══ -->
+<div class="ann-panel-overlay" id="ann-panel-overlay" onclick="annOverlayClick(event)">
+  <div class="ann-panel">
+    <div class="ann-panel-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span class="ann-panel-title">Thông báo trường</span>
+      <button class="ann-panel-close" onclick="closeAnnPanel()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ann-post-form">
+      <textarea class="ann-textarea" id="ann-textarea" placeholder="Nhập nội dung thông báo…" maxlength="1000" oninput="annCharCount()"></textarea>
+      <div class="ann-post-row">
+        <span class="ann-char-count" id="ann-char-count">0 / 1000</span>
+        <button class="ann-post-btn" onclick="postAnnouncement()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="overflow:visible"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 14l11 -11"/><path d="M21 3l-6.5 18a.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a.55 .55 0 0 1 0 -1l18 -6.5"/></svg>
+          Gửi
+        </button>
+      </div>
+    </div>
+    <div class="ann-feed" id="ann-feed">
+      <div class="ann-empty">Đang tải…</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

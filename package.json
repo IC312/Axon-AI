@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@datastax/astra-db-ts": "^1.5.0",
+    "@supabase/supabase-js": "^2.106.2",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
@@ -19,8 +20,10 @@
     "groq-sdk": "^0.9.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.4.0",
-    "uuid": "^10.0.0"
+    "multer": "^2.1.1",
+    "nodemailer": "^8.0.9",
+    "resend": "^6.12.4",
+    "uuid": "^11.1.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

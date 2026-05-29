@@ -46,13 +46,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ── API Routes ────────────────────────────────────────
 app.use('/api/auth',  require('./routes/auth'));
 app.use('/api/chat',  require('./routes/chat'));
-app.use('/api/admin', require('./routes/admin'));
+app.use('/api/public-demo', require('./routes/public-demo'));
+app.use('/api/admin',         require('./routes/admin'));
+app.use('/api/admin/excel',  require('./routes/excel'));
+app.use('/api/teacher',       require('./routes/teacher'));
+app.use('/api/announcements', require('./routes/announcements'));
 const { router: forumRouter, startAutoScan } = require('./routes/forum');
 app.use('/api/forum', forumRouter);
 
 // ── Admin login — URL ẩn /admin ───────────────────────
 app.get('/admin', (_req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'admin-login.html'))
+);
+
+// ── Teacher dashboard ─────────────────────────────────
+app.get('/dashboard', (_req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'teacher.html'))
 );
 
 // ── Forum page ─────────────────────────────────────────
@@ -76,9 +85,10 @@ app.get('/portal-teacher', (_req, res) =>
 );
 
 // ── Clean URL aliases ─────────────────────────────────
-app.get('/login',    (_req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
-app.get('/register', (_req, res) => res.sendFile(path.join(__dirname, 'public', 'register.html')));
-app.get('/teacher',  (_req, res) => res.sendFile(path.join(__dirname, 'public', 'register-teacher.html')));
+app.get('/login',           (_req, res) => res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/register',        (_req, res) => res.sendFile(path.join(__dirname, 'public', 'register.html')));
+app.get('/teacher',         (_req, res) => res.sendFile(path.join(__dirname, 'public', 'register-teacher.html')));
+app.get('/reset-password',  (_req, res) => res.sendFile(path.join(__dirname, 'public', 'reset-password.html')));
 
 // ── Fallback → Landing ────────────────────────────────
 app.get('*', (_req, res) =>

@@ -168,6 +168,8 @@ body::before{
   body{padding:12px}
 }
 @media(max-width:360px){.card{padding:22px 16px}.heading{font-size:1.2rem}}
+html{overflow-x:hidden}
+body{overflow-wrap:break-word}
 </style>
 </head>
 <body>
@@ -251,7 +253,8 @@ body::before{
   <div class="divider"></div>
   <div class="footer-txt">
     Chưa có tài khoản?
-    <a id="register-link" href="/register.html">Đăng ký miễn phí ↗</a>
+    <a id="register-link" href="/register.html">Đăng ký miễn phí ↗</a><br>
+    <a href="/forgot-password.html">Quên mật khẩu?</a>
   </div>
 </div>
 
@@ -336,6 +339,7 @@ async function doStudentLogin(e) {
     localStorage.setItem('hc_className', '');
     localStorage.setItem('hc_gender', ''); localStorage.setItem('hc_dob', '');
     localStorage.setItem('hc_mustChangePw', '0');
+    localStorage.setItem('hc_authType', data.authType || 'email');
     btn.textContent = '✓ Thành công!';
     setTimeout(() => { location.href = '/chat.html'; }, 350);
   } catch {
@@ -374,6 +378,7 @@ async function doTeacherLogin(e) {
     localStorage.setItem('hc_className', '');
     localStorage.setItem('hc_gender', ''); localStorage.setItem('hc_dob', '');
     localStorage.setItem('hc_mustChangePw', '0');
+    localStorage.setItem('hc_authType', data.authType || 'email');
     btn.textContent = '✓ Thành công!';
     setTimeout(() => { location.href = '/chat.html'; }, 350);
   } catch {

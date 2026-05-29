@@ -130,7 +130,7 @@ body::before{
 (async () => {
   try {
     const r = await fetch('/api/auth/me', { credentials: 'include' });
-    if (r.ok) { const d = await r.json(); location.href = d.role === 'admin' ? '/admin.html' : '/chat.html'; }
+    if (r.ok) { const d = await r.json(); location.href = d.role === 'admin' ? '/admin.html' : d.role === 'teacher' ? '/teacher.html' : '/chat.html'; }
   } catch {}
 })();
 let _pwVisible = false;
@@ -171,7 +171,7 @@ async function doLogin(e) {
     localStorage.setItem('hc_className', data.className||''); localStorage.setItem('hc_gender', data.gender||'');
     localStorage.setItem('hc_dob', data.dob||''); localStorage.setItem('hc_mustChangePw', data.mustChangePassword ? '1':'0');
     btn.textContent = '✓ Thành công!';
-    setTimeout(() => { location.href = data.role === 'admin' ? '/admin.html' : '/chat.html'; }, 350);
+    setTimeout(() => { location.href = data.role === 'admin' ? '/admin.html' : data.role === 'teacher' ? '/teacher.html' : '/chat.html'; }, 350);
   } catch {
     msg.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Lỗi kết nối server. Vui lòng thử lại.'; msg.className = 'msg err';
     btn.disabled = false; btn.textContent = 'Đăng nhập';

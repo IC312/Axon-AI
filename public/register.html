@@ -198,6 +198,8 @@ body::before{
 }
 @media(max-width:400px){.card{padding:24px 16px}.heading{font-size:1.2rem}}
 @media(max-width:360px){.card{padding:22px 16px}.heading{font-size:1.2rem}}
+html{overflow-x:hidden}
+body{overflow-wrap:break-word}
 
 /* ─── Confirm Modal ─────────────────────── */
 .modal-overlay{
@@ -330,6 +332,33 @@ body::before{
   </div>
   <div class="footer-txt" style="margin-top:6px">
     Giáo viên? <a href="/register-teacher.html">Tạo tài khoản giáo viên ↗</a>
+  </div>
+</div>
+
+<!-- ── OTP Panel (ẩn lúc đầu) ── -->
+<div class="card" id="otp-card" style="display:none">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    </div>
+    Axon AI
+  </div>
+  <div class="heading" style="font-size:1.3rem">Xác minh email 📬</div>
+  <div class="sub" id="otp-sub">Mã OTP đã được gửi đến email của bạn. Mã có hiệu lực trong 10 phút.</div>
+
+  <div class="field" id="otp-field" style="margin-top:20px">
+    <label for="otp-input">Mã OTP 6 chữ số</label>
+    <div class="input-wrap">
+      <input class="s-input" type="text" id="otp-input" name="otp"
+        inputmode="numeric" maxlength="6" placeholder="Ví dụ: 482910"
+        autocomplete="one-time-code" style="letter-spacing:8px;font-size:1.4rem;font-weight:700;text-align:center">
+    </div>
+  </div>
+  <div class="msg" id="otp-msg"></div>
+  <button class="btn-primary" id="otp-btn" onclick="submitOtp()">Xác minh</button>
+  <div class="footer-txt" style="margin-top:14px">
+    Không nhận được email?
+    <a href="#" id="resend-link" onclick="resendOtp(event)">Gửi lại mã →</a>
   </div>
 </div>
 
@@ -519,16 +548,21 @@ async function submitRegister() {
       return;
     }
 
-    localStorage.setItem('hc_role', json.role);
-    localStorage.setItem('hc_fullName', json.fullName);
-    localStorage.setItem('hc_className', '');
-    localStorage.setItem('hc_gender', '');
-    localStorage.setItem('hc_dob', '');
-    localStorage.setItem('hc_mustChangePw', '0');
+    // Yêu cầu xác minh email — chuyển sang OTP panel
+    if (json.requiresVerification) {
+      _pendingEmail = json.email;
+      document.querySelector('.card:not(#otp-card)').style.display = 'none';
+      const otpCard = document.getElementById('otp-card');
+      otpCard.style.display = 'block';
+      document.getElementById('otp-sub').textContent =
+        `Mã OTP đã gửi đến ${json.email}. Mã có hiệu lực trong 10 phút.`;
+      document.getElementById('otp-input').focus();
+      return;
+    }
 
-    msg.textContent = '✓ Tài khoản đã tạo! Đang vào ứng dụng…';
+    // Fallback (không nên xảy ra với flow mới)
+    msg.textContent = '✓ Tài khoản đã tạo!';
     msg.className = 'msg ok';
-    setTimeout(() => { location.href = '/chat.html'; }, 700);
   } catch {
     okBtn.disabled = false;
     okBtn.textContent = '✓ Xác nhận';
@@ -539,6 +573,87 @@ async function submitRegister() {
     btn.textContent = 'Tạo tài khoản';
   }
 }
+
+// ── OTP flow ───────────────────────────────────────────
+let _pendingEmail = '';
+
+async function submitOtp() {
+  const otp = document.getElementById('otp-input').value.trim();
+  const msg = document.getElementById('otp-msg');
+  const btn = document.getElementById('otp-btn');
+  msg.className = 'msg';
+  if (!otp || !/^\d{6}$/.test(otp)) {
+    msg.textContent = '⚠ Vui lòng nhập đúng mã OTP 6 chữ số.';
+    msg.className = 'msg err'; return;
+  }
+  btn.disabled = true; btn.textContent = 'Đang xác minh…';
+  try {
+    const res = await fetch('/api/auth/verify-email', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: _pendingEmail, otp })
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      msg.textContent = '⚠ ' + (json.error || 'Xác minh thất bại');
+      msg.className = 'msg err';
+      btn.disabled = false; btn.textContent = 'Xác minh'; return;
+    }
+    localStorage.setItem('hc_role', json.role);
+    localStorage.setItem('hc_fullName', json.fullName);
+    localStorage.setItem('hc_className', '');
+    localStorage.setItem('hc_gender', '');
+    localStorage.setItem('hc_dob', '');
+    localStorage.setItem('hc_mustChangePw', '0');
+    localStorage.setItem('hc_authType', json.authType || 'email');
+    msg.textContent = '✓ Xác minh thành công! Đang vào ứng dụng…';
+    msg.className = 'msg ok';
+    setTimeout(() => { location.href = '/chat.html'; }, 800);
+  } catch {
+    msg.textContent = '⚠ Lỗi kết nối. Vui lòng thử lại.';
+    msg.className = 'msg err';
+    btn.disabled = false; btn.textContent = 'Xác minh';
+  }
+}
+
+let _resendCooldown = false;
+async function resendOtp(e) {
+  e.preventDefault();
+  if (_resendCooldown) return;
+  if (!_pendingEmail) return;
+  const link = document.getElementById('resend-link');
+  const msg = document.getElementById('otp-msg');
+  msg.className = 'msg';
+  _resendCooldown = true;
+  link.style.opacity = '0.4'; link.style.pointerEvents = 'none';
+  try {
+    const res = await fetch('/api/auth/resend-verification', {
+      method: 'POST', credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: _pendingEmail })
+    });
+    const json = await res.json();
+    if (!res.ok) {
+      msg.textContent = '⚠ ' + (json.error || 'Không thể gửi lại.');
+      msg.className = 'msg err';
+    } else {
+      msg.textContent = '✓ Đã gửi lại mã OTP mới.';
+      msg.className = 'msg ok';
+    }
+  } catch {
+    msg.textContent = '⚠ Lỗi kết nối.'; msg.className = 'msg err';
+  }
+  setTimeout(() => {
+    _resendCooldown = false;
+    link.style.opacity = ''; link.style.pointerEvents = '';
+  }, 60000);
+}
+
+// Enter key trên ô OTP gửi luôn
+document.addEventListener('DOMContentLoaded', () => {
+  const input = document.getElementById('otp-input');
+  if (input) input.addEventListener('keydown', e => { if (e.key === 'Enter') submitOtp(); });
+});
 
 </script>
 </body>

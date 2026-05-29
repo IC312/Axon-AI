@@ -28,4 +28,12 @@ function adminMiddleware(req, res, next) {
   });
 }
 
-module.exports = { authMiddleware, adminMiddleware };
+function teacherMiddleware(req, res, next) {
+  authMiddleware(req, res, () => {
+    if (req.user.role !== 'teacher' && req.user.role !== 'admin')
+      return res.status(403).json({ error: 'Chỉ giáo viên mới có quyền truy cập' });
+    next();
+  });
+}
+
+module.exports = { authMiddleware, adminMiddleware, teacherMiddleware };

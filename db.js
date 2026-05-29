@@ -44,96 +44,6 @@ async function getCollection(name, createOptions = {}) {
 function now() { return new Date().toISOString(); }
 
 // ══════════════════════════════════════════════════════
-// USER MODEL
-// ══════════════════════════════════════════════════════
-async function getUserCollection() {
-  return getCollection('users');
-}
-
-function docToUser(doc) {
-  return {
-    ...doc,
-    id: doc._id,
-    save: async function () {
-      const col = await getUserCollection();
-      const { save, id, ...rest } = this;
-      await col.replaceOne({ _id: this._id }, { ...rest, updatedAt: now() });
-    },
-  };
-}
-
-const UserModel = {
-  async findOne(query) {
-    const col = await getUserCollection();
-    if (query.$or) {
-      for (const cond of query.$or) {
-        const doc = await col.findOne(cond);
-        if (doc) return docToUser(doc);
-      }
-      return null;
-    }
-    const doc = await col.findOne(query);
-    return doc ? docToUser(doc) : null;
-  },
-
-  async findById(id) {
-    const col = await getUserCollection();
-    const doc = await col.findOne({ _id: String(id) });
-    return doc ? docToUser(doc) : null;
-  },
-
-  async create(data) {
-    const col = await getUserCollection();
-    const ts = now();
-    const doc = { _id: uuidv4(), ...data, createdAt: ts, updatedAt: ts };
-    await col.insertOne(doc);
-    return docToUser(doc);
-  },
-
-  // Admin: find many with optional filter, returns chainable with .select().lean()
-  find(query = {}) {
-    const self = this;
-    const p = (async () => {
-      const col = await getUserCollection();
-      const filter = {};
-      for (const [k, v] of Object.entries(query)) {
-        if (v && typeof v === 'object' && '$ne' in v) {
-          // skip $ne filter — AstraDB doesn't support it; filter client-side
-          filter[k] = undefined;
-        } else {
-          filter[k] = v;
-        }
-      }
-      // Remove undefined keys
-      Object.keys(filter).forEach(k => filter[k] === undefined && delete filter[k]);
-      const cursor = col.find(Object.keys(filter).length ? filter : {}, { limit: 10000 });
-      let docs = await cursor.toArray();
-      // Apply client-side $ne filters
-      for (const [k, v] of Object.entries(query)) {
-        if (v && typeof v === 'object' && '$ne' in v) {
-          docs = docs.filter(d => d[k] !== v['$ne']);
-        }
-      }
-      if (query.role) docs = docs.filter(d => d.role === query.role);
-      return docs.map(docToUser);
-    })();
-    const chain = {
-      select: () => chain,
-      lean: () => p,
-      sort: () => chain,
-      then: (res, rej) => p.then(res, rej),
-    };
-    return chain;
-  },
-
-  async countDocuments(query = {}) {
-    const col = await getUserCollection();
-    const docs = await col.find(query, { limit: 10000 }).toArray();
-    return docs.length;
-  },
-};
-
-// ══════════════════════════════════════════════════════
 // CHAT MODELS (Conversation + Message per grade)
 // ══════════════════════════════════════════════════════
 function convCollName(grade) { return `conversations_${grade}`; }
@@ -307,19 +217,21 @@ const FeedbackModel = {
   async find() {
     const col = await getFeedbackCollection();
     const cursor = col.find({}, { sort: { createdAt: -1 }, limit: 500 });
-    return cursor.toArray();
+    const docs = await cursor.toArray();
+    return docs.filter(d => d.type !== 'announcement');
   },
 
   async findByUser(userId) {
     const col = await getFeedbackCollection();
     const cursor = col.find({ userId: String(userId) }, { sort: { createdAt: -1 }, limit: 200 });
-    return cursor.toArray();
+    const docs = await cursor.toArray();
+    return docs.filter(d => d.type !== 'announcement');
   },
 
   async countDocuments() {
     const col = await getFeedbackCollection();
     const docs = await col.find({}, { limit: 5000 }).toArray();
-    return docs.length;
+    return docs.filter(d => d.type !== 'announcement').length;
   },
 
   async deleteById(id) {
@@ -361,13 +273,48 @@ const FeedbackModel = {
   },
 };
 
+// ══════════════════════════════════════════════════════
+// ANNOUNCEMENT MODEL — stored in feedback collection (type discriminator)
+// ══════════════════════════════════════════════════════
+
+const AnnouncementModel = {
+  async create(data) {
+    const col = await getFeedbackCollection();
+    const doc = {
+      _id: uuidv4(),
+      type: 'announcement',
+      authorId: String(data.authorId),
+      authorName: String(data.authorName),
+      authorRole: data.authorRole,
+      content: String(data.content),
+      createdAt: now(),
+    };
+    await col.insertOne(doc);
+    return doc;
+  },
+
+  async find(limit = 50) {
+    const col = await getFeedbackCollection();
+    const cursor = col.find({}, { sort: { createdAt: -1 }, limit: limit + 500 });
+    const docs = await cursor.toArray();
+    return docs.filter(d => d.type === 'announcement').slice(0, limit);
+  },
+
+  async findById(id) {
+    const col = await getFeedbackCollection();
+    const doc = await col.findOne({ _id: String(id) });
+    return doc && doc.type === 'announcement' ? doc : null;
+  },
+
+  async deleteById(id) {
+    const col = await getFeedbackCollection();
+    await col.deleteOne({ _id: String(id) });
+  },
+};
+
 // ── API tương thích với routes cũ ────────────────────
 async function getConnection(key) {
   return { grade: key, readyState: 1 };
-}
-
-function getUserModel(_conn) {
-  return UserModel;
 }
 
 // Xóa cache collection để buộc tái kết nối (dùng khi gặp "session has been destroyed")
@@ -383,8 +330,8 @@ function clearCollectionCache(...names) {
 module.exports = {
   getConnection,
   getChatModels: (conn) => getChatModels(conn.grade),
-  getUserModel,
   FeedbackModel,
+  AnnouncementModel,
   getCollection,
   clearCollectionCache,
 };

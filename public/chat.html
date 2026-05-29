@@ -18,7 +18,9 @@
   --success:#34d399;--danger:#f87171;--warning:#fbbf24;
   --bubble-font:'Plus Jakarta Sans',sans-serif;--bubble-size:.86rem
 }
+html{overflow-x:hidden}
 html,body{height:100%;-webkit-tap-highlight-color:transparent}
+body{overflow-wrap:break-word}
 body{
   background:var(--bg);color:var(--text);
   font-family:'Plus Jakarta Sans',sans-serif;
@@ -184,7 +186,15 @@ body::before{
   font-size:.78rem;color:var(--warning);flex-shrink:0
 }
 .pw-banner.show{display:flex}
-.pw-banner-icon{font-size:1rem;flex-shrink:0}
+.pw-banner-icon{display:inline-flex;align-items:center;flex-shrink:0;color:var(--warning)}
+.ui-icon-label{display:inline-flex;align-items:center;gap:6px}
+.ui-icon-label>span{line-height:1.35}
+.ui-icon-svg{flex-shrink:0;display:block}
+.sug-title{display:flex;align-items:flex-start;gap:6px}
+.sug-title .ui-icon-svg{margin-top:1px;color:var(--accent2)}
+.modal-title,.preset-title{display:flex;align-items:center;gap:7px}
+.modal-title .ui-icon-svg,.preset-title .ui-icon-svg{color:var(--accent2);flex-shrink:0}
+.pw-save-btn,.fb-submit-btn,.settings-save-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 .pw-banner button{
   margin-left:auto;padding:4px 12px;border-radius:6px;
   border:1px solid rgba(251,191,36,.3);background:none;color:var(--warning);
@@ -262,7 +272,7 @@ body::before{
   margin-bottom:18px;box-shadow:0 0 40px rgba(124,92,252,.3);
   animation:iconFloat 4s ease-in-out infinite;color:white;padding:13px
 }
-.welcome-icon svg{width:30px;height:30px;stroke-width:1.5}
+.welcome-icon .ui-icon-svg,.welcome-icon svg{width:30px;height:30px;stroke-width:1.5;color:white}
 @keyframes iconFloat{
   0%,100%{transform:translateY(0);box-shadow:0 0 40px rgba(124,92,252,.3)}
   50%{transform:translateY(-8px);box-shadow:0 12px 50px rgba(124,92,252,.5)}
@@ -493,6 +503,17 @@ textarea::placeholder{color:var(--muted)}
 .pw-msg.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);color:#fca5a5;display:block}
 .pw-msg.ok{background:rgba(52,211,153,.1);border:1px solid rgba(52,211,153,.25);color:var(--success);display:block}
 
+/* Recovery email OTP strip */
+.otp-strip{display:flex;gap:6px;justify-content:center}
+.otp-box{
+  width:38px;height:44px;
+  background:var(--surface2);border:1.5px solid var(--border2);
+  border-radius:9px;color:var(--text);font-size:1.2rem;font-weight:700;
+  text-align:center;font-family:inherit;outline:none;
+  transition:border-color .2s,box-shadow .2s;caret-color:var(--accent)
+}
+.otp-box:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,252,.12)}
+
 /* ── Settings modal ── */
 .settings-btn{
   width:32px;height:32px;border:1px solid var(--border);border-radius:9px;
@@ -530,11 +551,48 @@ textarea::placeholder{color:var(--muted)}
 }
 .settings-save-btn:hover{opacity:.9}
 .active-prompt-tag{
-  display:inline-flex;align-items:center;gap:5px;
+  display:inline-flex;align-items:center;gap:6px;
   background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25);
-  border-radius:20px;padding:3px 9px;font-size:.67rem;color:#c4b5fd;margin-top:6px
+  border-radius:20px;padding:5px 10px;font-size:.67rem;color:#c4b5fd;margin-bottom:5px;
+  width:100%;justify-content:center
 }
+.active-prompt-tag .ui-icon-label{gap:5px}
+.active-prompt-tag .ui-icon-svg{width:13px;height:13px;color:#c4b5fd}
 .settings-divider{height:1px;background:var(--border);margin:16px 0}
+
+/* Delete account */
+.delete-account-zone{margin-top:8px;padding-top:16px;border-top:1px solid rgba(248,113,113,.2)}
+.delete-account-btn{
+  width:100%;padding:10px 16px;border-radius:10px;border:1px solid rgba(248,113,113,.35);
+  background:rgba(248,113,113,.06);color:var(--danger);font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.delete-account-btn:hover{background:rgba(248,113,113,.14);border-color:rgba(248,113,113,.55)}
+/* Delete confirm dialog */
+.del-dialog-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.65);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:opacity .2s}
+.del-dialog-overlay.open{opacity:1;pointer-events:all}
+.del-dialog{background:#1c1c1f;border:1px solid rgba(248,113,113,.3);border-radius:16px;
+  padding:24px;width:100%;max-width:360px;transform:translateY(10px) scale(.97);transition:transform .2s}
+.del-dialog-overlay.open .del-dialog{transform:translateY(0) scale(1)}
+.del-dialog-title{font-weight:700;font-size:.95rem;color:#f87171;margin-bottom:6px;display:flex;align-items:center;gap:7px}
+.del-dialog-sub{font-size:.8rem;color:var(--muted);margin-bottom:16px;line-height:1.5}
+.del-dialog-btns{display:flex;gap:8px;margin-top:16px}
+.del-cancel-btn{flex:1;padding:9px;border-radius:9px;border:1px solid var(--border);
+  background:transparent;color:var(--text);font-size:.83rem;cursor:pointer}
+.del-cancel-btn:hover{background:var(--surface2)}
+.del-confirm-btn{flex:1;padding:9px;border-radius:9px;border:none;
+  background:#ef4444;color:#fff;font-size:.83rem;font-weight:700;cursor:pointer;transition:opacity .15s}
+.del-confirm-btn:disabled{opacity:.5;cursor:not-allowed}
+.del-confirm-btn:not(:disabled):hover{opacity:.88}
+.del-pw-wrap{position:relative}
+.del-pw-input{width:100%;padding:9px 38px 9px 12px;border-radius:9px;border:1px solid var(--border);
+  background:var(--surface2);color:var(--text);font-size:.85rem;box-sizing:border-box}
+.del-pw-input:focus{outline:none;border-color:rgba(248,113,113,.6)}
+.del-msg{font-size:.78rem;min-height:16px;margin-top:6px;line-height:1.4}
+.del-msg.err{color:#f87171}
+.del-msg.ok{color:#4ade80}
 
 /* Font settings */
 .font-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
@@ -682,6 +740,11 @@ textarea::placeholder{color:var(--muted)}
   .scroll-btn{bottom:80px;right:14px}
 }
 
+@media(max-width:480px){
+  .sug-grid{grid-template-columns:1fr;gap:8px}
+  .sug-title{font-size:.8rem;white-space:normal;word-break:break-word;line-height:1.35}
+  .sug-desc{font-size:.72rem}
+}
 @media(max-width:420px){
   .topbar{padding:9px 11px}
   .chat-area{padding:12px 10px}
@@ -689,13 +752,20 @@ textarea::placeholder{color:var(--muted)}
   .msg-bubble{font-size:.82rem;padding:8px 11px;border-radius:12px}
   .welcome h2{font-size:1.15rem}
   .welcome p{font-size:.79rem}
-  .sug-grid{grid-template-columns:1fr 1fr;gap:6px}
   .sug-card{padding:9px 10px}
-  .sug-title{font-size:.74rem}
   .input-area{padding:7px 10px env(safe-area-inset-bottom,10px)}
   .status-pill{display:none}
   .model-badge{font-size:.68rem;padding:6px 9px}
   .logout-btn{font-size:.73rem;padding:6px 9px}
+  .topbar-title{font-size:.88rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+}
+@media(max-width:768px){
+  .pw-banner{flex-wrap:wrap;line-height:1.45;gap:6px}
+  .pw-banner button{margin-left:0;flex:1 1 auto;min-width:88px}
+  .sb-footer-links{flex-direction:column}
+  .sb-footer-link{width:100%}
+  .modal-title{word-break:break-word;line-height:1.35}
+  .preset-title{word-break:break-word}
 }
 /* ══ TOAST ══ */
 .toast-container{position:fixed;bottom:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
@@ -716,6 +786,61 @@ textarea::placeholder{color:var(--muted)}
 .confirm-ok:hover{opacity:.85}
 .confirm-cancel{background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--muted);padding:7px 18px;border-radius:8px;cursor:pointer;font-size:.82rem;transition:background .12s}
 .confirm-cancel:hover{background:rgba(255,255,255,.1)}
+
+/* ══ ANNOUNCEMENT PANEL ══ */
+.ann-panel-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(5px);
+  z-index:400;display:none;justify-content:flex-end
+}
+.ann-panel-overlay.open{display:flex}
+.ann-panel{
+  width:400px;max-width:100%;background:var(--surface);
+  border-left:1px solid var(--border2);display:flex;flex-direction:column;
+  box-shadow:-20px 0 60px rgba(0,0,0,.5);
+  transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1)
+}
+.ann-panel-overlay.open .ann-panel{transform:translateX(0)}
+.ann-panel-header{
+  padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;flex-shrink:0
+}
+.ann-panel-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:.95rem;color:white;flex:1}
+.ann-panel-close{
+  background:transparent;border:none;color:var(--muted);cursor:pointer;
+  padding:4px;border-radius:6px;transition:all .15s;line-height:1
+}
+.ann-panel-close:hover{background:rgba(255,255,255,.06);color:var(--text)}
+.ann-feed{flex:1;overflow-y:auto;padding:12px 14px;-webkit-overflow-scrolling:touch}
+.ann-feed::-webkit-scrollbar{width:3px}
+.ann-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:2px}
+.ann-item{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:12px;margin-bottom:10px;padding:12px 14px
+}
+.ann-item-head{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.ann-author-name{font-size:.8rem;font-weight:600;color:var(--text);flex:1}
+.ann-role-badge{
+  font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px
+}
+.ann-role-badge.admin-role{background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.25);color:#f87171}
+.ann-role-badge.teacher-role{background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.25);color:#5eead4}
+.ann-time{font-size:.65rem;color:var(--muted);font-family:'Courier New',monospace}
+.ann-content{font-size:.83rem;color:var(--text);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.ann-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:.82rem}
+.ann-unread-dot{
+  position:absolute;top:-2px;right:-2px;
+  width:7px;height:7px;background:var(--danger);border-radius:50%;
+  pointer-events:none
+}
+@keyframes bell-shake{
+  0%,100%{transform:translateX(0)}
+  20%{transform:translateX(-1.5px)}
+  40%{transform:translateX(1.5px)}
+  60%{transform:translateX(-1.5px)}
+  80%{transform:translateX(1.5px)}
+}
+.ann-bell-btn:hover svg{animation:bell-shake .4s ease-in-out}
 </style>
 </head>
 <body>
@@ -730,6 +855,25 @@ textarea::placeholder{color:var(--muted)}
     <div class="confirm-btns">
       <button class="confirm-cancel" id="confirm-cancel">Hủy</button>
       <button class="confirm-ok" id="confirm-ok">Xác nhận</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DELETE ACCOUNT DIALOG ═══ -->
+<div class="del-dialog-overlay" id="del-dialog-overlay" onclick="closeDelDialog(event)">
+  <div class="del-dialog">
+    <div class="del-dialog-title">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+      Xóa tài khoản
+    </div>
+    <div class="del-dialog-sub">Hành động này <strong>không thể hoàn tác</strong>. Toàn bộ dữ liệu của bạn sẽ bị xóa vĩnh viễn.<br>Nhập mật khẩu để xác nhận.</div>
+    <div class="del-pw-wrap">
+      <input class="del-pw-input" type="password" id="del-pw" placeholder="Mật khẩu hiện tại" autocomplete="current-password">
+    </div>
+    <div class="del-msg" id="del-msg"></div>
+    <div class="del-dialog-btns">
+      <button class="del-cancel-btn" onclick="closeDelDialog()">Hủy</button>
+      <button class="del-confirm-btn" id="del-confirm-btn" onclick="confirmDeleteAccount()">Xóa tài khoản</button>
     </div>
   </div>
 </div>
@@ -770,8 +914,13 @@ textarea::placeholder{color:var(--muted)}
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Diễn đàn
       </a>
+      <button class="sb-footer-link ann-bell-btn" onclick="openAnnPanel()" id="ann-bell-btn" style="position:relative">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        Thông báo
+        <span class="ann-unread-dot" id="ann-unread-dot" style="display:none"></span>
+      </button>
       <button class="sb-footer-link" onclick="openFeedback()">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <span data-icon="chat" data-size="12" aria-hidden="true"></span>
         Góp ý
       </button>
     </div>
@@ -785,7 +934,7 @@ textarea::placeholder{color:var(--muted)}
 <!-- ═══ MAIN ═══ -->
 <div class="main">
   <div class="pw-banner" id="pw-banner">
-    <span class="pw-banner-icon">⚠️</span>
+    <span class="pw-banner-icon" id="pw-banner-icon" aria-hidden="true"></span>
     Hãy đổi mật khẩu mặc định để bảo vệ tài khoản!
     <button onclick="openProfile()">Đổi ngay</button>
   </div>
@@ -797,7 +946,7 @@ textarea::placeholder{color:var(--muted)}
     <div class="topbar-title" id="topbar-title">Axon AI</div>
     <div class="topbar-actions">
       <button class="icon-btn settings-btn" onclick="openSettings()" title="Cài đặt AI">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span data-icon="settings" data-size="15" aria-hidden="true"></span>
       </button>
       <div class="status-pill"><span class="model-dot"></span><span>online</span></div>
     </div>
@@ -805,16 +954,14 @@ textarea::placeholder{color:var(--muted)}
 
   <div class="chat-area" id="chat-area">
     <div class="welcome" id="welcome">
-      <div class="welcome-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-      </div>
+      <div class="welcome-icon"><span data-icon="zap" data-size="30" aria-hidden="true"></span></div>
       <h2>Xin chào, <span id="welcome-name">bạn</span>!</h2>
       <p>Nhắn tin ngay bên dưới — Axon AI sẽ tự tạo hội thoại cho bạn.</p>
       <div class="sug-grid">
-        <div class="sug-card" onclick="useSug('Giải thích định lý Pythagore và cho ví dụ thực tế')"><div class="sug-title">📐 Giải thích định lý</div><div class="sug-desc">Toán học dễ hiểu hơn</div></div>
-        <div class="sug-card" onclick="useSug('Tóm tắt và phân tích bài thơ Đoàn thuyền đánh cá')"><div class="sug-title">📖 Phân tích văn học</div><div class="sug-desc">Văn, thơ, tác phẩm</div></div>
-        <div class="sug-card" onclick="useSug('Viết chương trình Python tính diện tích các hình')"><div class="sug-title">💻 Bài tập lập trình</div><div class="sug-desc">Python, thuật toán</div></div>
-        <div class="sug-card" onclick="useSug('Giải bài tập: Một vật chuyển động đều với vận tốc 36 km/h. Tính quãng đường đi được trong 2,5 giờ.')"><div class="sug-title">⚡ Bài tập Vật lý</div><div class="sug-desc">Giải từng bước rõ ràng</div></div>
+        <div class="sug-card" onclick="useSug('Giải thích định lý Pythagore và cho ví dụ thực tế')"><div class="sug-title"><span data-icon="ruler" data-size="15" aria-hidden="true"></span><span>Giải thích định lý</span></div><div class="sug-desc">Toán học dễ hiểu hơn</div></div>
+        <div class="sug-card" onclick="useSug('Tóm tắt và phân tích bài thơ Đoàn thuyền đánh cá')"><div class="sug-title"><span data-icon="book-open" data-size="15" aria-hidden="true"></span><span>Phân tích văn học</span></div><div class="sug-desc">Văn, thơ, tác phẩm</div></div>
+        <div class="sug-card" onclick="useSug('Viết chương trình Python tính diện tích các hình')"><div class="sug-title"><span data-icon="laptop" data-size="15" aria-hidden="true"></span><span>Bài tập lập trình</span></div><div class="sug-desc">Python, thuật toán</div></div>
+        <div class="sug-card" onclick="useSug('Giải bài tập: Một vật chuyển động đều với vận tốc 36 km/h. Tính quãng đường đi được trong 2,5 giờ.')"><div class="sug-title"><span data-icon="zap" data-size="15" aria-hidden="true"></span><span>Bài tập Vật lý</span></div><div class="sug-desc">Giải từng bước rõ ràng</div></div>
       </div>
     </div>
   </div>
@@ -842,7 +989,7 @@ textarea::placeholder{color:var(--muted)}
 <div class="modal-overlay" id="profile-overlay" onclick="closeProfileBg(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">👤 Hồ sơ học sinh</div>
+      <div class="modal-title"><span class="ui-icon-inline" data-icon="user" aria-hidden="true"></span><span>Hồ sơ học sinh</span></div>
       <button class="modal-close" onclick="closeProfile()">✕</button>
     </div>
     <div class="modal-body">
@@ -869,7 +1016,54 @@ textarea::placeholder{color:var(--muted)}
           <button type="button" class="field-pw-toggle" onclick="toggleField('pw-new2','eye-new2')"><svg id="eye-new2" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
         </div>
         <div class="pw-msg" id="pw-msg"></div>
-        <button class="pw-save-btn" id="pw-save-btn" onclick="changePassword()">💾 Cập nhật mật khẩu</button>
+        <button class="pw-save-btn" id="pw-save-btn" onclick="changePassword()" type="button"></button>
+      </div>
+      <!-- Chỉ hiện với tài khoản trường (school) — Email khôi phục -->
+      <div id="recovery-email-zone" style="display:none">
+        <div class="divider"></div>
+        <div class="section-hd">Email khôi phục</div>
+        <div id="rec-status-row" style="font-size:.78rem;color:var(--muted2);margin-bottom:10px;line-height:1.6"></div>
+
+        <!-- Sub-panel: nhập email -->
+        <div id="rec-add-panel">
+          <div class="pw-fields">
+            <div class="pw-field-wrap">
+              <input class="s-input" type="email" id="rec-email-input"
+                placeholder="email@gmail.com" autocomplete="email">
+            </div>
+            <div class="pw-msg" id="rec-add-msg"></div>
+            <button class="pw-save-btn" id="rec-add-btn" onclick="recAddEmail()" type="button">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>Gửi mã xác minh
+            </button>
+          </div>
+        </div>
+
+        <!-- Sub-panel: nhập OTP -->
+        <div id="rec-otp-panel" style="display:none">
+          <p style="font-size:.78rem;color:var(--muted2);margin-bottom:10px" id="rec-otp-hint"></p>
+          <div class="otp-strip" id="rec-otp-strip">
+            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off">
+            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off">
+            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off">
+            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off">
+            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off">
+            <input class="otp-box" type="text" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off">
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;align-items:center;font-size:.76rem;color:var(--muted)">
+            <button class="pw-save-btn" id="rec-otp-btn" onclick="recVerifyOtp()" type="button" style="flex:1">Xác minh OTP</button>
+            <button type="button" id="rec-resend-btn" onclick="recResendOtp()" style="background:none;border:none;color:var(--accent2);cursor:pointer;font-size:.75rem;font-weight:600;white-space:nowrap;font-family:inherit;padding:0" disabled>Gửi lại <span id="rec-timer"></span></button>
+            <button type="button" onclick="recCancelOtp()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:.75rem;font-family:inherit;padding:0">Huỷ</button>
+          </div>
+          <div class="pw-msg" id="rec-otp-msg"></div>
+        </div>
+      </div>
+
+      <!-- Chỉ hiện với tài khoản tự đăng ký bằng email -->
+      <div class="delete-account-zone" id="delete-account-zone" style="display:none">
+        <button class="delete-account-btn" onclick="openDelDialog()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+          Xóa tài khoản
+        </button>
       </div>
     </div>
   </div>
@@ -879,30 +1073,30 @@ textarea::placeholder{color:var(--muted)}
 <div class="modal-overlay" id="settings-overlay" onclick="closeSettingsBg(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">⚙️ Cài đặt AI</div>
+      <div class="modal-title"><span data-icon="settings" data-size="16" aria-hidden="true"></span><span>Cài đặt AI</span></div>
       <button class="modal-close" onclick="closeSettings()">✕</button>
     </div>
     <div class="modal-body">
       <div class="section-hd" style="margin-bottom:10px">Chọn phong cách trợ lý</div>
       <div class="preset-grid">
         <button class="preset-card" id="preset-0" onclick="selectPreset(0)">
-          <div class="preset-title">⚡ Mặc định</div>
+          <div class="preset-title"><span data-icon="zap" data-size="14" aria-hidden="true"></span><span>Mặc định</span></div>
           <div class="preset-desc">Trợ lý thông minh, trả lời ngắn gọn, đúng trọng tâm. Phù hợp cho mọi nhu cầu.</div>
         </button>
         <button class="preset-card" id="preset-1" onclick="selectPreset(1)">
-          <div class="preset-title">📚 Gia sư kiên nhẫn</div>
+          <div class="preset-title"><span data-icon="book" data-size="14" aria-hidden="true"></span><span>Gia sư kiên nhẫn</span></div>
           <div class="preset-desc">Giải thích từng bước, dùng ví dụ dễ hiểu, hướng dẫn để học sinh tự tìm ra đáp án.</div>
         </button>
         <button class="preset-card" id="preset-2" onclick="selectPreset(2)">
-          <div class="preset-title">✍️ Luyện văn &amp; ngôn ngữ</div>
+          <div class="preset-title"><span data-icon="write" data-size="14" aria-hidden="true"></span><span>Luyện văn &amp; ngôn ngữ</span></div>
           <div class="preset-desc">Tập trung vào văn phong, ngữ pháp, cách diễn đạt. Sửa lỗi và gợi ý cải thiện bài viết.</div>
         </button>
         <button class="preset-card" id="preset-3" onclick="selectPreset(3)">
-          <div class="preset-title">🔢 Toán &amp; Khoa học</div>
+          <div class="preset-title"><span data-icon="math" data-size="14" aria-hidden="true"></span><span>Toán &amp; Khoa học</span></div>
           <div class="preset-desc">Giải bài toán chi tiết, trình bày có bước, giải thích công thức và lý thuyết rõ ràng.</div>
         </button>
         <button class="preset-card" id="preset-4" onclick="selectPreset(4)">
-          <div class="preset-title">✏️ Tự tùy chỉnh</div>
+          <div class="preset-title"><span data-icon="custom" data-size="14" aria-hidden="true"></span><span>Tự tùy chỉnh</span></div>
           <div class="preset-desc">Tự viết prompt theo nhu cầu riêng của bạn.</div>
         </button>
       </div>
@@ -948,7 +1142,7 @@ textarea::placeholder{color:var(--muted)}
 <div class="modal-overlay" id="feedback-overlay" onclick="closeFeedbackBg(event)">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">💬 Ý kiến &amp; Góp ý</div>
+      <div class="modal-title"><span data-icon="chat" data-size="16" aria-hidden="true"></span><span>Ý kiến &amp; Góp ý</span></div>
       <button class="modal-close" onclick="closeFeedback()">✕</button>
     </div>
     <div class="modal-body">
@@ -964,7 +1158,7 @@ textarea::placeholder{color:var(--muted)}
         <textarea class="fb-textarea" id="fb-content" placeholder="Chia sẻ góp ý, ý kiến hoặc báo cáo vấn đề…" maxlength="2000" oninput="updateFbCount()"></textarea>
         <div class="fb-char-count"><span id="fb-count">0</span>/2000</div>
         <div class="fb-msg" id="fb-msg"></div>
-        <button class="fb-submit-btn" id="fb-submit-btn" onclick="submitFeedback()">📨 Gửi góp ý</button>
+        <button class="fb-submit-btn" id="fb-submit-btn" type="button" onclick="submitFeedback()"></button>
       </div>
       <div class="fb-panel" id="fb-panel-mine">
         <div class="my-fb-loading" id="my-fb-loading">Đang tải…</div>
@@ -975,12 +1169,72 @@ textarea::placeholder{color:var(--muted)}
 </div>
 
 <script>
+const AXON_ICON_PATHS = {
+  'alert-triangle': '<path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+  ruler: '<path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/>',
+  'book-open': '<path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>',
+  laptop: '<path d="M2 20h20"/><path d="m9 10 2 2 4-4"/><rect x="3" y="4" width="18" height="12" rx="2"/>',
+  zap: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
+  user: '<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  save: '<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>',
+  settings: '<path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/>',
+  'mail-plus': '<path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M19 16v6"/><path d="M16 19h6"/>',
+  chat: '<path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/><path d="M12 11h.01"/><path d="M16 11h.01"/><path d="M8 11h.01"/>',
+  book: '<rect width="8" height="18" x="3" y="3" rx="1"/><path d="M7 3v18"/><path d="M20.4 18.9c.2.5-.1 1.1-.6 1.3l-1.9.7c-.5.2-1.1-.1-1.3-.6L11.1 5.1c-.2-.5.1-1.1.6-1.3l1.9-.7c.5-.2 1.1.1 1.3.6Z"/>',
+  write: '<path d="M13 21h8"/><path d="m15 5 4 4"/><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>',
+  math: '<rect width="16" height="20" x="4" y="2" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+  custom: '<path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z"/>'
+};
+function axonIcon(name, size = 16) {
+  const body = AXON_ICON_PATHS[name];
+  if (!body) return '';
+  return `<svg class="ui-icon-svg" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+}
+function axonIconLabel(name, text, size = 16) {
+  return `<span class="ui-icon-label">${axonIcon(name, size)}<span>${text}</span></span>`;
+}
+function mountAxonIcons(root = document) {
+  root.querySelectorAll('[data-icon]').forEach(el => {
+    const name = el.getAttribute('data-icon');
+    const size = parseInt(el.getAttribute('data-size') || '16', 10);
+    el.innerHTML = axonIcon(name, size);
+  });
+  const bannerIcon = root.getElementById ? root.getElementById('pw-banner-icon') : document.getElementById('pw-banner-icon');
+  if (bannerIcon && root.contains(bannerIcon)) bannerIcon.innerHTML = axonIcon('alert-triangle', 18);
+}
+function setSavePwBtn(html) {
+  const btn = document.getElementById('pw-save-btn');
+  if (btn) btn.innerHTML = html;
+}
+function setFbSubmitBtn(html) {
+  const btn = document.getElementById('fb-submit-btn');
+  if (btn) btn.innerHTML = html;
+}
+function getWelcomeHtml() {
+  const name = esc(fullName.split(' ').pop());
+  return `<div class="welcome" id="welcome">
+    <div class="welcome-icon"><span data-icon="zap" data-size="30" aria-hidden="true"></span></div>
+    <h2>Xin chào, <span>${name}</span>!</h2>
+    <p>Nhắn tin ngay bên dưới — Axon AI sẽ tự tạo hội thoại cho bạn.</p>
+    <div class="sug-grid">
+      <div class="sug-card" onclick="useSug('Giải thích định lý Pythagore và cho ví dụ thực tế')"><div class="sug-title"><span data-icon="ruler" data-size="15" aria-hidden="true"></span><span>Giải thích định lý</span></div><div class="sug-desc">Toán học dễ hiểu hơn</div></div>
+      <div class="sug-card" onclick="useSug('Tóm tắt và phân tích bài thơ Đoàn thuyền đánh cá')"><div class="sug-title"><span data-icon="book-open" data-size="15" aria-hidden="true"></span><span>Phân tích văn học</span></div><div class="sug-desc">Văn, thơ, tác phẩm</div></div>
+      <div class="sug-card" onclick="useSug('Viết chương trình Python tính diện tích các hình')"><div class="sug-title"><span data-icon="laptop" data-size="15" aria-hidden="true"></span><span>Bài tập lập trình</span></div><div class="sug-desc">Python, thuật toán</div></div>
+      <div class="sug-card" onclick="useSug('Giải bài tập: Một vật chuyển động đều với vận tốc 36 km/h. Tính quãng đường đi được trong 2,5 giờ.')"><div class="sug-title"><span data-icon="zap" data-size="15" aria-hidden="true"></span><span>Bài tập Vật lý</span></div><div class="sug-desc">Giải từng bước rõ ràng</div></div>
+    </div>
+  </div>`;
+}
+mountAxonIcons();
+setSavePwBtn(axonIconLabel('save', 'Cập nhật mật khẩu', 15));
+setFbSubmitBtn(axonIconLabel('mail-plus', 'Gửi góp ý', 16));
+
 const API_PROXY = '/api/chat/ai';
 const fullName = localStorage.getItem('hc_fullName') || '?';
 const className = localStorage.getItem('hc_className') || '';
 const gender = localStorage.getItem('hc_gender') || '';
 const dob = localStorage.getItem('hc_dob') || '';
 const mustChange = localStorage.getItem('hc_mustChangePw') === '1';
+const authType = localStorage.getItem('hc_authType') || 'school';
 document.title = 'Axon AI – ' + fullName.split(' ').pop();
 // Kiểm tra session qua cookie (không cần token trong JS)
 (async () => {
@@ -1001,6 +1255,17 @@ document.getElementById('pc-class').textContent = className || '—';
 document.getElementById('pc-gender').textContent = gender || '—';
 document.getElementById('pc-dob').textContent = dob || '—';
 if (mustChange) document.getElementById('pw-banner').classList.add('show');
+// Chỉ hiện nút xóa tài khoản với tài khoản email tự đăng ký
+if (authType === 'email') {
+  const zone = document.getElementById('delete-account-zone');
+  if (zone) zone.style.display = 'block';
+}
+// Hiện email khôi phục với tài khoản trường
+if (authType === 'school') {
+  const zone = document.getElementById('recovery-email-zone');
+  if (zone) zone.style.display = 'block';
+  recLoadStatus();
+}
 
 const chatArea = document.getElementById('chat-area');
 const inp = document.getElementById('inp');
@@ -1060,6 +1325,153 @@ function openProfile() { closeSidebar(); document.getElementById('profile-overla
 function closeProfile() { document.getElementById('profile-overlay').classList.remove('open'); }
 function closeProfileBg(e) { if (e.target === document.getElementById('profile-overlay')) closeProfile(); }
 
+// ── Recovery email (school accounts only) ────────────────────────────────────
+let _recTimer = null;
+
+async function recLoadStatus() {
+  const statusRow = document.getElementById('rec-status-row');
+  const emailInput = document.getElementById('rec-email-input');
+  if (!statusRow) return;
+  try {
+    const r = await fetch('/api/auth/me', { credentials: 'include' });
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.recoveryEmail) {
+      const verified = d.recoveryEmailVerified;
+      statusRow.innerHTML = verified
+        ? '<span style="color:var(--success)">✓ Đã xác minh: </span><strong>' + d.recoveryEmail + '</strong>'
+        : '<span style="color:#fb923c">⚠ Chưa xác minh: </span><strong>' + d.recoveryEmail + '</strong> — <a href="#" onclick="recResendOtpForExisting(event)" style="color:var(--accent2);font-size:.77rem">Gửi lại OTP</a>';
+      if (emailInput) emailInput.value = d.recoveryEmail;
+    } else {
+      statusRow.textContent = 'Chưa đăng ký. Thêm email để có thể đặt lại mật khẩu khi quên.';
+    }
+  } catch { /* silent */ }
+}
+
+function recStartCooldown(secs) {
+  const btn = document.getElementById('rec-resend-btn');
+  const timer = document.getElementById('rec-timer');
+  if (!btn) return;
+  btn.disabled = true;
+  let rem = secs;
+  timer.textContent = '(' + rem + 's)';
+  clearInterval(_recTimer);
+  _recTimer = setInterval(() => {
+    rem--;
+    if (rem <= 0) { clearInterval(_recTimer); btn.disabled = false; timer.textContent = ''; }
+    else timer.textContent = '(' + rem + 's)';
+  }, 1000);
+}
+
+function recShowOtpPanel(hint) {
+  document.getElementById('rec-add-panel').style.display = 'none';
+  document.getElementById('rec-otp-panel').style.display = 'block';
+  document.getElementById('rec-otp-hint').textContent = hint;
+  document.getElementById('rec-otp-msg').className = 'pw-msg';
+  const boxes = document.querySelectorAll('#rec-otp-strip .otp-box');
+  boxes.forEach(b => { b.value = ''; });
+  boxes[0].focus();
+  recStartCooldown(60);
+}
+
+function recCancelOtp() {
+  document.getElementById('rec-otp-panel').style.display = 'none';
+  document.getElementById('rec-add-panel').style.display = 'block';
+  clearInterval(_recTimer);
+}
+
+// Wire up OTP box navigation
+(function() {
+  const strip = document.getElementById('rec-otp-strip');
+  if (!strip) return;
+  const boxes = strip.querySelectorAll('.otp-box');
+  boxes.forEach((box, i) => {
+    box.addEventListener('input', e => {
+      const v = e.target.value.replace(/\D/g,''); e.target.value = v;
+      if (v && i < boxes.length - 1) boxes[i+1].focus();
+    });
+    box.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !e.target.value && i > 0) boxes[i-1].focus();
+    });
+    box.addEventListener('paste', e => {
+      e.preventDefault();
+      const text = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      text.split('').forEach((ch,j) => { if (boxes[j]) boxes[j].value = ch; });
+      boxes[Math.min(text.length, boxes.length-1)].focus();
+    });
+  });
+})();
+
+function recGetOtp() {
+  return Array.from(document.querySelectorAll('#rec-otp-strip .otp-box')).map(b=>b.value).join('');
+}
+
+async function recAddEmail() {
+  const btn = document.getElementById('rec-add-btn');
+  const msg = document.getElementById('rec-add-msg');
+  const email = document.getElementById('rec-email-input').value.trim();
+  msg.className = 'pw-msg';
+  if (!email) { msg.textContent = 'Vui lòng nhập email.'; msg.className = 'pw-msg err'; return; }
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res = await fetch('/api/auth/school/add-recovery-email', {
+      method: 'POST', credentials: 'include', headers: authH(),
+      body: JSON.stringify({ recoveryEmail: email })
+    });
+    const data = await res.json();
+    if (!res.ok) { msg.textContent = data.error || 'Gửi thất bại'; msg.className = 'pw-msg err'; btn.disabled = false; btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>Gửi mã xác minh'; return; }
+    recShowOtpPanel('Nhập mã 6 chữ số đã gửi tới ' + email);
+  } catch { msg.textContent = 'Lỗi kết nối.'; msg.className = 'pw-msg err'; }
+  btn.disabled = false; btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:5px"><path d="M22 13V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h8"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="m16 19 2 2 4-4"/></svg>Gửi mã xác minh';
+}
+
+async function recResendOtp() {
+  const email = document.getElementById('rec-email-input').value.trim();
+  const msg = document.getElementById('rec-otp-msg');
+  msg.className = 'pw-msg';
+  try {
+    const res = await fetch('/api/auth/school/add-recovery-email', {
+      method: 'POST', credentials: 'include', headers: authH(),
+      body: JSON.stringify({ recoveryEmail: email })
+    });
+    const data = await res.json();
+    if (!res.ok) { msg.textContent = data.error || 'Gửi lại thất bại'; msg.className = 'pw-msg err'; return; }
+    msg.textContent = '✓ Đã gửi lại mã.'; msg.className = 'pw-msg ok';
+    const boxes = document.querySelectorAll('#rec-otp-strip .otp-box');
+    boxes.forEach(b => { b.value = ''; }); boxes[0].focus();
+    recStartCooldown(60);
+  } catch { msg.textContent = 'Lỗi kết nối.'; msg.className = 'pw-msg err'; }
+}
+
+async function recResendOtpForExisting(e) {
+  e.preventDefault();
+  const email = document.getElementById('rec-email-input').value.trim();
+  if (!email) return;
+  recShowOtpPanel('Nhập mã 6 chữ số đã gửi tới ' + email);
+  await recResendOtp();
+}
+
+async function recVerifyOtp() {
+  const btn = document.getElementById('rec-otp-btn');
+  const msg = document.getElementById('rec-otp-msg');
+  const otp = recGetOtp();
+  msg.className = 'pw-msg';
+  if (otp.length !== 6) { msg.textContent = 'Nhập đủ 6 chữ số.'; msg.className = 'pw-msg err'; return; }
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res = await fetch('/api/auth/school/verify-recovery-email', {
+      method: 'POST', credentials: 'include', headers: authH(),
+      body: JSON.stringify({ otp })
+    });
+    const data = await res.json();
+    if (!res.ok) { msg.textContent = data.error || 'Xác minh thất bại'; msg.className = 'pw-msg err'; btn.disabled = false; btn.textContent = 'Xác minh OTP'; return; }
+    msg.textContent = '✓ Email đã được xác minh!'; msg.className = 'pw-msg ok';
+    btn.textContent = '✓';
+    clearInterval(_recTimer);
+    setTimeout(() => { recCancelOtp(); recLoadStatus(); }, 1500);
+  } catch { msg.textContent = 'Lỗi kết nối.'; msg.className = 'pw-msg err'; btn.disabled = false; btn.textContent = 'Xác minh OTP'; }
+}
+
 // ── Feedback ──
 let fbTabActive = 'send', myFbLoaded = false;
 async function checkFbMineBadge() {
@@ -1115,7 +1527,7 @@ async function submitFeedback() {
     myFbLoaded = false;
     setTimeout(() => { closeFeedback(); }, 1800);
   } catch { msg.textContent = 'Lỗi kết nối, vui lòng thử lại'; msg.className = 'fb-msg err'; }
-  finally { btn.disabled = false; btn.textContent = '📨 Gửi góp ý'; }
+  finally { btn.disabled = false; setFbSubmitBtn(axonIconLabel('mail-plus', 'Gửi góp ý', 16)); }
 }
 
 async function loadMyFeedback() {
@@ -1198,7 +1610,7 @@ async function changePassword() {
     document.getElementById('pw-banner').classList.remove('show');
     ['pw-cur', 'pw-new', 'pw-new2'].forEach(id => document.getElementById(id).value = '');
   } catch { msg.textContent = 'Lỗi kết nối'; msg.className = 'pw-msg err'; }
-  finally { btn.disabled = false; btn.textContent = '💾 Cập nhật mật khẩu'; }
+  finally { btn.disabled = false; setSavePwBtn(axonIconLabel('save', 'Cập nhật mật khẩu', 15)); }
 }
 
 // ── Relative time helper ──
@@ -1262,7 +1674,7 @@ async function delConv(e, id) {
   e.stopPropagation();
   if (!await showConfirm('Xoá hội thoại này?', 'Xoá')) return;
   await fetch(`/api/chat/conversations/${id}`, { method: 'DELETE', credentials:'include', headers: authH() });
-  if (currentConvId === id) { currentConvId = null; chatHistory = []; document.getElementById('topbar-title').textContent = 'Axon AI'; chatArea.innerHTML = `<div class="welcome" id="welcome"><div class="welcome-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div><h2>Xin chào, <span>${esc(fullName.split(' ').pop())}</span>!</h2><p>Nhắn tin ngay bên dưới — Axon AI sẽ tự tạo hội thoại cho bạn.</p></div>`; }
+  if (currentConvId === id) { currentConvId = null; chatHistory = []; document.getElementById('topbar-title').textContent = 'Axon AI'; chatArea.innerHTML = getWelcomeHtml(); mountAxonIcons(chatArea); }
   await loadConversations();
 }
 
@@ -1392,7 +1804,7 @@ async function send() {
   } catch (err) {
     typingWrap.remove();
     const errWrap = document.createElement('div'); errWrap.className = 'messages-wrap';
-    errWrap.innerHTML = `<div style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:10px 14px;font-size:.8rem;color:#fca5a5;margin-bottom:14px">⚠ Lỗi: ${esc(err.message)}</div>`;
+    errWrap.innerHTML = `<div style="background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.25);border-radius:10px;padding:10px 14px;font-size:.8rem;color:#fca5a5;margin-bottom:14px;display:flex;align-items:flex-start;gap:8px"><span style="flex-shrink:0;margin-top:1px">${axonIcon('alert-triangle', 16)}</span><span>Lỗi: ${esc(err.message)}</span></div>`;
     chatArea.appendChild(errWrap); chatHistory.pop();
   }
   busy = false; btnSend.disabled = false; inp.focus(); chatArea.scrollTop = chatArea.scrollHeight;
@@ -1592,12 +2004,144 @@ function updatePresetTag() {
   const old = document.getElementById('preset-tag'); if (old) old.remove();
   const label = selectedPreset === 4 ? 'Tùy chỉnh' : PRESETS[selectedPreset]?.label;
   const tag = document.createElement('div'); tag.id = 'preset-tag'; tag.className = 'active-prompt-tag';
-  tag.innerHTML = '⚙️ ' + label;
+  tag.innerHTML = axonIconLabel('settings', label, 13);
   document.querySelector('.sidebar-footer').prepend(tag);
 }
 updatePresetTag();
+
+// ── Delete account ──
+function openDelDialog() {
+  closeProfile();
+  document.getElementById('del-pw').value = '';
+  document.getElementById('del-msg').textContent = '';
+  document.getElementById('del-msg').className = 'del-msg';
+  document.getElementById('del-confirm-btn').disabled = false;
+  document.getElementById('del-dialog-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('del-pw').focus(), 200);
+}
+function closeDelDialog(e) {
+  if (e && e.target !== document.getElementById('del-dialog-overlay')) return;
+  document.getElementById('del-dialog-overlay').classList.remove('open');
+}
+async function confirmDeleteAccount() {
+  const pw = document.getElementById('del-pw').value;
+  const msg = document.getElementById('del-msg');
+  const btn = document.getElementById('del-confirm-btn');
+  msg.className = 'del-msg';
+  if (!pw) { msg.textContent = 'Vui lòng nhập mật khẩu.'; msg.className = 'del-msg err'; return; }
+  btn.disabled = true; btn.textContent = 'Đang xóa…';
+  try {
+    const res = await fetch('/api/auth/account', {
+      method: 'DELETE', credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...authH() },
+      body: JSON.stringify({ password: pw }),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      msg.textContent = data.error || 'Xóa tài khoản thất bại.';
+      msg.className = 'del-msg err';
+      btn.disabled = false; btn.textContent = 'Xóa tài khoản'; return;
+    }
+    msg.textContent = '✓ Đã xóa. Đang chuyển hướng…'; msg.className = 'del-msg ok';
+    setTimeout(() => { localStorage.clear(); location.href = '/landing.html'; }, 1200);
+  } catch {
+    msg.textContent = 'Lỗi kết nối. Vui lòng thử lại.'; msg.className = 'del-msg err';
+    btn.disabled = false; btn.textContent = 'Xóa tài khoản';
+  }
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.getElementById('del-dialog-overlay').classList.remove('open');
+});
+
 loadConversations();
 checkFbMineBadge();
+</script>
+
+<!-- ═══ ANNOUNCEMENT PANEL ═══ -->
+<div class="ann-panel-overlay" id="ann-panel-overlay" onclick="annOverlayClick(event)">
+  <div class="ann-panel">
+    <div class="ann-panel-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      <span class="ann-panel-title">Thông báo trường</span>
+      <button class="ann-panel-close" onclick="closeAnnPanel()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="ann-feed" id="ann-feed">
+      <div class="ann-empty">Đang tải…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Announcement panel (read-only for students) ─────────────
+let _annList = [];
+
+async function openAnnPanel() {
+  document.getElementById('ann-panel-overlay').classList.add('open');
+  await loadAnnouncements();
+  // Mark all as seen using the newest item's timestamp
+  if (_annList.length) {
+    localStorage.setItem('axon_ann_seen', _annList[0].createdAt);
+    updateAnnBadge();
+  }
+}
+
+function closeAnnPanel() {
+  document.getElementById('ann-panel-overlay').classList.remove('open');
+}
+
+function annOverlayClick(e) {
+  if (e.target === document.getElementById('ann-panel-overlay')) closeAnnPanel();
+}
+
+async function loadAnnouncements() {
+  try {
+    const r = await fetch('/api/announcements', { credentials: 'include' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    _annList = await r.json();
+    renderAnnFeed();
+  } catch {
+    document.getElementById('ann-feed').innerHTML = '<div class="ann-empty">Không thể tải thông báo</div>';
+  }
+}
+
+function renderAnnFeed() {
+  const el = document.getElementById('ann-feed');
+  if (!_annList.length) { el.innerHTML = '<div class="ann-empty">Chưa có thông báo nào</div>'; return; }
+  el.innerHTML = _annList.map(a => {
+    const d = new Date(a.createdAt);
+    const t = d.toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    const roleLbl = a.authorRole === 'admin' ? 'Quản trị' : 'Giáo viên';
+    const roleCls = a.authorRole === 'admin' ? 'admin-role' : 'teacher-role';
+    return `<div class="ann-item">
+      <div class="ann-item-head">
+        <span class="ann-author-name">${esc(a.authorName)}</span>
+        <span class="ann-role-badge ${roleCls}">${roleLbl}</span>
+        <span class="ann-time">${t}</span>
+      </div>
+      <div class="ann-content">${esc(a.content)}</div>
+    </div>`;
+  }).join('');
+}
+
+function updateAnnBadge() {
+  const dot = document.getElementById('ann-unread-dot');
+  if (!dot) return;
+  const lastSeen = localStorage.getItem('axon_ann_seen');
+  const hasNew = _annList.length > 0 && (!lastSeen || _annList[0].createdAt > lastSeen);
+  dot.style.display = hasNew ? 'block' : 'none';
+}
+
+// Check for unread announcements on page load
+(async function initAnnBadge() {
+  try {
+    const r = await fetch('/api/announcements', { credentials: 'include' });
+    if (!r.ok) return;
+    _annList = await r.json();
+    updateAnnBadge();
+  } catch {}
+})();
 </script>
 </body>
 </html>
