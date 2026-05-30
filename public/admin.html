@@ -1513,7 +1513,7 @@ function renderStudents(list) {
     const div = document.createElement('div'); div.className = 'student-item';
     const initials = st.fullName?.split(' ').pop()?.charAt(0)?.toUpperCase() || '?';
     const changed = !st.mustChangePassword;
-    div.innerHTML = `<div class="st-av">${initials}</div><div class="st-info"><div class="st-name">${esc(st.fullName)}</div><div class="st-class">${st.cccd||'?'}</div></div><span class="st-pw-pill ${changed?'changed':'unchanged'}">${changed?'Đã đổi':'Chưa đổi'}</span><button class="st-more-btn" title="Tùy chọn" onclick="showCtxBtn(event,arguments[0])" data-idx="">⋯</button>`;
+    div.innerHTML = `<div class="st-av">${initials}</div><div class="st-info"><div class="st-name">${esc(st.fullName)}</div><div class="st-class">${st.cccd||'?'}</div></div><span class="st-pw-pill ${changed?'changed':'unchanged'}">${changed?'Đã đổi':'Chưa đổi'}</span><button class="st-more-btn" title="Tùy chọn" onclick="showCtxBtn(event,arguments[0])" data-idx=""><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>`;
     const btn = div.querySelector('.st-more-btn');
     btn.addEventListener('click', e => { e.stopPropagation(); showCtx(e, st, div); });
     div.onclick = () => { selectStudent(st, div); };
@@ -1561,7 +1561,7 @@ async function selectConv(conv, student, el) {
   const res = await fetch(`/api/admin/conversations/${conv._id}/messages`, { credentials:'include', headers: authH() });
   const msgs = await res.json();
   showMobilePanel('msgs');
-  if (!msgs.length) { msgsArea.innerHTML = '<div class="msgs-placeholder"><div class="msgs-placeholder-icon">💬</div><p>Hội thoại này chưa có tin nhắn</p></div>'; return; }
+  if (!msgs.length) { msgsArea.innerHTML = '<div class="msgs-placeholder"><div class="msgs-placeholder-icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg></div><p>Hội thoại này chưa có tin nhắn</p></div>'; return; }
   msgsArea.innerHTML = '';
   const initials = student.fullName?.split(' ').pop()?.charAt(0)?.toUpperCase() || '?';
   msgs.forEach(m => {
@@ -1590,7 +1590,12 @@ function showMobilePanel(name) {
 let ctxStudent = null, ctxEl = null;
 
 // ── Toast ──
-const TOAST_ICONS = { success: '✓', error: '✕', warning: '⚠', info: 'ℹ' };
+const TOAST_ICONS = { 
+  success: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>', 
+  error: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>', 
+  warning: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>', 
+  info: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>' 
+};
 function toast(msg, type = 'info', duration = 3000) {
   const c = document.getElementById('toast-container');
   const el = document.createElement('div');
@@ -1654,8 +1659,8 @@ function openDetail(student) {
   document.getElementById('d-dob').textContent = student.dob || '—';
   document.getElementById('d-cccd').textContent = student.cccd || '—';
   document.getElementById('d-pw-status').innerHTML = !student.mustChangePassword
-    ? '<span style="color:var(--success)">✓ Đã đổi mật khẩu</span>'
-    : '<span style="color:var(--warning)">⚠ Chưa đổi mật khẩu mặc định</span>';
+    ? '<span style="color:var(--success)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M20 6 9 17l-5-5"/></svg>Đã đổi mật khẩu</span>'
+    : '<span style="color:var(--warning)"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>Chưa đổi mật khẩu mặc định</span>';
   document.getElementById('reset-msg').className = 'msg-box';
   switchTab('info');
   document.getElementById('detail-overlay').classList.add('open');
@@ -1684,7 +1689,7 @@ async function doResetPw() {
     const stEl = document.querySelector(`.student-item.active .st-pw-pill`);
     if (stEl) { stEl.className = 'st-pw-pill unchanged'; stEl.textContent = 'Chưa đổi'; }
   } catch { msg.textContent = 'Lỗi kết nối'; msg.className = 'msg-box err'; }
-  finally { btn.disabled = false; btn.textContent = '🔒 Đặt lại mật khẩu về mặc định'; }
+  finally { btn.disabled = false; btn.textContent = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><circle cx="12" cy="16" r="1"/><rect x="3" y="10" width="18" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>Đặt lại mật khẩu về mặc định'; }
 }
 
 // ── Analyze modal ──
@@ -1824,7 +1829,7 @@ async function checkAppealsBadge() {
 
 async function loadAppeals() {
   const body = document.getElementById('ap-panel-body');
-  body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)">⏳ Đang tải…</div>';
+  body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:8px"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>Đang tải…</div>';
   try {
     const res = await fetch('/api/forum/admin/appeals', { credentials: 'include', headers: authH() });
     if (!res.ok) { body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--danger)">Lỗi tải dữ liệu</div>'; return; }
@@ -1839,11 +1844,11 @@ function renderAppeals(items) {
   if (!items.length) { body.innerHTML = '<div style="text-align:center;padding:32px;font-size:.82rem;color:var(--muted)">Không có đơn phản hồi nào đang chờ</div>'; return; }
   body.innerHTML = items.map((item, i) => {
     const isPost    = item.itemType === 'post';
-    const typeLabel = isPost ? '📄 Bài viết' : '💬 Bình luận';
+    const typeLabel = isPost ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/></svg>Bài viết' : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>Bình luận';
     const title     = isPost ? esc(item.title || '(không tiêu đề)') : '';
     const content   = esc((item.content || '').slice(0, 300)) + ((item.content || '').length > 300 ? '…' : '');
-    const reason    = item.deletedReason ? `<div class="ap-item-del-reason">💬 Lý do bị xóa: ${esc(item.deletedReason)}</div>` : '';
-    const appealMsg = `<div style="font-size:.62rem;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px">Học sinh giải thích:</div><div class="ap-item-appeal-msg">${esc(item.appeal.message || '')}</div>`;
+    const reason    = item.deletedReason ? `<div class="ap-item-del-reason"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>Lý do bị xóa: ${esc(item.deletedReason)}</div>` : '';
+    const appealMsg = `<div style="font-size:.62rem;font-weight:700;color:#c4b5fd;text-transform:uppercase;letter-spacing:.07em;margin-bottom:3px"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M20 18v-2a4 4 0 0 0-4-4H4"/><path d="m9 17-5-5 5-5"/></svg>Học sinh giải thích:</div><div class="ap-item-appeal-msg">${esc(item.appeal.message || '')}</div>`;
     return `
     <div class="ap-item" id="ap-item-${i}">
       <div class="ap-item-type">${typeLabel} — ${esc(item.authorName || 'Ẩn danh')}</div>
@@ -1856,8 +1861,8 @@ function renderAppeals(items) {
         <textarea class="ap-note-ta" id="ap-note-${i}" placeholder="Ghi chú cho học sinh (tuỳ chọn)…"></textarea>
       </div>
       <div class="ap-item-foot">
-        <button class="btn btn-primary" style="font-size:.75rem;padding:6px 12px" onclick="resolveAppeal('${item.itemType}','${item._id}','approve',${i})">✅ Duyệt cho đăng</button>
-        <button class="btn btn-ghost" style="font-size:.75rem;padding:6px 12px;border-color:rgba(248,113,113,.3);color:var(--danger)" onclick="resolveAppeal('${item.itemType}','${item._id}','reject',${i})">❌ Từ chối</button>
+        <button class="btn btn-primary" style="font-size:.75rem;padding:6px 12px" onclick="resolveAppeal('${item.itemType}','${item._id}','approve',${i})"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>Duyệt cho đăng</button>
+        <button class="btn btn-ghost" style="font-size:.75rem;padding:6px 12px;border-color:rgba(248,113,113,.3);color:var(--danger)" onclick="resolveAppeal('${item.itemType}','${item._id}','reject',${i})"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>Từ chối</button>
       </div>
     </div>`;
   }).join('');
@@ -1922,16 +1927,16 @@ async function loadFeedback() {
 
 function renderFeedback(items) {
   const el = document.getElementById('fb-list'); el.innerHTML = '';
-  if (!items.length) { el.innerHTML = '<div style="text-align:center;padding:30px;font-size:.82rem;color:var(--muted);line-height:1.9">📭 Chưa có phản hồi nào</div>'; return; }
+  if (!items.length) { el.innerHTML = '<div style="text-align:center;padding:30px;font-size:.82rem;color:var(--muted);line-height:1.9"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:8px"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>Chưa có phản hồi nào</div>'; return; }
   items.forEach(item => {
     const card = document.createElement('div');
     card.className = 'fb-item' + (item.adminRead ? '' : ' fb-unread');
     card.dataset.fbid = item._id;
     const unreadDot = item.adminRead ? '' : '<span class="unread-dot" title="Chưa xem"></span>';
-    const replyHtml = item.adminReply ? `<div class="fb-item-reply"><div class="fb-item-reply-lbl">↩ Phản hồi của bạn</div><div class="fb-item-reply-txt">${esc(item.adminReply)}</div></div>` : '';
+    const replyHtml = item.adminReply ? `<div class="fb-item-reply"><div class="fb-item-reply-lbl"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M20 18v-2a4 4 0 0 0-4-4H4"/><path d="m9 17-5-5 5-5"/></svg>Phản hồi của bạn</div><div class="fb-item-reply-txt">${esc(item.adminReply)}</div></div>` : '';
     // Chỉ cho phép đánh dấu đã xem sau khi đã phản hồi học sinh
-    const markReadBtn = (item.adminReply && !item.adminRead) ? `<button class="fb-foot-btn" onclick="markFeedbackRead('${item._id}',this)">✓ Đánh dấu đã xem</button>` : '';
-    card.innerHTML = `<div class="fb-item-body"><div class="fb-item-meta">${unreadDot}${fmt(item.createdAt)}</div><div class="fb-item-text">${esc(item.content)}</div></div>${replyHtml}<div class="fb-item-foot"><span class="fb-foot-time">${item.adminReply?'Đã phản hồi':'Chờ phản hồi'}</span>${markReadBtn}<button class="fb-foot-btn" onclick="openReply('${item._id}')">↩ Phản hồi</button><button class="fb-foot-btn del" onclick="deleteFeedback('${item._id}',this)">✕</button></div>`;
+    const markReadBtn = (item.adminReply && !item.adminRead) ? `<button class="fb-foot-btn" onclick="markFeedbackRead('${item._id}',this)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M20 6 9 17l-5-5"/></svg>Đánh dấu đã xem</button>` : '';
+    card.innerHTML = `<div class="fb-item-body"><div class="fb-item-meta">${unreadDot}${fmt(item.createdAt)}</div><div class="fb-item-text">${esc(item.content)}</div></div>${replyHtml}<div class="fb-item-foot"><span class="fb-foot-time">${item.adminReply?'Đã phản hồi':'Chờ phản hồi'}</span>${markReadBtn}<button class="fb-foot-btn" onclick="openReply('${item._id}')"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M20 18v-2a4 4 0 0 0-4-4H4"/><path d="m9 17-5-5 5-5"/></svg>Phản hồi</button><button class="fb-foot-btn del" onclick="deleteFeedback('${item._id}',this)"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>`;
     el.appendChild(card);
   });
 }
@@ -1991,7 +1996,7 @@ async function sendReply() {
   try {
     const res = await fetch(`/api/admin/feedback/${replyFbId}/reply`, { method:'POST', credentials:'include', headers:authH(), body:JSON.stringify({reply:text}) });
     if(!res.ok){const d=await res.json();msg.textContent=d.error||'Lỗi';msg.className='msg-box err';return;}
-    msg.textContent='✓ Đã gửi phản hồi!'; msg.className='msg-box ok';
+    msg.textContent='<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline;margin-right:4px"><path d="M20 6 9 17l-5-5"/></svg>Đã gửi phản hồi!'; msg.className='msg-box ok';
     setTimeout(()=>{closeReply();loadFeedback();checkFeedbackBadge();},900);
   } catch {msg.textContent='Lỗi kết nối';msg.className='msg-box err';}
   finally {btn.disabled=false;btn.textContent='Gửi phản hồi';}

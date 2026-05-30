@@ -1,0 +1,4 @@
+- [ ] Cập nhật `public/teacher.html` để sửa việc “chọn lớp” không hiện/highlight đúng (nguyên nhân: `id` tạo bằng `esc(cls)` không phù hợp cho HTML id, khiến `getElementById('cls-' + className)` không tìm thấy).
+- [ ] Thêm hàm `classDomId(className)` dùng `encodeURIComponent` để tạo id ổn định.
+- [ ] Sửa `renderClassList()` và `selectClass()` tương ứng.
+- [ ] Test nhanh bằng cách mở `public/teacher.html`, chọn nhiều lớp và kiểm tra vùng bảng/stat hiển thị đúng.
