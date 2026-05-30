@@ -851,10 +851,12 @@ function showNotification(message, type = 'info') {
 // ── Announcement panel ──────────────────────────────
 let _annList = [];
 let _annMyId = null;
-const _ANN_SCOPES_TEACHER = ['all', 'students'];
+const _ANN_SCOPES_TEACHER = ['all', 'class'];
 let _annTargets = { allowedScopes: _ANN_SCOPES_TEACHER, classes: [], teachers: [], students: [] };
-let _annTargetOptions = [];
-let _annTargetSelected = new Set();
+let _annTeacherClasses = []; // Teacher's assigned classes
+let _annClassStudentsMap = {}; // Map of className -> [students]
+let _annTargetSelected = new Map(); // className -> Set<studentId>
+let _annSelectedClasses = new Set(); // Classes with at least one student selected
 
 async function openAnnPanel() {
   document.getElementById('ann-panel-overlay').classList.add('open');
@@ -865,6 +867,12 @@ async function openAnnPanel() {
     } catch {}
   }
   await loadAnnouncementTargets();
+  
+  // Preload students for all teacher classes
+  if (_annTeacherClasses && _annTeacherClasses.length) {
+    await Promise.all(_annTeacherClasses.map(cls => loadClassStudents(cls)));
+  }
+  
   await loadAnnouncements();
 }
 
@@ -923,18 +931,21 @@ function annCharCount() {
 
 async function loadAnnouncementTargets() {
   try {
+    // Load teacher's classes
+    const cr = await fetch('/api/teacher/classes', { credentials: 'include' });
+    if (cr.ok) {
+      _annTeacherClasses = await cr.json();
+      if (Array.isArray(_annTeacherClasses)) {
+        _annTeacherClasses.sort();
+      }
+    }
+    
     const r = await fetch('/api/announcements/targets', { credentials: 'include' });
     if (r.ok) {
       const data = await r.json();
       if (data && !data.error) _annTargets = data;
     }
-    if (!_annTargets.classes?.length) {
-      const cr = await fetch('/api/teacher/classes', { credentials: 'include' });
-      if (cr.ok) {
-        const classes = await cr.json();
-        if (Array.isArray(classes) && classes.length) _annTargets.classes = classes;
-      }
-    }
+    
     if (!Array.isArray(_annTargets.allowedScopes) || !_annTargets.allowedScopes.length) {
       _annTargets.allowedScopes = _ANN_SCOPES_TEACHER;
     }
@@ -953,7 +964,7 @@ function renderAnnScopeOptions() {
   if (!scopeEl) return;
   const labels = {
     all: 'Toàn trường (mặc định)',
-    students: 'Theo học sinh',
+    class: 'Theo lớp',
   };
   const scopes = (Array.isArray(_annTargets.allowedScopes) && _annTargets.allowedScopes.length
     ? _annTargets.allowedScopes
@@ -963,94 +974,177 @@ function renderAnnScopeOptions() {
   if (!scopes.includes(scopeEl.value)) scopeEl.value = scopes.includes('all') ? 'all' : (scopes[0] || 'all');
 }
 
-function buildAnnTargetOptions(scope) {
-  return (_annTargets.students || []).map(s => {
-    const label = s.fullName || 'Học sinh';
-    return { id: String(s.id), label, searchText: label.toLowerCase() };
-  });
+async function loadClassStudents(className) {
+  if (_annClassStudentsMap[className]) return;
+  try {
+    const r = await fetch(`/api/teacher/classes/${encodeURIComponent(className)}/students`, { credentials: 'include' });
+    if (r.ok) {
+      const students = await r.json();
+      _annClassStudentsMap[className] = students.map(s => ({
+        id: String(s.id || s._id || ''),
+        fullName: s.fullName || s.full_name || 'Học sinh',
+      }));
+    }
+  } catch (err) {
+    console.error(`[LoadClassStudents] Error loading ${className}:`, err);
+    _annClassStudentsMap[className] = [];
+  }
 }
 
 function onAnnScopeChange() {
   const scopeEl = document.getElementById('ann-target-scope');
   const wrapEl = document.getElementById('ann-target-picker-wrap');
-  const searchEl = document.getElementById('ann-target-search');
   const helpEl = document.getElementById('ann-target-help');
   if (!scopeEl || !wrapEl || !helpEl) return;
 
   const scope = scopeEl.value;
   _annTargetSelected.clear();
+  _annSelectedClasses.clear();
+  
+  const searchEl = document.getElementById('ann-target-search');
   if (searchEl) searchEl.value = '';
 
   if (scope === 'all') {
     wrapEl.style.display = 'none';
-    _annTargetOptions = [];
     helpEl.textContent = 'Thông báo sẽ gửi cho toàn trường.';
     return;
   }
 
-  _annTargetOptions = buildAnnTargetOptions(scope);
-  helpEl.textContent = 'Tìm và chọn học sinh nhận thông báo.';
-
+  helpEl.textContent = 'Chọn lớp, sau đó chọn học sinh. Nhấn "Chọn tất cả" để lựa chọn toàn bộ học sinh trong lớp.';
   wrapEl.style.display = '';
-  renderAnnTargetPicker();
+  renderAnnTargetClassPicker();
 }
 
-function getAnnTargetFilterQuery() {
-  return (document.getElementById('ann-target-search')?.value || '').trim().toLowerCase();
-}
-
-function getFilteredAnnTargetOptions() {
-  const q = getAnnTargetFilterQuery();
-  if (!q) return _annTargetOptions;
-  return _annTargetOptions.filter(o => o.searchText.includes(q));
-}
-
-function renderAnnTargetPicker() {
+function renderAnnTargetClassPicker() {
   const picker = document.getElementById('ann-target-picker');
   const meta = document.getElementById('ann-target-pick-meta');
   if (!picker) return;
 
-  const filtered = getFilteredAnnTargetOptions();
-  if (!_annTargetOptions.length) {
-    picker.innerHTML = '<div class="ann-target-empty">Chưa có dữ liệu để chọn</div>';
-  } else if (!filtered.length) {
-    picker.innerHTML = '<div class="ann-target-empty">Không tìm thấy kết quả</div>';
-  } else {
-    picker.innerHTML = filtered.map(o => {
-      const checked = _annTargetSelected.has(o.id) ? ' checked' : '';
-      return `<label class="ann-target-item"><input type="checkbox" value="${esc(o.id)}"${checked}><span>${esc(o.label)}</span></label>`;
-    }).join('');
-    picker.querySelectorAll('input[type=checkbox]').forEach(cb => {
-      cb.addEventListener('change', () => {
-        if (cb.checked) _annTargetSelected.add(cb.value);
-        else _annTargetSelected.delete(cb.value);
-        if (meta) meta.textContent = `${_annTargetSelected.size} đã chọn`;
-      });
-    });
+  const classes = _annTeacherClasses || [];
+  if (!classes.length) {
+    picker.innerHTML = '<div class="ann-target-empty">Chưa có lớp nào</div>';
+    if (meta) meta.textContent = '0 đã chọn';
+    return;
   }
+
+  let html = '';
+  let totalSelected = 0;
+
+  for (const className of classes) {
+    const students = _annClassStudentsMap[className] || [];
+    const classSelected = _annTargetSelected.get(className) || new Set();
+    totalSelected += classSelected.size;
+
+    html += `<div style="margin-bottom:16px;padding:12px;background:rgba(255,255,255,.02);border-radius:8px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <strong style="font-size:.85rem;color:var(--text)">${esc(className)}</strong>
+        <div style="display:flex;gap:6px">
+          <button type="button" class="ann-target-pick-btn" onclick="annClassSelectAll('${esc(className)}')">Chọn tất cả</button>
+          <button type="button" class="ann-target-pick-btn" onclick="annClassSelectNone('${esc(className)}')">Bỏ chọn</button>
+        </div>
+      </div>`;
+
+    if (!students.length) {
+      html += `<div style="font-size:.78rem;color:var(--muted);padding:8px">Chưa có học sinh</div>`;
+    } else {
+      html += `<div style="display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto">`;
+      for (const student of students) {
+        const checked = classSelected.has(student.id) ? ' checked' : '';
+        html += `<label class="ann-target-item" style="margin:0;padding:4px 6px">
+          <input type="checkbox" value="${esc(student.id)}" data-class="${esc(className)}"${checked}>
+          <span>${esc(student.fullName)}</span>
+        </label>`;
+      }
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+
+  picker.innerHTML = html;
+  
+  // Attach change listeners to all checkboxes
+  picker.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      const className = cb.dataset.class;
+      if (!_annTargetSelected.has(className)) _annTargetSelected.set(className, new Set());
+      const classSet = _annTargetSelected.get(className);
+      if (cb.checked) {
+        classSet.add(cb.value);
+        _annSelectedClasses.add(className);
+      } else {
+        classSet.delete(cb.value);
+        if (classSet.size === 0) {
+          _annSelectedClasses.delete(className);
+        }
+      }
+      renderAnnTargetClassPicker();
+    });
+  });
 
   if (meta) {
-    const extra = filtered.length < _annTargetOptions.length ? ` · hiện ${filtered.length}/${_annTargetOptions.length}` : '';
-    meta.textContent = `${_annTargetSelected.size} đã chọn${extra}`;
+    meta.textContent = `${totalSelected} học sinh đã chọn (${_annSelectedClasses.size} lớp)`;
   }
 }
 
-function filterAnnTargetList() {
-  renderAnnTargetPicker();
+function annClassSelectAll(className) {
+  const students = _annClassStudentsMap[className] || [];
+  if (!students.length) return;
+  
+  if (!_annTargetSelected.has(className)) _annTargetSelected.set(className, new Set());
+  const classSet = _annTargetSelected.get(className);
+  students.forEach(s => classSet.add(s.id));
+  _annSelectedClasses.add(className);
+  renderAnnTargetClassPicker();
 }
 
-function annTargetSelectVisible(all) {
-  getFilteredAnnTargetOptions().forEach(o => {
-    if (all) _annTargetSelected.add(o.id);
-    else _annTargetSelected.delete(o.id);
-  });
-  renderAnnTargetPicker();
+function annClassSelectNone(className) {
+  _annTargetSelected.delete(className);
+  _annSelectedClasses.delete(className);
+  renderAnnTargetClassPicker();
 }
 
 function getAnnouncementTargetPayload() {
   const scope = document.getElementById('ann-target-scope')?.value || 'all';
-  const selected = [..._annTargetSelected];
-  if (scope === 'students') return { scope, userIds: selected };
+  
+  if (scope === 'all') {
+    return { scope: 'all' };
+  }
+
+  if (scope === 'class') {
+    const classNames = [..._annSelectedClasses];
+    const userIds = [];
+    
+    // Collect all selected user IDs
+    for (const [className, studentSet] of _annTargetSelected) {
+      userIds.push(...studentSet);
+    }
+    
+    // If all students in selected classes are picked, use class scope
+    // Otherwise use student scope for partial selection
+    if (userIds.length === 0) {
+      return { scope: 'all' }; // No selection
+    }
+    
+    // Check if any class has partial selection
+    let hasPartialSelection = false;
+    for (const className of classNames) {
+      const students = _annClassStudentsMap[className] || [];
+      const selected = _annTargetSelected.get(className)?.size || 0;
+      if (selected > 0 && selected < students.length) {
+        hasPartialSelection = true;
+        break;
+      }
+    }
+    
+    if (hasPartialSelection) {
+      // Use student scope for partial selection
+      return { scope: 'students', userIds };
+    } else {
+      // Use class scope when all students in selected classes are chosen
+      return { scope: 'class', classNames };
+    }
+  }
+
   return { scope: 'all' };
 }
 
@@ -1074,9 +1168,10 @@ async function postAnnouncement() {
     if (!r.ok) { showNotification(d.error || 'Đăng thất bại', 'error'); return; }
     ta.value = '';
     _annTargetSelected.clear();
+    _annSelectedClasses.clear();
     const searchEl = document.getElementById('ann-target-search');
     if (searchEl) searchEl.value = '';
-    renderAnnTargetPicker();
+    renderAnnTargetClassPicker();
     annCharCount();
     _annList.unshift(d);
     renderAnnFeed();
@@ -1315,18 +1410,13 @@ init();
       <div class="ann-target-grid">
         <select class="ann-target-select" id="ann-target-scope" onchange="onAnnScopeChange()">
           <option value="all" selected>Toàn trường (mặc định)</option>
-          <option value="students">Theo học sinh</option>
+          <option value="class">Theo lớp</option>
         </select>
         <div class="ann-target-picker-wrap" id="ann-target-picker-wrap">
-          <input type="search" class="ann-target-search" id="ann-target-search" placeholder="Tìm theo tên…" oninput="filterAnnTargetList()">
-          <div class="ann-target-pick-actions">
-            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(true)">Chọn các mục đang hiện</button>
-            <button type="button" class="ann-target-pick-btn" onclick="annTargetSelectVisible(false)">Bỏ chọn</button>
-          </div>
           <div class="ann-target-picker" id="ann-target-picker"></div>
           <div class="ann-target-pick-meta" id="ann-target-pick-meta">0 đã chọn</div>
         </div>
-        <div class="ann-target-help" id="ann-target-help">Mặc định gửi toàn trường. Có thể thu hẹp theo học sinh nếu cần.</div>
+        <div class="ann-target-help" id="ann-target-help">Mặc định gửi toàn trường. Có thể thu hẹp theo lớp nếu cần.</div>
       </div>
       <textarea class="ann-textarea" id="ann-textarea" placeholder="Nhập nội dung thông báo…" maxlength="1000" oninput="annCharCount()"></textarea>
       <div class="ann-post-row">

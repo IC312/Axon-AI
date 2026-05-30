@@ -128,9 +128,9 @@ router.get('/targets', teacherMiddleware, async (req, res) => {
       });
     }
 
-    // Giáo viên: mặc định gửi toàn trường; khi thu hẹp thì chọn học sinh (không theo lớp)
+    // Giáo viên: mặc định gửi toàn trường; khi thu hẹp thì chọn lớp hoặc học sinh
     res.json({
-      allowedScopes: ['all', 'students'],
+      allowedScopes: ['all', 'class', 'students'],
       classes: allClasses,
       teachers: [],
       students: allStudents,
@@ -166,8 +166,12 @@ router.post('/', teacherMiddleware, async (req, res) => {
   if (content.length > 1000) return res.status(400).json({ error: 'Nội dung quá dài (tối đa 1000 ký tự)' });
   const target = normalizeTarget(req.body.target || { scope: 'all' });
   if (target.error) return res.status(400).json({ error: target.error });
-  if (req.user.role === 'teacher' && (target.scope === 'class' || target.scope === 'teachers')) {
-    return res.status(400).json({ error: 'Giáo viên không thể gửi thông báo theo lớp hoặc giáo viên' });
+  
+  // Teachers can use class or students scope; admins can use any scope
+  if (req.user.role === 'teacher') {
+    if (target.scope === 'teachers') {
+      return res.status(400).json({ error: 'Giáo viên không thể gửi thông báo cho giáo viên khác' });
+    }
   }
 
   try {

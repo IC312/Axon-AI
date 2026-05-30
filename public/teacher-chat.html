@@ -567,13 +567,15 @@ input:-webkit-autofill:active {
 .settings-save-btn:hover{opacity:.9}
 .active-prompt-tag{
   display:flex;align-items:center;gap:6px;
-  background:rgba(124,92,252,.12);border:1px solid rgba(124,92,252,.25);
-  border-radius:9px;padding:5px 8px;font-size:.65rem;color:#c4b5fd;
+  background:var(--accent-soft);
+  border:1px solid rgba(13,148,136,.25);
+  border-radius:9px;padding:5px 8px;font-size:.65rem;color:var(--accent2);
   width:100%;justify-content:center;flex-shrink:0;
   overflow:hidden;white-space:nowrap;text-overflow:ellipsis
 }
 .active-prompt-tag .ui-icon-label{gap:5px}
-.active-prompt-tag .ui-icon-svg{width:13px;height:13px;color:#c4b5fd}
+.active-prompt-tag .ui-icon-svg{width:13px;height:13px;color:var(--accent2)}
+
 .settings-divider{height:1px;background:var(--border);margin:16px 0}
 
 /* Delete account */
@@ -1147,20 +1149,20 @@ input:-webkit-autofill:active {
       <div class="section-hd" style="margin-bottom:10px">Chọn phong cách trợ lý</div>
       <div class="preset-grid">
         <button class="preset-card" id="preset-0" onclick="selectPreset(0)">
-          <div class="preset-title"><span data-icon="zap" data-size="14" aria-hidden="true"></span><span>Mặc định</span></div>
-          <div class="preset-desc">Trợ lý thông minh, trả lời ngắn gọn, đúng trọng tâm. Phù hợp cho mọi nhu cầu.</div>
+          <div class="preset-title"><span data-icon="write" data-size="14" aria-hidden="true"></span><span>Soạn bài giảng</span></div>
+          <div class="preset-desc">Hỗ trợ lập kế hoạch bài học, tổ chức nội dung, thiết kế hoạt động dạy học và phiếu học tập.</div>
         </button>
         <button class="preset-card" id="preset-1" onclick="selectPreset(1)">
-          <div class="preset-title"><span data-icon="book" data-size="14" aria-hidden="true"></span><span>Gia sư kiên nhẫn</span></div>
-          <div class="preset-desc">Giải thích từng bước, dùng ví dụ dễ hiểu, hướng dẫn để học sinh tự tìm ra đáp án.</div>
+          <div class="preset-title"><span data-icon="book" data-size="14" aria-hidden="true"></span><span>Hỗ trợ giảng dạy</span></div>
+          <div class="preset-desc">Giải thích khái niệm dưới góc độ sư phạm, cung cấp ví dụ dạy học, hỗ trợ chuẩn bị bài giảng.</div>
         </button>
         <button class="preset-card" id="preset-2" onclick="selectPreset(2)">
-          <div class="preset-title"><span data-icon="write" data-size="14" aria-hidden="true"></span><span>Luyện văn &amp; ngôn ngữ</span></div>
-          <div class="preset-desc">Tập trung vào văn phong, ngữ pháp, cách diễn đạt. Sửa lỗi và gợi ý cải thiện bài viết.</div>
+          <div class="preset-title"><span data-icon="math" data-size="14" aria-hidden="true"></span><span>Tạo bài tập &amp; đánh giá</span></div>
+          <div class="preset-desc">Thiết kế bài tập, câu hỏi, đề kiểm tra. Tạo đáp án chi tiết và hướng dẫn chấm điểm.</div>
         </button>
         <button class="preset-card" id="preset-3" onclick="selectPreset(3)">
-          <div class="preset-title"><span data-icon="math" data-size="14" aria-hidden="true"></span><span>Toán &amp; Khoa học</span></div>
-          <div class="preset-desc">Giải bài toán chi tiết, trình bày có bước, giải thích công thức và lý thuyết rõ ràng.</div>
+          <div class="preset-title"><span data-icon="zap" data-size="14" aria-hidden="true"></span><span>Quản lý lớp &amp; đánh giá</span></div>
+          <div class="preset-desc">Cấp lời khuyên về quản lý lớp, xử lý thách thức học tập, và đánh giá tiến độ học sinh.</div>
         </button>
         <button class="preset-card" id="preset-4" onclick="selectPreset(4)">
           <div class="preset-title"><span data-icon="custom" data-size="14" aria-hidden="true"></span><span>Tự tùy chỉnh</span></div>
@@ -2021,10 +2023,10 @@ function showConfirm(msg, okLabel = 'Xác nhận', type = 'danger') {
 
 // ── System Prompts ──
 const PRESETS = [
-  { label: 'Mặc định',             prompt: 'Bạn là Axon AI — trợ lý học tập. Trả lời tiếng Việt, ngắn gọn, đúng trọng tâm.' },
-  { label: 'Gia sư kiên nhẫn',     prompt: 'Bạn là gia sư kiên nhẫn. Giải thích từng bước, dùng ví dụ dễ hiểu, hướng dẫn học sinh tự suy nghĩ thay vì đưa đáp án thẳng. Trả lời tiếng Việt.' },
-  { label: 'Luyện văn & ngôn ngữ', prompt: 'Bạn là chuyên gia văn học Việt. Sửa lỗi chính tả, ngữ pháp, văn phong và gợi ý cách diễn đạt hay hơn. Trả lời tiếng Việt.' },
-  { label: 'Toán & Khoa học',      prompt: 'Bạn là giáo viên Toán và Khoa học. Trình bày lời giải từng bước, ghi rõ công thức và đơn vị. Trả lời tiếng Việt.' },
+  { label: 'Soạn bài giảng',       prompt: 'Bạn là trợ lý soạn bài giảng. Giúp lập kế hoạch dạy, tổ chức nội dung bài học rõ ràng, đưa ra các hoạt động dạy học hấp dẫn, tạo phiếu học tập. Trả lời tiếng Việt.' },
+  { label: 'Hỗ trợ giảng dạy',     prompt: 'Bạn là trợ lý giảng dạy. Giải thích khái niệm dưới góc độ sư phạm, đưa ra ví dụ cụ thể, gợi ý cách diễn đạt dễ hiểu cho học sinh. Hỗ trợ giáo viên chuẩn bị lý thuyết và kỹ năng dạy. Trả lời tiếng Việt.' },
+  { label: 'Tạo bài tập & đánh giá', prompt: 'Bạn là trợ lý tạo bài tập. Thiết kế bài tập, câu hỏi trắc nghiệm, bài kiểm tra phù hợp từng mức độ học sinh. Tạo đáp án chi tiết, hướng dẫn chấm điểm. Trả lời tiếng Việt.' },
+  { label: 'Quản lý lớp & đánh giá',  prompt: 'Bạn là trợ lý quản lý lớp học. Cung cấp lời khuyên về kỹ năng quản lý lớp, thách thức học tập, quản lý thời gian và tương tác với học sinh. Hỗ trợ đánh giá hiệu suất và phản hồi học sinh. Trả lời tiếng Việt.' },
 ];
 let selectedPreset = parseInt(localStorage.getItem('axon_preset') || '0');
 let customPrompt = localStorage.getItem('axon_custom_prompt') || '';
